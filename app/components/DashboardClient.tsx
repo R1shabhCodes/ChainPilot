@@ -4,9 +4,11 @@ import { useState } from 'react';
 import PrivyAuthButton from './PrivyAuthButton';
 import AddressInput from './AddressInput';
 import NativeBalanceCard from './NativeBalanceCard';
+import PositionFilterTabs, { PositionFilter } from './PositionFilterTabs';
 
 export default function DashboardClient() {
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<PositionFilter>('ALL');
 
   return (
     <div className="min-h-screen flex flex-col bg-[#090d16] text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200">
@@ -57,8 +59,19 @@ export default function DashboardClient() {
 
         {/* Live Native On-Chain RPC Balance Section */}
         {selectedAddress && (
-          <section className="max-w-2xl w-full mx-auto">
+          <section className="max-w-2xl w-full mx-auto flex flex-col gap-6">
             <NativeBalanceCard address={selectedAddress} />
+            
+            {/* Position Category Filter Controls */}
+            <div className="flex flex-col gap-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                Position Overview Filters
+              </h4>
+              <PositionFilterTabs
+                activeFilter={activeFilter}
+                onFilterChange={(filter) => setActiveFilter(filter)}
+              />
+            </div>
           </section>
         )}
 
