@@ -1,3 +1,5 @@
+import AddressInput from './components/AddressInput';
+
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-[#090d16] text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200">
@@ -35,23 +37,13 @@ export default function Home() {
             <span className="gradient-text">Evidence-Backed Insights</span>
           </h2>
           <p className="text-sm text-slate-400 leading-relaxed">
-            Enter any EVM wallet address to query indexed live protocol data via The Graph, 
+            Enter an EVM wallet address to query indexed live protocol data via The Graph, 
             receive transparent AI risk analysis, and review suggested actions.
           </p>
 
-          {/* Address Input Form */}
-          <div className="w-full max-w-xl mt-2 flex flex-col sm:flex-row gap-2.5">
-            <div className="relative flex-1">
-              <input
-                type="text"
-                placeholder="Enter wallet address (0x...) or ENS domain"
-                className="w-full px-4 py-3 text-sm rounded-xl glass-panel bg-slate-900/90 border-slate-700/80 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
-                defaultValue=""
-              />
-            </div>
-            <button className="px-6 py-3 text-sm font-semibold rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white shadow-lg shadow-cyan-500/25 transition-all">
-              Analyze Portfolio
-            </button>
+          {/* Interactive Address Input */}
+          <div className="w-full mt-2">
+            <AddressInput />
           </div>
         </section>
 
@@ -64,7 +56,7 @@ export default function Home() {
             </div>
             <h3 className="font-bold text-base text-slate-100">Indexed On-Chain Data</h3>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Queries real-time positions, liquidity mints/burns, and health metrics directly from 
+              Queries real-time positions, liquidity mintSwaps, and health metrics directly from 
               The Graph network subgraphs.
             </p>
             <div className="mt-auto pt-4 border-t border-slate-800/60 text-xs font-mono text-cyan-400/90 flex items-center justify-between">
