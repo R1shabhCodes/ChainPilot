@@ -2,13 +2,13 @@
 
 > **AI-Powered DeFi Position Copilot & Risk Engine**
 
-ChainPilot is an intelligent, evidence-backed risk analysis engine and position copilot for Decentralized Finance (DeFi) protocols. Built for traders and liquidity providers (LPs), ChainPilot helps monitor position health, calculate impermanent loss risk, and suggest corrective actions using real-time blockchain telemetry and Google Gemini AI.
+ChainPilot is an intelligent risk analysis engine and position copilot for Decentralized Finance (DeFi) protocols. Built to assist traders and liquidity providers (LPs), ChainPilot is designed to monitor position health, evaluate range risks, and suggest transparent corrective actions using live blockchain data and Google Gemini AI.
 
 ---
 
-## 🏗️ Current Architecture & System Data Flow
+## 🏗️ Architecture & System Data Flow
 
-ChainPilot enforces strict separation of concerns, keeping `app/page.tsx` as a React Server Component (RSC) while managing client-side interactive state inside `DashboardClient.tsx`.
+ChainPilot follows a strict Server/Client architecture. The main landing page (`app/page.tsx`) remains a React Server Component (RSC) baseline, delegating client-side interactivity to `DashboardClient.tsx`.
 
 ```
                ┌──────────────────────────────┐
@@ -17,96 +17,99 @@ ChainPilot enforces strict separation of concerns, keeping `app/page.tsx` as a R
                               │
                               ▼
                ┌──────────────────────────────┐
-               │   Privy Authentication UI    │
+               │   Privy Authentication UI    │ [Implemented]
                │  (PrivyProviderWrapper.tsx)  │
                └──────────────┬───────────────┘
                               │  (Auto-sync wallet address)
                               ▼
                ┌──────────────────────────────┐
-               │   DashboardClient (Client)   │
+               │   DashboardClient (Client)   │ [Implemented]
                └──────────────┬───────────────┘
                               │
          ┌────────────────────┼────────────────────┐
          │                    │                    │
          ▼                    ▼                    ▼
 ┌──────────────────┐ ┌──────────────────┐ ┌──────────────────┐
-│ EVM RPC Balance  │ │ The Graph Data   │ │ Position Filter  │
-│ Fetcher (Live)   │ │ (Paused / WIP)   │ │ Tabs (ALL/RANGE) │
+│ Live EVM RPC     │ │ The Graph Data   │ │ Position Filter  │
+│ Balance Fetcher  │ │ Indexer Pipeline │ │ Tabs Component   │
+│ [Implemented]    │ │ [WIP / Blocked]  │ │ [Implemented]    │
 └────────┬─────────┘ └────────┬─────────┘ └────────┬─────────┘
+         │ (ETH Balance)      │ (Positions Payload)│
+         │                    ▼                    │
+         │         ┌──────────────────┐            │
+         │         │ Server /api/     │            │
+         │         │ analyze Route    │            │
+         │         │ [Foundation]     │            │
+         │         └──────────┬───────┘            │
          │                    │                    │
-         └──────────┬─────────┘                    │
-                    ▼                              │
-         ┌──────────────────┐                      │
-         │ Server /api/     │                      │
-         │ analyze Route    │                      │
-         └──────────┬───────┘                      │
-                    │                              │
-                    ▼                              │
-         ┌──────────────────┐                      │
-         │ Gemini 3.6 Flash │                      │
-         │ AI Engine Client │                      │
-         └──────────┬───────┘                      │
-                    │                              │
-                    ▼                              │
-         ┌─────────────────────────────────────────┴┐
-         │       AIRiskCard Presentation UI         │
-         │    (Evidence Citations & Actions)        │
-         └──────────────────────────────────────────┘
+         │                    ▼                    │
+         │         ┌──────────────────┐            │
+         │         │ Gemini AI Engine │            │
+         │         │ (models/gemini-  │            │
+         │         │  3.6-flash)      │            │
+         │         │ [Implemented]    │            │
+         │         └──────────┬───────┘            │
+         │                    │                    │
+         └──────────┬─────────┴────────────────────┘
+                    ▼
+         ┌─────────────────────────────────────────┐
+         │       AIRiskCard Presentation UI        │
+         │      (Evidence Citations & Actions)     │
+         │              [Implemented]              │
+         └─────────────────────────────────────────┘
 ```
 
-### Component Status Breakdown
+> **Note on Data Separation**: The live EVM RPC balance fetcher provides real-time ETH native balances and block numbers directly from public nodes. It does not generate LP position telemetry. The AI analysis engine is invoked only when verified protocol position payloads are supplied by the server backend.
 
-| Component | Status | Details |
+---
+
+## 🚦 Component Implementation Status
+
+| Component | Status | Description / Path |
 | :--- | :--- | :--- |
-| **Next.js RSC Shell** | ✅ Implemented | Server Component layout (`app/page.tsx`), header, background, metadata |
-| **Privy Auth Integration** | ✅ Implemented | Embedded wallet login, modal triggers, and automatic address population |
-| **Live EVM RPC Balance** | ✅ Implemented | Real-time `eth_getBalance` queries over public Ethereum RPC endpoints |
-| **Position Filter UI** | ✅ Implemented | Filter state tabs (`ALL`, `IN_RANGE`, `OUT_OF_RANGE`, `CRITICAL_RISK`) |
-| **AI Risk Card UI** | ✅ Implemented | Reusable presentation renderer for verified AI risk summaries |
-| **Gemini AI Client** | ✅ Implemented | Server-only native `fetch()` integration with `models/gemini-3.6-flash` |
-| **Analysis API Foundation** | ✅ Implemented | Secure `/api/analyze` route returning `HTTP 428 DATA_SOURCE_UNAVAILABLE` when data is missing |
-| **The Graph Live Indexer** | ⏳ Paused (WIP) | Data fetching pipeline architected; live querying paused pending API key configuration |
-| **Transaction Sign-off** | ⏳ Planned (WIP) | Action approval modal and transaction sign-off pipeline scheduled for Phase 8 |
+| **Next.js RSC Shell** | `Implemented` | `app/page.tsx` — Server component layout, dark mode aesthetic, background grid |
+| **EVM Address Validation** | `Implemented` | `lib/utils/address.ts` — Native regex validation for 40-character hex EVM addresses |
+| **Live EVM RPC Balance** | `Implemented` | `app/api/balance/route.ts` & `NativeBalanceCard.tsx` — Queries `eth_getBalance` & `eth_blockNumber` from PublicNode RPC with 1RPC fallback |
+| **Privy Auth Integration** | `Implemented` | `PrivyProviderWrapper.tsx` & `PrivyAuthButton.tsx` — Embedded wallet onboarding with automatic address input sync |
+| **AI Schemas & Prompts** | `Implemented` | `lib/ai/types.ts` & `lib/ai/prompts.ts` — Strict TypeScript contracts (`RiskLevel`, `EvidenceCitation`, `SuggestedAction`) and non-hallucinatory prompt guidance |
+| **Server Gemini AI Engine** | `Implemented` | `lib/ai/geminiClient.ts` — Server-only native `fetch()` client calling `models/gemini-3.6-flash` |
+| **Analysis API Foundation** | `Implemented` | `app/api/analyze/route.ts` — Validates addresses and enforces HTTP status 428 `DATA_SOURCE_UNAVAILABLE` when subgraph key is missing |
+| **DashboardClient UI** | `Implemented` | `app/components/DashboardClient.tsx` — Client-side state coordinator for auth, balance, filter tabs, and AI card rendering |
+| **Position Filter UI** | `Implemented` | `app/components/PositionFilterTabs.tsx` — Reusable filter tab state bar (`ALL`, `IN_RANGE`, `OUT_OF_RANGE`, `CRITICAL_RISK`) |
+| **AI Risk Presentation Card** | `Implemented` | `app/components/AIRiskCard.tsx` — Pure presentation renderer for verified AI risk summaries and status notices |
+| **UX Routing Boundaries** | `Implemented` | `app/error.tsx`, `app/loading.tsx`, `app/not-found.tsx` — Next.js UX fallback pages |
+| **Subgraph Data Ingestion** | `Foundation / prepared` | `app/api/analyze/route.ts` — Architectural foundation ready to accept server-fetched subgraph position payloads |
+| **The Graph Live Indexer** | `WIP / blocked` | Indexing pipeline designed; live subgraph querying is currently paused pending API key setup |
+| **Transaction Execution** | `Planned` | One-click action approval modal and transaction sign-off via Privy scheduled for Phase 8 |
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack & Dependencies
 
-- **Framework**: Next.js 15 (App Router, Server Components + Client Boundaries), React 19, TypeScript
-- **Styling**: Tailwind CSS v4, Vanilla CSS design tokens
-- **Wallet Auth**: `@privy-io/react-auth` (Privy embedded wallets)
-- **Blockchain Data**: Native EVM JSON-RPC via public Ethereum endpoints (`ethereum-rpc.publicnode.com`)
-- **AI Intelligence**: Google Gemini API (`models/gemini-3.6-flash`) via server-only native fetch client (`lib/ai/geminiClient.ts`)
-- **Indexing & Queries**: The Graph Subgraph APIs (Integration architected, live queries paused)
+Examine exact versions from `package.json`:
 
----
-
-## ✨ Implemented Features
-
-- **Standardized AI Schemas & Prompts**: `lib/ai/types.ts` defines explicit contracts for `RiskLevel`, `RangeStatus`, `EvidenceCitation`, `SuggestedAction`, `PositionRiskSummary`, and `PortfolioAnalysisResponse`. `lib/ai/prompts.ts` enforces non-hallucinatory system prompts.
-- **Server-Only Gemini AI Engine**: `lib/ai/geminiClient.ts` executes server-side calls directly to Google Gemini API endpoints without third-party SDK dependencies or client key exposure.
-- **Live Ethereum Native Balance Fetcher**: `/api/balance/route.ts` and `NativeBalanceCard.tsx` fetch and render live ETH balances and block heights directly from public EVM RPC nodes.
-- **Privy Wallet Authentication**: Seamless embedded wallet onboarding and manual address input sync.
-- **Position Filter UI**: Interactive state selector (`ALL`, `IN_RANGE`, `OUT_OF_RANGE`, `CRITICAL_RISK`) built for immediate connection to real indexed position streams.
-- **AI Risk Presentation Renderer**: `AIRiskCard.tsx` renders evidence citations, risk levels, and suggested actions exclusively from verified server responses.
-- **Error & Loading Infrastructure**: Full UX boundary support via `app/error.tsx`, `app/loading.tsx`, and `app/not-found.tsx`.
+- **Framework**: Next.js (`16.3.4`), React (`19.2.8`), React DOM (`19.2.8`), TypeScript (`^5`)
+- **Styling**: Tailwind CSS (`^4`), `@tailwindcss/postcss` (`^4`)
+- **Wallet Authentication**: `@privy-io/react-auth` (`^3.40.0`)
+- **Blockchain Telemetry**: Native EVM JSON-RPC over public HTTPS endpoints (`https://ethereum-rpc.publicnode.com`, fallback: `https://1rpc.io/eth`)
+- **AI Engine**: Google Gemini API (`models/gemini-3.6-flash`) via server-only native HTTP client (`lib/ai/geminiClient.ts`)
 
 ---
 
-## 🚧 Current Limitations & Work in Progress
+## ⚖️ Project Integrity & Zero-Fake-Data Policy
 
-1. **The Graph Live Indexing**: On-chain position indexing is architected but currently paused until The Graph Studio API key configuration is finalized. The analysis route `/api/analyze` strictly enforces `HTTP 428 DATA_SOURCE_UNAVAILABLE` rather than returning mock data.
-2. **AI Analysis Safeguards**: ChainPilot's Gemini AI pipeline rejects requests that lack verified position data, preventing hallucinated portfolio evaluations.
-3. **Transaction Execution**: One-click action execution (e.g. rebalancing LP ranges) will be connected to Privy wallet transaction sign-off in an upcoming release.
+ChainPilot enforces a strict **Zero-Fake-Data policy**:
+- **No Mocked Data**: We do not generate, hardcode, or render synthetic portfolio positions or fake risk scores.
+- **No Synthetic AI Claims**: The Gemini AI client evaluates only verified position data passed from the server.
+- **Explicit System Statuses**: When required data providers (such as The Graph indexer) are unconfigured, `/api/analyze` responds with HTTP status 428 (`DATA_SOURCE_UNAVAILABLE`), and the UI renders a clear status banner rather than fabricated analysis.
 
 ---
 
-## ⚖️ Project Integrity & Zero-Fake-Data Guarantee
+## 🚧 Limitations & Active Work in Progress
 
-ChainPilot operates under a strict **Zero-Fake-Data policy**:
-- **No Mock Data**: We do not use hardcoded, sample, or fabricated portfolio data.
-- **No Synthetic AI Output**: AI risk analysis is generated only when backed by verified on-chain telemetry.
-- **Transparent Statuses**: When external data sources (like subgraph endpoints) are unconfigured, the UI clearly displays explicit system banners rather than synthetic metrics.
+1. **The Graph Live Indexing**: On-chain subgraph querying is architected but paused while Studio API key access is established.
+2. **AI Analysis Safeguards**: Gemini AI risk evaluation is gated behind server-verified data availability to ensure all recommendations remain evidence-backed.
+3. **Transaction Execution**: User action sign-off via embedded Privy wallets is planned for upcoming development phases.
 
 ---
 
@@ -117,53 +120,53 @@ ChainPilot operates under a strict **Zero-Fake-Data policy**:
 - Node.js 20+
 - npm 10+
 
-### Installation
+### Step-by-Step Setup
 
-1. Clone the repository:
+1. **Clone the Repository**:
    ```bash
    git clone https://github.com/R1shabhCodes/ChainPilot.git
    cd chainpilot
    ```
 
-2. Install dependencies:
+2. **Install Dependencies**:
    ```bash
    npm install
    ```
 
-3. Environment Configuration:
-   Create a `.env.local` file based on `.env.example`:
+3. **Configure Environment Variables**:
+   Create `.env.local` using `.env.example` as a reference:
    ```bash
    cp .env.example .env.local
    ```
    Add your API keys to `.env.local`:
    ```env
-   # Google Gemini API Key
+   # Google Gemini API Key (Server-only)
    GEMINI_API_KEY="your_gemini_api_key_here"
 
-   # Privy App ID (Optional for wallet login)
+   # Privy App ID (Client auth)
    NEXT_PUBLIC_PRIVY_APP_ID="your_privy_app_id_here"
 
-   # The Graph API Key (Phase 3)
+   # The Graph API Key (Phase 3 Indexing)
    THE_GRAPH_API_KEY="your_the_graph_api_key_here"
    ```
 
-4. Run Development Server:
+4. **Run Development Server**:
    ```bash
    npm run dev
    ```
-   Open [http://localhost:3000](http://localhost:3000) in your browser.
+   Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-5. Run Production Build:
+5. **Build for Production**:
    ```bash
    npm run build
    ```
 
 ---
 
-## 🤝 Sponsor & Integration Alignment
+## 🤝 Sponsor & Integration Intent
 
-- **The Graph**: Intended as the load-bearing position indexing engine for Uniswap v3 / DeFi liquidity positions. Integration pipeline is architected; live subgraph queries are pending API key activation.
-- **Privy**: Load-bearing authentication and embedded wallet layer, providing low-friction wallet connection and transaction authorization.
+- **The Graph**: Architected as the primary indexer for Uniswap v3 / DeFi liquidity pool positions.
+- **Privy**: Integrated as the primary authentication and embedded wallet layer for user address auto-sync and future transaction authorization.
 
 ---
 
