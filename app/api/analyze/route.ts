@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { fetchUniswapPositions } from '@/lib/graph/client';
+import { evaluatePositionsWithGemini } from '@/lib/ai/geminiClient';
 
 export async function POST(request: Request) {
   try {
@@ -13,36 +15,53 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check if verified live Graph Subgraph position data source is configured
-    const graphKey = process.env.THE_GRAPH_API_KEY;
-    const isGraphConfigured = Boolean(graphKey && graphKey !== 'your_the_graph_api_key_here');
+    // Step 1: Query server-side Graph Subgraph integration for verified positions
+    const graphResult = await fetchUniswapPositions(address);
 
-    if (!isGraphConfigured) {
-      // Return explicit structured status — NEVER fabricate fake or mocked position data
+    if (!graphResult.success) {
+      if (graphResult.status === 'DATA_SOURCE_UNAVAILABLE') {
+        return NextResponse.json(
+          {
+            status: 'DATA_SOURCE_UNAVAILABLE',
+            code: graphResult.code,
+            message: graphResult.message,
+            address,
+            canAnalyze: false,
+            timestamp: new Date().toISOString(),
+          },
+          { status: 428 } // HTTP 428 Precondition Required
+        );
+      }
+
+      return NextResponse.json(
+        { error: graphResult.message || 'Error querying subgraph position data.' },
+        { status: 502 }
+      );
+    }
+
+    // Step 2: Handle empty positions response (NO_POSITIONS_FOUND)
+    if (graphResult.status === 'NO_POSITIONS_FOUND') {
       return NextResponse.json(
         {
-          status: 'DATA_SOURCE_UNAVAILABLE',
-          code: 'GRAPH_API_KEY_REQUIRED',
-          message: 'Live Graph Subgraph data integration is required for portfolio risk analysis. Please configure THE_GRAPH_API_KEY in .env.local to enable live indexing.',
+          status: 'NO_POSITIONS_FOUND',
+          code: 'ZERO_POSITIONS',
+          message: graphResult.message,
           address,
           canAnalyze: false,
           timestamp: new Date().toISOString(),
         },
-        { status: 428 } // HTTP 428 Precondition Required
+        { status: 200 }
       );
     }
 
-    // Pipeline Foundation: When THE_GRAPH_API_KEY is configured in Phase 3,
-    // server-fetched verified subgraph positions will be passed to evaluatePositionsWithGemini() here.
-    return NextResponse.json({
-      status: 'READY_FOR_SUBGRAPH_PIPELINE',
-      address,
-      message: 'Server AI pipeline foundation ready for server-fetched Subgraph payloads.',
-    });
+    // Step 3: Verified positions exist -> Call Gemini AI reasoning engine with verified data only
+    const aiAnalysis = await evaluatePositionsWithGemini(address, graphResult.rawJson);
+
+    return NextResponse.json(aiAnalysis, { status: 200 });
   } catch (error: any) {
     console.error('Error in /api/analyze route handler:', error);
     return NextResponse.json(
-      { error: 'An error occurred while processing the analysis request.' },
+      { error: error.message || 'An error occurred while processing the portfolio analysis request.' },
       { status: 500 }
     );
   }
