@@ -1,16 +1,32 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface AddressInputProps {
+  externalAddress?: string | null;
   onAnalyze?: (address: string) => void;
 }
 
-export default function AddressInput({ onAnalyze }: AddressInputProps) {
+export default function AddressInput({ externalAddress, onAnalyze }: AddressInputProps) {
   const [address, setAddress] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [activeAddress, setActiveAddress] = useState<string | null>(null);
+
+  // Sync with externalAddress prop (e.g. from Privy login or parent selection)
+  useEffect(() => {
+    if (externalAddress) {
+      setAddress(externalAddress);
+      if (/^0x[a-fA-F0-9]{40}$/.test(externalAddress)) {
+        setError(null);
+        setActiveAddress(externalAddress);
+      }
+    } else if (externalAddress === null) {
+      setAddress('');
+      setError(null);
+      setActiveAddress(null);
+    }
+  }, [externalAddress]);
 
   // Validate EVM address format (0x followed by 40 hex chars)
   const validateAddress = (input: string): boolean => {
