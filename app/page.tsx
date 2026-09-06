@@ -1,6 +1,12 @@
+'use client';
+
+import { useState } from 'react';
 import AddressInput from './components/AddressInput';
+import NativeBalanceCard from './components/NativeBalanceCard';
 
 export default function Home() {
+  const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
+
   return (
     <div className="min-h-screen flex flex-col bg-[#090d16] text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200">
       {/* Top Header */}
@@ -41,11 +47,18 @@ export default function Home() {
             receive transparent AI risk analysis, and review suggested actions.
           </p>
 
-          {/* Interactive Address Input */}
+          {/* Reusable Address Input */}
           <div className="w-full mt-2">
-            <AddressInput />
+            <AddressInput onAnalyze={(address) => setSelectedAddress(address)} />
           </div>
         </section>
+
+        {/* Live Native On-Chain RPC Balance Card */}
+        {selectedAddress && (
+          <section className="max-w-2xl w-full mx-auto">
+            <NativeBalanceCard address={selectedAddress} />
+          </section>
+        )}
 
         {/* Feature Grid Placeholders */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -56,7 +69,7 @@ export default function Home() {
             </div>
             <h3 className="font-bold text-base text-slate-100">Indexed On-Chain Data</h3>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Queries real-time positions, liquidity mintSwaps, and health metrics directly from 
+              Queries real-time positions, liquidity mints/burns, and health metrics directly from 
               The Graph network subgraphs.
             </p>
             <div className="mt-auto pt-4 border-t border-slate-800/60 text-xs font-mono text-cyan-400/90 flex items-center justify-between">
