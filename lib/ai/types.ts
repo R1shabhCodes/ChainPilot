@@ -10,6 +10,14 @@ export interface EvidenceCitation {
   sourceRef: string;
 }
 
+export interface ExecutableTxPayload {
+  chainId: number;
+  to: string;
+  data: string;
+  value: string;
+  actionSpecificParams?: Record<string, string>;
+}
+
 export interface SuggestedAction {
   id: string;
   actionType: 'REBALANCE' | 'WITHDRAW' | 'REPAY' | 'HOLD';
@@ -17,6 +25,7 @@ export interface SuggestedAction {
   description: string;
   riskWarning?: string;
   suggestedParameters?: Record<string, string>;
+  executablePayload?: ExecutableTxPayload;
 }
 
 export interface PositionRiskSummary {

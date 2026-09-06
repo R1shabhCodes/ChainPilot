@@ -6,7 +6,8 @@ import AddressInput from './AddressInput';
 import NativeBalanceCard from './NativeBalanceCard';
 import PositionFilterTabs, { PositionFilter } from './PositionFilterTabs';
 import AIRiskCard, { AnalyzeStatusNotice } from './AIRiskCard';
-import { PortfolioAnalysisResponse } from '@/lib/ai/types';
+import ActionApprovalModal from './ActionApprovalModal';
+import { PortfolioAnalysisResponse, SuggestedAction, PositionRiskSummary } from '@/lib/ai/types';
 
 export default function DashboardClient() {
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
@@ -18,11 +19,18 @@ export default function DashboardClient() {
   const [aiNotice, setAiNotice] = useState<AnalyzeStatusNotice | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
 
+  // Action Modal State
+  const [selectedActionState, setSelectedActionState] = useState<{
+    action: SuggestedAction;
+    position: PositionRiskSummary;
+  } | null>(null);
+
   const fetchAiAnalysis = useCallback((address: string) => {
     setAiLoading(true);
     setAiError(null);
     setAiNotice(null);
     setAiAnalysis(null);
+    setSelectedActionState(null);
 
     fetch('/api/analyze', {
       method: 'POST',
@@ -31,11 +39,23 @@ export default function DashboardClient() {
     })
       .then(async (res) => {
         const data = await res.json();
+
         if (res.status === 428 || data.status === 'DATA_SOURCE_UNAVAILABLE') {
           setAiNotice({
             status: data.status || 'DATA_SOURCE_UNAVAILABLE',
             code: data.code || 'GRAPH_API_KEY_REQUIRED',
             message: data.message || 'Live Graph Subgraph position data is required.',
+            canAnalyze: false,
+          });
+          setAiLoading(false);
+          return;
+        }
+
+        if (data.status === 'NO_POSITIONS_FOUND') {
+          setAiNotice({
+            status: data.status,
+            code: data.code || 'ZERO_POSITIONS',
+            message: data.message || 'No active Uniswap v3 positions were found for this address.',
             canAnalyze: false,
           });
           setAiLoading(false);
@@ -63,6 +83,7 @@ export default function DashboardClient() {
       setAiLoading(false);
       setAiNotice(null);
       setAiError(null);
+      setSelectedActionState(null);
     }
   }, [selectedAddress, fetchAiAnalysis]);
 
@@ -125,6 +146,7 @@ export default function DashboardClient() {
               statusNotice={aiNotice}
               error={aiError}
               onRetry={() => fetchAiAnalysis(selectedAddress)}
+              onSelectAction={(action, position) => setSelectedActionState({ action, position })}
             />
 
             {/* Position Category Filter Controls */}
@@ -191,6 +213,14 @@ export default function DashboardClient() {
           </div>
         </section>
       </main>
+
+      {/* Action Approval Modal */}
+      <ActionApprovalModal
+        isOpen={Boolean(selectedActionState)}
+        action={selectedActionState?.action || null}
+        position={selectedActionState?.position || null}
+        onClose={() => setSelectedActionState(null)}
+      />
 
       {/* Footer */}
       <footer className="border-t border-slate-800/80 bg-slate-950/60 py-6 px-6 text-center text-xs text-slate-500">

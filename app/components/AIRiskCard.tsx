@@ -2,7 +2,9 @@
 
 import {
   PortfolioAnalysisResponse,
+  PositionRiskSummary,
   RiskLevel,
+  SuggestedAction,
 } from '@/lib/ai/types';
 
 export interface AnalyzeStatusNotice {
@@ -18,6 +20,7 @@ export interface AIRiskCardProps {
   statusNotice?: AnalyzeStatusNotice | null;
   error?: string | null;
   onRetry?: () => void;
+  onSelectAction?: (action: SuggestedAction, position: PositionRiskSummary) => void;
 }
 
 function getRiskBadgeColor(level: RiskLevel): string {
@@ -41,6 +44,7 @@ export default function AIRiskCard({
   statusNotice,
   error,
   onRetry,
+  onSelectAction,
 }: AIRiskCardProps) {
   // Loading State
   if (loading) {
@@ -73,7 +77,7 @@ export default function AIRiskCard({
           {onRetry && (
             <button
               onClick={onRetry}
-              className="text-xs text-slate-300 hover:text-white underline font-medium"
+              className="text-xs text-slate-300 hover:text-white underline font-medium cursor-pointer"
             >
               Retry
             </button>
@@ -181,7 +185,7 @@ export default function AIRiskCard({
 
             {/* Suggested User Action */}
             {pos.suggestedAction && (
-              <div className="mt-2 p-3 rounded-xl bg-cyan-950/30 border border-cyan-800/50 text-xs flex flex-col gap-1.5">
+              <div className="mt-2 p-3 rounded-xl bg-cyan-950/30 border border-cyan-800/50 text-xs flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-cyan-300 flex items-center gap-1.5">
                     💡 Suggested Action: {pos.suggestedAction.title}
@@ -193,6 +197,18 @@ export default function AIRiskCard({
                 <p className="text-[11px] text-slate-300">{pos.suggestedAction.description}</p>
                 {pos.suggestedAction.riskWarning && (
                   <p className="text-[10px] text-amber-300 font-mono">Notice: {pos.suggestedAction.riskWarning}</p>
+                )}
+
+                {/* Review Action Trigger Button */}
+                {onSelectAction && (
+                  <div className="pt-1">
+                    <button
+                      onClick={() => onSelectAction(pos.suggestedAction!, pos)}
+                      className="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-cyan-950/40"
+                    >
+                      🔍 Review Action Proposal
+                    </button>
+                  </div>
                 )}
               </div>
             )}
