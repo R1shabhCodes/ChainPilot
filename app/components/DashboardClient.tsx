@@ -1,14 +1,70 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import PrivyAuthButton from './PrivyAuthButton';
 import AddressInput from './AddressInput';
 import NativeBalanceCard from './NativeBalanceCard';
 import PositionFilterTabs, { PositionFilter } from './PositionFilterTabs';
+import AIRiskCard, { AnalyzeStatusNotice } from './AIRiskCard';
+import { PortfolioAnalysisResponse } from '@/lib/ai/types';
 
 export default function DashboardClient() {
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<PositionFilter>('ALL');
+
+  // AI Pipeline States
+  const [aiAnalysis, setAiAnalysis] = useState<PortfolioAnalysisResponse | null>(null);
+  const [aiLoading, setAiLoading] = useState<boolean>(false);
+  const [aiNotice, setAiNotice] = useState<AnalyzeStatusNotice | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
+
+  const fetchAiAnalysis = useCallback((address: string) => {
+    setAiLoading(true);
+    setAiError(null);
+    setAiNotice(null);
+    setAiAnalysis(null);
+
+    fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ address }),
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (res.status === 428 || data.status === 'DATA_SOURCE_UNAVAILABLE') {
+          setAiNotice({
+            status: data.status || 'DATA_SOURCE_UNAVAILABLE',
+            code: data.code || 'GRAPH_API_KEY_REQUIRED',
+            message: data.message || 'Live Graph Subgraph position data is required.',
+            canAnalyze: false,
+          });
+          setAiLoading(false);
+          return;
+        }
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to complete AI risk analysis.');
+        }
+
+        setAiAnalysis(data);
+        setAiLoading(false);
+      })
+      .catch((err: any) => {
+        setAiError(typeof err === 'string' ? err : err.message || 'Error connecting to AI API route');
+        setAiLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (selectedAddress && /^0x[a-fA-F0-9]{40}$/.test(selectedAddress)) {
+      fetchAiAnalysis(selectedAddress);
+    } else {
+      setAiAnalysis(null);
+      setAiLoading(false);
+      setAiNotice(null);
+      setAiError(null);
+    }
+  }, [selectedAddress, fetchAiAnalysis]);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#090d16] text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200">
@@ -57,11 +113,20 @@ export default function DashboardClient() {
           </div>
         </section>
 
-        {/* Live Native On-Chain RPC Balance Section */}
+        {/* Live Native On-Chain RPC Balance & AI Risk Section */}
         {selectedAddress && (
           <section className="max-w-2xl w-full mx-auto flex flex-col gap-6">
             <NativeBalanceCard address={selectedAddress} />
             
+            {/* AI Risk Card Presentation Renderer */}
+            <AIRiskCard
+              analysis={aiAnalysis}
+              loading={aiLoading}
+              statusNotice={aiNotice}
+              error={aiError}
+              onRetry={() => fetchAiAnalysis(selectedAddress)}
+            />
+
             {/* Position Category Filter Controls */}
             <div className="flex flex-col gap-3">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
