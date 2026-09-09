@@ -33,17 +33,19 @@ export default function PositionFilterTabs({
           <button
             key={tab.key}
             onClick={() => onFilterChange(tab.key)}
-            className={`px-4 py-2 text-xs font-semibold rounded-xl border transition-all flex items-center gap-2 whitespace-nowrap ${
+            className={`px-4 py-2.5 text-xs font-mono font-bold rounded border transition-all flex items-center gap-2.5 whitespace-nowrap cursor-pointer ${
               isActive
-                ? 'bg-slate-800 text-cyan-300 border-cyan-500/60 shadow-sm shadow-cyan-500/10'
-                : 'glass-panel bg-slate-900/40 text-slate-400 border-slate-800/80 hover:text-slate-200 hover:border-slate-700'
+                ? 'bg-[var(--bg-surface-elevated)] text-[var(--accent-purple)] border-[var(--accent-purple)] shadow-sm shadow-[var(--accent-purple-glow)]'
+                : 'panel-sharp bg-[var(--bg-surface)] text-[var(--text-muted)] border-[var(--border-color)] hover:text-[var(--text-primary)] hover:border-[var(--border-color-hover)]'
             }`}
           >
             <span>{tab.label}</span>
             {tab.count !== undefined && (
               <span
-                className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono ${
-                  isActive ? 'bg-cyan-950 text-cyan-300 border border-cyan-800/60' : 'bg-slate-800 text-slate-400'
+                className={`px-2 py-0.5 rounded text-[10px] font-mono ${
+                  isActive
+                    ? 'bg-[var(--accent-purple-glow)] text-[var(--accent-purple)] border border-[var(--accent-purple)]'
+                    : 'bg-[var(--bg-surface-elevated)] text-[var(--text-muted)] border border-[var(--border-color)]'
                 }`}
               >
                 {tab.count}

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import PrivyAuthButton from './PrivyAuthButton';
 import AddressInput from './AddressInput';
 import NativeBalanceCard from './NativeBalanceCard';
+import RiskScoreGauge from './RiskScoreGauge';
 import PositionFilterTabs, { PositionFilter } from './PositionFilterTabs';
 import AIRiskCard, { AnalyzeStatusNotice } from './AIRiskCard';
 import ActionApprovalModal from './ActionApprovalModal';
@@ -138,20 +139,21 @@ export default function DashboardClient() {
           </div>
         </section>
 
-        {/* Live Native On-Chain RPC Balance & AI Risk Section */}
+        {/* Portfolio Command Center Grid: Native Balance & Risk Score Gauge */}
         {selectedAddress && (
-          <section className="max-w-2xl w-full mx-auto flex flex-col gap-6">
-            <NativeBalanceCard address={selectedAddress} />
-            
-            {/* AI Risk Card Presentation Renderer */}
-            <AIRiskCard
-              analysis={aiAnalysis}
-              loading={aiLoading}
-              statusNotice={aiNotice}
-              error={aiError}
-              onRetry={() => fetchAiAnalysis(selectedAddress)}
-              onSelectAction={(action, position) => setSelectedActionState({ action, position })}
-            />
+          <section className="max-w-4xl w-full mx-auto flex flex-col gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+              {/* Native Balance Telemetry Card */}
+              <NativeBalanceCard address={selectedAddress} />
+
+              {/* Dominant Risk Score Gauge Command Card */}
+              <RiskScoreGauge
+                analysis={aiAnalysis}
+                loading={aiLoading}
+                statusNotice={aiNotice}
+                error={aiError}
+              />
+            </div>
 
             {/* Position Category Filter Controls */}
             <div className="flex flex-col gap-3">
@@ -161,8 +163,24 @@ export default function DashboardClient() {
               <PositionFilterTabs
                 activeFilter={activeFilter}
                 onFilterChange={(filter) => setActiveFilter(filter)}
+                counts={{
+                  all: aiAnalysis?.positionSummaries?.length,
+                  inRange: aiAnalysis?.positionSummaries?.filter(p => p.rangeStatus === 'IN_RANGE').length,
+                  outOfRange: aiAnalysis?.positionSummaries?.filter(p => p.rangeStatus === 'OUT_OF_RANGE').length,
+                  criticalRisk: aiAnalysis?.positionSummaries?.filter(p => p.riskLevel === 'CRITICAL').length,
+                }}
               />
             </div>
+
+            {/* AI Risk Card Presentation Renderer */}
+            <AIRiskCard
+              analysis={aiAnalysis}
+              loading={aiLoading}
+              statusNotice={aiNotice}
+              error={aiError}
+              onRetry={() => fetchAiAnalysis(selectedAddress)}
+              onSelectAction={(action, position) => setSelectedActionState({ action, position })}
+            />
           </section>
         )}
 

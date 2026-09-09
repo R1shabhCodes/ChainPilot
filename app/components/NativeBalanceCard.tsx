@@ -61,62 +61,73 @@ export default function NativeBalanceCard({ address }: NativeBalanceCardProps) {
   }
 
   return (
-    <div className="w-full glass-panel rounded-2xl p-6 border-slate-800/80 bg-slate-900/40 backdrop-blur-md flex flex-col gap-4 animate-fadeIn">
-      <div className="flex items-center justify-between border-b border-slate-800/60 pb-3">
+    <div className="w-full panel-sharp border-blue-top p-6 flex flex-col gap-5 animate-fadeIn">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
         <div className="flex items-center gap-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">
+          <span className="h-2 w-2 rounded-full bg-[var(--status-green)] animate-pulse"></span>
+          <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--text-muted)]">
             Native On-Chain Balance
           </h3>
         </div>
         {data && (
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800/80 text-cyan-400 border border-cyan-800/40">
+          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-[var(--bg-surface-elevated)] text-[var(--accent-blue)] border border-[var(--border-color)]">
             Block #{data.blockNumber}
           </span>
         )}
       </div>
 
+      {/* Loading State */}
       {loading && (
-        <div className="py-6 flex flex-col items-center justify-center gap-2 text-slate-400">
-          <div className="h-6 w-6 rounded-full border-2 border-cyan-500/20 border-t-cyan-400 animate-spin"></div>
-          <span className="text-xs font-medium">Querying EVM RPC Node...</span>
+        <div className="py-8 flex flex-col items-center justify-center gap-2 text-[var(--text-muted)]">
+          <div className="h-6 w-6 rounded-full border-2 border-[var(--accent-blue-glow)] border-t-[var(--accent-blue)] animate-spin"></div>
+          <span className="text-xs font-mono">Querying Live EVM RPC Node...</span>
         </div>
       )}
 
+      {/* Error State */}
       {error && (
-        <div className="p-3 rounded-xl bg-red-950/60 border border-red-800/50 text-red-300 text-xs flex items-center justify-between">
+        <div className="p-3 rounded panel-sharp border-[var(--status-red)] bg-[var(--status-red-bg)] text-[var(--status-red)] text-xs font-mono flex items-center justify-between">
           <span>⚠️ {error}</span>
           <button
             onClick={() => setData(null)}
-            className="text-slate-400 hover:text-slate-200 text-xs underline"
+            className="text-[var(--text-muted)] hover:text-[var(--text-primary)] underline cursor-pointer"
           >
             Dismiss
           </button>
         </div>
       )}
 
+      {/* Verified Data State */}
       {data && !loading && !error && (
-        <div className="flex flex-col gap-3">
-          <div className="flex items-baseline justify-between">
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold text-slate-100 tracking-tight">
-                {data.ethBalance}
-              </span>
-              <span className="text-sm font-bold text-cyan-400">ETH</span>
-            </div>
-            <span className="text-xs text-slate-500 font-mono">
-              Via {data.rpcSource}
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
+              Ethereum Native Balance
             </span>
+            <div className="flex items-baseline justify-between">
+              <div className="flex items-baseline gap-2">
+                <span className="font-display font-extrabold text-4xl sm:text-5xl text-[var(--text-primary)] tracking-tight">
+                  {data.ethBalance}
+                </span>
+                <span className="font-mono font-bold text-[var(--accent-blue)] text-base">ETH</span>
+              </div>
+              <span className="text-[11px] font-mono text-[var(--text-muted)]">
+                Via {data.rpcSource}
+              </span>
+            </div>
           </div>
 
-          <div className="p-2.5 rounded-xl bg-slate-950/50 border border-slate-800/50 flex flex-col gap-1 text-[11px] font-mono text-slate-400">
+          <div className="p-3 rounded panel-sharp bg-[var(--bg-surface-elevated)] text-xs font-mono flex flex-col gap-1.5 border-[var(--border-color)]">
             <div className="flex justify-between">
-              <span>Target Address:</span>
-              <span className="text-slate-200">{data.address.slice(0, 10)}...{data.address.slice(-8)}</span>
+              <span className="text-[var(--text-muted)]">Target Address:</span>
+              <span className="text-[var(--text-primary)] font-semibold">
+                {data.address.slice(0, 10)}...{data.address.slice(-8)}
+              </span>
             </div>
             <div className="flex justify-between">
-              <span>Raw Wei Quantity:</span>
-              <span className="text-slate-300">{data.weiBalance} Wei</span>
+              <span className="text-[var(--text-muted)]">Raw Wei Quantity:</span>
+              <span className="text-[var(--text-secondary)]">{data.weiBalance} Wei</span>
             </div>
           </div>
         </div>
