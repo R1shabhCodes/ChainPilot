@@ -2,31 +2,28 @@
 
 @layer base {
   :root {
-    /* ChainPilot Premium Dark DeFi Terminal Tokens */
-    --bg-primary: #05070c;
-    --bg-surface: #0a0d14;
-    --bg-surface-elevated: #0f131f;
-    --bg-surface-highlight: #141a29;
+    /* ChainPilot Core Architecture Colors */
+    --bg-primary: #020306;
+    --bg-surface: #06080d;
+    --bg-surface-elevated: #0a0d14;
+    --bg-surface-highlight: #111623;
 
-    --border-color: #172033;
-    --border-color-hover: #263352;
-    --border-color-active: #00F0FF;
+    /* Structural Borders */
+    --border-subtle: #141a29;
+    --border-strong: #1e283d;
+    --border-focus: #00F0FF;
 
+    /* Typography */
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --text-muted: #64748b;
 
-    --accent-lime: #baf24a;
-    --accent-lime-glow: rgba(186, 242, 74, 0.18);
+    /* Semantic Accents */
     --accent-cyan: #00f0ff;
-    --accent-cyan-glow: rgba(0, 240, 255, 0.18);
+    --accent-lime: #baf24a;
     --accent-orange: #ff5c16;
-    --accent-orange-glow: rgba(255, 92, 22, 0.18);
-    --accent-purple: #d075ff;
-
-    --status-green: #baf24a;
-    --status-amber: #ff8a00;
-    --status-red: #ff3b30;
+    --accent-violet: #d075ff;
+    --accent-blue: #0055ff;
   }
 }
 
@@ -43,77 +40,66 @@
   font-family: var(--font-jetbrains-mono), monospace;
 }
 
-/* Terminal Sharp Panel Utilities */
-.panel-terminal {
+/* Sharp Architectural Panels */
+.panel-architecture {
   background-color: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: 0px;
+  border: 1px solid var(--border-strong);
+  border-radius: 0;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
 }
 
-.panel-terminal-elevated {
-  background-color: var(--bg-surface-elevated);
-  border: 1px solid var(--border-color);
-  border-radius: 0px;
-}
-
-.panel-terminal-hover {
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.panel-terminal-hover:hover {
-  border-color: var(--border-color-hover);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.05);
-}
-
-/* Angular Header & Accent Borders */
-.border-lime-top {
-  border-top: 2px solid var(--accent-lime);
-}
-
-.border-cyan-top {
-  border-top: 2px solid var(--accent-cyan);
-}
-
-.border-orange-top {
-  border-top: 2px solid var(--accent-orange);
+.panel-flat {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 0;
 }
 
 /* Geometric Grid Background Pattern */
 .bg-grid-pattern {
-  background-image: linear-gradient(to right, rgba(23, 32, 51, 0.5) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(23, 32, 51, 0.5) 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-image: linear-gradient(to right, rgba(30, 40, 61, 0.4) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(30, 40, 61, 0.4) 1px, transparent 1px);
+  background-size: 40px 40px;
   background-position: center center;
 }
 
-/* Signature ChainPilot Text Gradient */
-.gradient-text-terminal {
-  background: linear-gradient(135deg, #00f0ff 0%, #baf24a 50%, #d075ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.bg-dot-pattern {
+  background-image: radial-gradient(rgba(30, 40, 61, 0.8) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
-.gradient-text-hero {
-  background: linear-gradient(135deg, #00f0ff 0%, #baf24a 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Typography Utilities */
+.text-stroke-cyan {
+  -webkit-text-stroke: 1px var(--accent-cyan);
+  color: transparent;
+}
+
+/* Transitions */
+.transition-layout {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Custom Web3 Terminal Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #05070c;
+  background: var(--bg-primary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #172033;
-  border-radius: 0px;
+  background: var(--border-strong);
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #00f0ff;
+  background: var(--accent-cyan);
 }

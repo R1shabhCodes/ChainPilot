@@ -21,22 +21,23 @@ export interface AIRiskCardProps {
   loading: boolean;
   statusNotice?: AnalyzeStatusNotice | null;
   error?: string | null;
+  focusedPositionId?: string | null;
   onRetry?: () => void;
   onSelectAction?: (action: SuggestedAction, position: PositionRiskSummary) => void;
 }
 
-function getRiskBadgeColor(level: RiskLevel): string {
+function getRiskBadgeStyle(level: RiskLevel): string {
   switch (level) {
     case 'LOW':
-      return 'bg-emerald-950/80 text-emerald-300 border-emerald-800/80';
+      return 'bg-[#baf24a] text-[#020306] border-[#baf24a]';
     case 'MODERATE':
-      return 'bg-amber-950/80 text-amber-300 border-amber-800/80';
+      return 'bg-amber-400 text-[#020306] border-amber-400';
     case 'HIGH':
-      return 'bg-orange-950/80 text-orange-400 border-orange-800/80';
+      return 'bg-orange-500 text-white border-orange-500';
     case 'CRITICAL':
-      return 'bg-red-950/80 text-red-400 border-red-800/80';
+      return 'bg-red-500 text-white border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]';
     default:
-      return 'bg-slate-800 text-slate-300 border-slate-700';
+      return 'bg-slate-700 text-slate-200 border-slate-600';
   }
 }
 
@@ -90,24 +91,20 @@ export default function AIRiskCard({
   loading,
   statusNotice,
   error,
+  focusedPositionId,
   onRetry,
   onSelectAction,
 }: AIRiskCardProps) {
   // Loading State
   if (loading) {
     return (
-      <div className="w-full bg-[#0a0d14] border border-slate-800 p-6 font-mono flex flex-col gap-4 animate-fadeIn">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 bg-[#00F0FF] animate-pulse"></span>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">
-              AI RISK REASONING ENGINE
-            </h3>
-          </div>
-        </div>
-        <div className="py-10 flex flex-col items-center justify-center gap-3 text-slate-400">
-          <div className="h-7 w-7 border-2 border-[#00F0FF]/20 border-t-[#00F0FF] animate-spin"></div>
-          <span className="text-xs font-medium tracking-wide">Evaluating On-Chain Data via Gemini AI...</span>
+      <div className="w-full panel-architecture p-8 min-h-[400px] flex flex-col items-center justify-center gap-6 animate-fadeIn">
+        <div className="h-10 w-10 border-t-2 border-r-2 border-[#00F0FF] animate-spin"></div>
+        <div className="flex flex-col items-center gap-2 font-mono">
+          <h3 className="text-sm font-black uppercase tracking-widest text-[#00F0FF]">
+            PROCESSING SUBGRAPH TELEMETRY
+          </h3>
+          <span className="text-xs text-slate-500">Executing Gemini AI Reasoning Engine...</span>
         </div>
       </div>
     );
@@ -116,194 +113,173 @@ export default function AIRiskCard({
   // Error State
   if (error) {
     return (
-      <div className="w-full bg-[#0d090a] border border-red-900/60 p-6 font-mono flex flex-col gap-3">
-        <div className="flex items-center justify-between border-b border-red-900/40 pb-3">
-          <span className="text-xs font-bold text-red-400 flex items-center gap-2 uppercase tracking-wide">
-            ⚠️ ANALYSIS PIPELINE NOTICE
+      <div className="w-full panel-architecture border-red-500/50 p-8 flex flex-col gap-4">
+        <div className="flex items-center justify-between border-b border-red-500/30 pb-3">
+          <span className="text-xs font-black text-red-500 uppercase tracking-widest">
+            ANALYSIS PIPELINE FAULT
           </span>
           {onRetry && (
             <button
               onClick={onRetry}
-              className="text-xs text-slate-300 hover:text-white underline font-semibold cursor-pointer"
+              className="text-xs text-slate-300 hover:text-white font-black uppercase tracking-widest border border-slate-700 px-3 py-1"
             >
-              Retry
+              [ RETRY ]
             </button>
           )}
         </div>
-        <p className="text-xs text-slate-300 leading-relaxed font-sans">{error}</p>
+        <p className="text-sm font-mono text-slate-300">{error}</p>
       </div>
     );
   }
 
-  // Data Source Unavailable Notice (Honest Zero-Mock Fallback)
+  // Status Notice State
   if (statusNotice && !statusNotice.canAnalyze) {
     return (
-      <div className="w-full bg-[#0a0d14] border border-cyan-900/60 p-6 font-mono flex flex-col gap-4">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 bg-cyan-400"></span>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-cyan-300">
-              AI COPILOT ANALYSIS STATUS
+      <div className="w-full panel-architecture border-cyan-900/60 p-8 flex flex-col gap-5">
+        <div className="flex items-center justify-between border-b border-cyan-900/40 pb-3">
+          <div className="flex items-center gap-3">
+            <span className="h-2 w-2 bg-cyan-500"></span>
+            <h3 className="text-xs font-black uppercase tracking-widest text-cyan-400">
+              SYSTEM STATUS NOTICE
             </h3>
           </div>
-          <span className="text-[10px] font-mono px-2 py-0.5 bg-slate-900 text-cyan-300 border border-cyan-800">
+          <span className="text-[10px] font-mono px-2 py-0.5 bg-[#020306] text-cyan-500 font-bold border border-cyan-900">
             {statusNotice.code}
           </span>
         </div>
-        <div className="text-xs text-slate-300 leading-relaxed flex flex-col gap-3 font-sans">
-          <p className="font-mono text-slate-300">{statusNotice.message}</p>
-          <div className="p-3 bg-slate-950 border border-slate-800 text-[11px] text-slate-400 font-mono">
-            <span className="font-bold text-cyan-400">ENGINEERING RULE ENFORCED:</span> ChainPilot AI reasons strictly over verified live Subgraph index payloads. Mocked or fabricated portfolio data is prohibited.
-          </div>
-        </div>
+        <p className="font-mono text-sm text-slate-300">{statusNotice.message}</p>
       </div>
     );
   }
 
-  if (!analysis) {
+  if (!analysis || !analysis.positionSummaries || analysis.positionSummaries.length === 0) {
     return null;
   }
 
+  // Determine which position to show in the dominant view
+  const pos = focusedPositionId 
+    ? analysis.positionSummaries.find(p => p.positionId === focusedPositionId) 
+    : analysis.positionSummaries[0];
+
+  if (!pos) {
+    return (
+      <div className="w-full panel-architecture p-8 flex items-center justify-center text-slate-500 font-mono text-xs">
+        Position details unavailable.
+      </div>
+    );
+  }
+
+  const { tickLower, tickUpper, currentTick } = extractTicks(pos);
+
   return (
-    <div className="w-full flex flex-col gap-6">
-      {/* Position Breakdown List */}
-      <div className="flex flex-col gap-6">
-        {analysis.positionSummaries.map((pos) => {
-          const { tickLower, tickUpper, currentTick } = extractTicks(pos);
-
-          return (
-            <div
-              key={pos.positionId}
-              className="w-full bg-[#080a0e] border border-slate-800 p-5 flex flex-col gap-5 shadow-2xl"
-            >
-              {/* Position Header Identifier */}
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
-                <div className="flex items-center gap-3">
-                  <span className="font-bold text-base text-slate-100 font-mono tracking-tight">
-                    {pos.tokenPair}
-                  </span>
-                  <span className="text-xs text-slate-400 font-mono bg-slate-900 px-2 py-0.5 border border-slate-800">
-                    {pos.protocol}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 font-mono">
-                  <span className="text-[10px] text-slate-400 bg-slate-950 px-2 py-0.5 border border-slate-800">
-                    NFT #{pos.positionId}
-                  </span>
-                  <span className={`px-2 py-0.5 text-[10px] font-bold uppercase border ${getRiskBadgeColor(pos.riskLevel)}`}>
-                    RISK: {pos.riskLevel}
-                  </span>
-                  <span className={`px-2 py-0.5 text-[10px] font-bold uppercase border ${
-                    pos.rangeStatus === 'IN_RANGE'
-                      ? 'bg-[#BAF24A]/10 text-[#BAF24A] border-[#BAF24A]/40'
-                      : 'bg-red-950/60 text-red-400 border-red-800'
-                  }`}>
-                    {pos.rangeStatus}
-                  </span>
-                </div>
-              </div>
-
-              {/* TWO DISTINCT PANELS FOR PRODUCT IDENTITY & TRUST */}
-
-              {/* PANEL 1: VERIFIED ON-CHAIN DATA (DETERMINISTIC FROM THE GRAPH) */}
-              <div className="bg-[#05070a] border border-cyan-950/80 p-4 flex flex-col gap-3 font-mono">
-                <div className="flex items-center justify-between border-b border-cyan-950/80 pb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="h-2 w-2 bg-cyan-400"></span>
-                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-cyan-300">
-                      VERIFIED ON-CHAIN DATA
-                    </span>
-                  </div>
-                  <span className="text-[9px] text-cyan-400/80 uppercase tracking-widest border border-cyan-900/60 px-2 py-0.5 bg-cyan-950/40">
-                    DETERMINISTIC SUBGRAPH TELEMETRY
-                  </span>
-                </div>
-
-                {/* Liquidity Range Visualizer Instrument */}
-                <LiquidityRangeVisualizer
-                  tickLower={tickLower}
-                  tickUpper={tickUpper}
-                  currentTick={currentTick}
-                  rangeStatus={pos.rangeStatus}
-                />
-
-                {/* Evidence Citations Grid */}
-                {pos.evidence && pos.evidence.length > 0 && (
-                  <div className="mt-1 pt-3 border-t border-slate-800/80 flex flex-col gap-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      Verified Index References:
-                    </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {pos.evidence.map((ev, idx) => (
-                        <div
-                          key={idx}
-                          className="p-2 bg-slate-950 border border-slate-800 text-[10px] font-mono flex items-center justify-between text-slate-300"
-                        >
-                          <span className="text-slate-400 font-semibold">{ev.field}:</span>
-                          <span className="font-bold text-cyan-300">{ev.value}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* PANEL 2: AI RISK INTERPRETATION (GEMINI REASONING ENGINE) */}
-              <div className="bg-[#07080d] border border-indigo-950/80 p-4 flex flex-col gap-3 font-mono">
-                <div className="flex items-center justify-between border-b border-indigo-950/80 pb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="h-2 w-2 bg-indigo-400"></span>
-                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-indigo-300">
-                      AI RISK INTERPRETATION
-                    </span>
-                  </div>
-                  <span className="text-[9px] text-indigo-400/80 uppercase tracking-widest border border-indigo-900/60 px-2 py-0.5 bg-indigo-950/40">
-                    GEMINI 3.6 REASONING EVALUATION
-                  </span>
-                </div>
-
-                {/* Grounded Summary Text */}
-                <p className="text-xs text-slate-300 leading-relaxed font-sans font-normal pt-1">
-                  {pos.summary}
-                </p>
-
-                {/* Suggested Action Box */}
-                {pos.suggestedAction && (
-                  <div className="mt-2 p-3 bg-slate-950 border border-cyan-900/60 flex flex-col gap-2 font-mono">
-                    <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                      <span className="font-bold text-xs text-cyan-300 flex items-center gap-1.5">
-                        💡 SUGGESTED ACTION: {pos.suggestedAction.title}
-                      </span>
-                      <span className="text-[9px] font-mono px-2 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-800">
-                        {pos.suggestedAction.actionType}
-                      </span>
-                    </div>
-
-                    <p className="text-[11px] text-slate-300 font-sans">{pos.suggestedAction.description}</p>
-
-                    {pos.suggestedAction.riskWarning && (
-                      <p className="text-[10px] text-amber-400 font-mono">
-                        Notice: {pos.suggestedAction.riskWarning}
-                      </p>
-                    )}
-
-                    {/* Review Action Trigger Button */}
-                    {onSelectAction && (
-                      <div className="pt-1">
-                        <button
-                          onClick={() => onSelectAction(pos.suggestedAction!, pos)}
-                          className="w-full sm:w-auto px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-lg border border-cyan-400/40"
-                        >
-                          🔍 Review Action Proposal
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+    <div className="w-full flex flex-col gap-6 animate-fadeIn">
+      {/* DOMINANT POSITION HEADER */}
+      <div className="w-full panel-architecture bg-[#06080d] p-6 flex flex-col gap-4 border-t-2 border-t-[#00F0FF] shadow-2xl">
+        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#141a29] pb-4">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-3">
+              <span className="font-display font-black text-3xl text-white tracking-tighter uppercase">
+                {pos.tokenPair}
+              </span>
             </div>
-          );
-        })}
+            <div className="flex items-center gap-3 mt-1 font-mono">
+              <span className="text-[10px] text-slate-400 uppercase tracking-widest bg-[#020306] border border-[#141a29] px-2 py-1">
+                {pos.protocol}
+              </span>
+              <span className="text-[10px] text-slate-500 font-bold">
+                POSITION NFT #{pos.positionId}
+              </span>
+            </div>
+          </div>
+          
+          <div className="flex flex-col items-end gap-2 font-mono">
+            <span className="text-[9px] text-slate-500 uppercase tracking-widest font-bold">AI Risk Assessment</span>
+            <span className={`px-3 py-1 text-xs font-black uppercase tracking-widest ${getRiskBadgeStyle(pos.riskLevel)}`}>
+              {pos.riskLevel} RISK
+            </span>
+          </div>
+        </div>
+
+        {/* LIQUIDITY RANGE VISUALIZER (MASSIVE FOCAL POINT) */}
+        <div className="w-full pt-2">
+          <LiquidityRangeVisualizer
+            tickLower={tickLower}
+            tickUpper={tickUpper}
+            currentTick={currentTick}
+            rangeStatus={pos.rangeStatus}
+          />
+        </div>
+      </div>
+
+      {/* TWO DISTINCT PANELS: VERIFIED DATA vs AI INTERPRETATION */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        {/* PANEL 1: VERIFIED ON-CHAIN DATA */}
+        <div className="panel-architecture bg-[#020306] p-5 flex flex-col gap-4 border-t border-t-cyan-500/50">
+          <div className="flex items-center justify-between border-b border-[#141a29] pb-3">
+            <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 bg-cyan-400"></span>
+              VERIFIED ON-CHAIN DATA
+            </span>
+            <span className="text-[8px] text-cyan-500/50 uppercase tracking-widest">
+              DETERMINISTIC SUBGRAPH TELEMETRY
+            </span>
+          </div>
+
+          {pos.evidence && pos.evidence.length > 0 ? (
+            <div className="flex flex-col gap-2">
+              {pos.evidence.map((ev, idx) => (
+                <div key={idx} className="flex flex-col border-b border-[#141a29] pb-2 last:border-0 last:pb-0 font-mono">
+                  <span className="text-[9px] uppercase tracking-widest text-slate-500">{ev.field}</span>
+                  <span className="text-xs font-bold text-slate-200 mt-0.5">{ev.value}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-slate-500 font-mono italic">No raw telemetry cited.</p>
+          )}
+        </div>
+
+        {/* PANEL 2: AI RISK INTERPRETATION */}
+        <div className="panel-architecture bg-[#06080d] p-5 flex flex-col gap-4 border-t border-t-[#d075ff]/50">
+          <div className="flex items-center justify-between border-b border-[#141a29] pb-3">
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#d075ff] flex items-center gap-2">
+              <span className="h-1.5 w-1.5 bg-[#d075ff]"></span>
+              AI RISK INTERPRETATION
+            </span>
+            <span className="text-[8px] text-[#d075ff]/50 uppercase tracking-widest">
+              GEMINI REASONING EVALUATION
+            </span>
+          </div>
+
+          <p className="text-xs text-slate-300 leading-relaxed font-sans mt-1">
+            {pos.summary}
+          </p>
+
+          {/* Suggested Action Trigger */}
+          {pos.suggestedAction && (
+            <div className="mt-auto pt-4 border-t border-[#141a29] flex flex-col gap-3 font-mono">
+              <div className="flex justify-between items-start gap-2">
+                <span className="font-bold text-[11px] text-[#baf24a]">
+                  ACTION: {pos.suggestedAction.title}
+                </span>
+                <span className="text-[8px] px-1.5 py-0.5 bg-[#020306] border border-[#141a29] text-slate-400">
+                  {pos.suggestedAction.actionType}
+                </span>
+              </div>
+              
+              {onSelectAction && (
+                <button
+                  onClick={() => onSelectAction(pos.suggestedAction!, pos)}
+                  className="w-full bg-[#00F0FF] hover:bg-cyan-300 text-[#020306] font-black text-[10px] uppercase tracking-widest py-3 px-4 transition-colors text-center"
+                >
+                  REVIEW ACTION PROPOSAL
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
       </div>
     </div>
   );
