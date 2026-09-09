@@ -90,60 +90,75 @@ export default function DashboardClient() {
   }, [selectedAddress, fetchAiAnalysis]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)] bg-grid-pattern selection:bg-[var(--accent-purple-glow)] selection:text-[var(--accent-purple)]">
-      {/* Top Navigation Bar */}
-      <header className="w-full border-b border-[var(--border-color)] bg-[var(--bg-surface)] border-orange-top sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen flex flex-col bg-[#05070c] text-slate-100 bg-grid-pattern selection:bg-[#00F0FF]/20 selection:text-[#00F0FF]">
+      {/* Top Command & Navigation Bar */}
+      <header className="w-full border-b border-slate-800/80 bg-[#0a0d14]/90 backdrop-blur-md sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between font-mono">
         <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded panel-sharp bg-[var(--bg-surface-elevated)] border-[var(--border-color)] flex items-center justify-center font-display font-bold text-[var(--accent-orange)] text-sm shadow-sm">
+          <div className="h-8 w-8 bg-[#00F0FF]/10 border border-[#00F0FF]/40 flex items-center justify-center font-black text-[#00F0FF] text-xs">
             CP
           </div>
           <div>
-            <h1 className="font-display font-extrabold text-lg leading-none tracking-tight">
-              Chain<span className="gradient-text-purple">Pilot</span>
+            <h1 className="font-display font-black text-base leading-none tracking-tight flex items-center gap-2">
+              Chain<span className="text-[#00F0FF]">Pilot</span>
+              <span className="text-[10px] font-mono font-normal text-slate-400 border border-slate-800 px-1.5 py-0.2 bg-slate-950">
+                v1.0
+              </span>
             </h1>
-            <p className="text-[11px] font-mono text-[var(--text-muted)] mt-0.5">DeFi Risk & Portfolio Copilot</p>
+            <p className="text-[10px] font-mono text-slate-400 mt-0.5">DeFi Risk Intelligence Platform</p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded text-xs font-mono font-semibold bg-[var(--bg-surface-elevated)] text-[var(--accent-purple)] border border-[var(--border-color)]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-orange)] animate-pulse"></span>
-            ETHOnline 2026
+          <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono text-[#BAF24A] bg-[#BAF24A]/10 border border-[#BAF24A]/30">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#BAF24A] animate-pulse"></span>
+            ETHONLINE 2026
           </span>
           <PrivyAuthButton onWalletSelect={(address) => setSelectedAddress(address)} />
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-6 py-10 flex flex-col gap-10">
-        {/* Hero Section & 3D Compass Motif */}
-        <section className="text-center max-w-3xl mx-auto flex flex-col items-center gap-5 py-4">
-          <ChainPilotCompass />
+      {/* Main Content Viewport */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 flex flex-col gap-12">
+        {/* STATE 1: ASYMMETRIC LANDING / ANALYZE EXPERIENCE */}
+        <section className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center py-6 border-b border-slate-800/60 pb-12">
+          {/* Left Column (7 cols): Editorial Headline & Address Search Bar */}
+          <div className="lg:col-span-7 flex flex-col gap-6">
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-slate-950 border border-slate-800 text-[10px] font-mono text-[#00F0FF] w-fit">
+              <span className="h-1.5 w-1.5 bg-[#00F0FF]"></span>
+              VERIFIED ON-CHAIN DEFI RISK COPILOT
+            </div>
 
-          <h2 className="text-3xl sm:text-5xl font-display font-extrabold tracking-tight leading-tight">
-            Turn On-Chain Complexity Into <br />
-            <span className="gradient-text-hero">Evidence-Backed Intelligence</span>
-          </h2>
-          
-          <p className="text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
-            Connect your wallet or enter an EVM address to query indexed Uniswap v3 position health 
-            via The Graph and receive transparent, evidence-backed AI risk evaluations.
-          </p>
+            <h2 className="text-4xl sm:text-6xl font-display font-black tracking-tight leading-none uppercase">
+              <span className="text-[#BAF24A] block">SEE THE RANGE.</span>
+              <span className="text-white block mt-1">KNOW THE RISK.</span>
+            </h2>
 
-          {/* Reusable Address Input */}
-          <div className="w-full mt-2">
-            <AddressInput
-              externalAddress={selectedAddress}
-              onAnalyze={(address) => setSelectedAddress(address)}
-            />
+            <p className="text-sm text-slate-300 leading-relaxed max-w-xl font-sans">
+              ChainPilot queries indexed Uniswap v3 positions directly from The Graph and applies transparent 
+              Gemini AI evaluations to detect range status, out-of-bounds exposure, and evidence-backed mitigation steps.
+            </p>
+
+            {/* Address Search Command Input Bar */}
+            <div className="w-full pt-2">
+              <AddressInput
+                externalAddress={selectedAddress}
+                onAnalyze={(address) => setSelectedAddress(address)}
+              />
+            </div>
+          </div>
+
+          {/* Right Column (5 cols): ChainPilot Signature Visual Object */}
+          <div className="lg:col-span-5 flex items-center justify-center">
+            <ChainPilotCompass />
           </div>
         </section>
 
-        {/* Portfolio Command Center Grid: Native Balance & Risk Score Gauge */}
+        {/* STATE 2: ANALYZED PORTFOLIO WORKSPACE */}
         {selectedAddress && (
-          <section className="max-w-4xl w-full mx-auto flex flex-col gap-8">
+          <section className="w-full flex flex-col gap-8 animate-fadeIn">
+            {/* Portfolio Command Grid Header */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-              {/* Native Balance Telemetry Card */}
+              {/* Native Balance Telemetry */}
               <NativeBalanceCard address={selectedAddress} />
 
               {/* Dominant Risk Score Gauge Command Card */}
@@ -155,11 +170,18 @@ export default function DashboardClient() {
               />
             </div>
 
-            {/* Position Category Filter Controls */}
+            {/* Position Overview Filter Controls */}
             <div className="flex flex-col gap-3">
-              <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--text-muted)]">
-                Position Overview Filters
-              </h4>
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 bg-[#00F0FF]"></span>
+                  POSITION INSPECTOR FILTERS
+                </h4>
+                <span className="text-[10px] font-mono text-slate-400">
+                  REAL UNISWAP V3 POSITIONS ONLY
+                </span>
+              </div>
+
               <PositionFilterTabs
                 activeFilter={activeFilter}
                 onFilterChange={(filter) => setActiveFilter(filter)}
@@ -184,54 +206,39 @@ export default function DashboardClient() {
           </section>
         )}
 
-        {/* System Architecture Feature Cards */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1: Subgraph Data */}
-          <div className="panel-sharp panel-sharp-hover p-6 flex flex-col gap-3 border-accent-top">
-            <div className="h-9 w-9 rounded panel-sharp bg-[var(--bg-surface-elevated)] text-[var(--accent-purple)] flex items-center justify-center font-mono font-bold text-xs">
-              01
+        {/* Product Architectural Pillars */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+          <div className="bg-[#0a0d14] border border-slate-800 p-5 flex flex-col gap-3 font-mono">
+            <div className="text-[10px] font-bold text-[#00F0FF] uppercase tracking-wider">
+              [ 01 // TELEMETRY ]
             </div>
-            <h3 className="font-display font-bold text-base text-[var(--text-primary)]">Indexed On-Chain Telemetry</h3>
-            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-              Queries real-time positions, liquidity mints/burns, and pool tick health directly from 
+            <h3 className="font-display font-bold text-sm text-slate-100">Indexed On-Chain Data</h3>
+            <p className="text-xs text-slate-400 leading-relaxed font-sans">
+              Queries real-time positions, liquidity mints, and pool tick health directly from 
               The Graph network subgraphs.
             </p>
-            <div className="mt-auto pt-4 border-t border-[var(--border-color)] text-xs font-mono text-[var(--accent-purple)] flex items-center justify-between">
-              <span>The Graph Integration</span>
-              <span>Phase 3</span>
-            </div>
           </div>
 
-          {/* Card 2: AI Reasoning */}
-          <div className="panel-sharp panel-sharp-hover p-6 flex flex-col gap-3 border-orange-top">
-            <div className="h-9 w-9 rounded panel-sharp bg-[var(--bg-surface-elevated)] text-[var(--accent-orange)] flex items-center justify-center font-mono font-bold text-xs">
-              02
+          <div className="bg-[#0a0d14] border border-slate-800 p-5 flex flex-col gap-3 font-mono">
+            <div className="text-[10px] font-bold text-[#BAF24A] uppercase tracking-wider">
+              [ 02 // INTELLIGENCE ]
             </div>
-            <h3 className="font-display font-bold text-base text-[var(--text-primary)]">Evidence-Backed AI Intelligence</h3>
-            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+            <h3 className="font-display font-bold text-sm text-slate-100">Evidence-Backed AI Evaluation</h3>
+            <p className="text-xs text-slate-400 leading-relaxed font-sans">
               Processes raw subgraph telemetry to produce risk evaluations, position alerts, and 
-              verifiable on-chain evidence citations.
+              verifiable evidence citations.
             </p>
-            <div className="mt-auto pt-4 border-t border-[var(--border-color)] text-xs font-mono text-[var(--accent-orange)] flex items-center justify-between">
-              <span>Gemini AI Engine</span>
-              <span>Phase 4</span>
-            </div>
           </div>
 
-          {/* Card 3: Execution Flow */}
-          <div className="panel-sharp panel-sharp-hover p-6 flex flex-col gap-3 border-blue-top">
-            <div className="h-9 w-9 rounded panel-sharp bg-[var(--bg-surface-elevated)] text-[var(--accent-blue)] flex items-center justify-center font-mono font-bold text-xs">
-              03
+          <div className="bg-[#0a0d14] border border-slate-800 p-5 flex flex-col gap-3 font-mono">
+            <div className="text-[10px] font-bold text-[#D075FF] uppercase tracking-wider">
+              [ 03 // EXECUTION ]
             </div>
-            <h3 className="font-display font-bold text-base text-[var(--text-primary)]">User-Approved Safety Flow</h3>
-            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-              Prepares transparent transaction proposals for user sign-off via Privy embedded 
-              wallets with zero automatic actions.
+            <h3 className="font-display font-bold text-sm text-slate-100">User-Approved Actions</h3>
+            <p className="text-xs text-slate-400 leading-relaxed font-sans">
+              Prepares transparent transaction proposals for explicit user review with zero 
+              automated execution.
             </p>
-            <div className="mt-auto pt-4 border-t border-[var(--border-color)] text-xs font-mono text-[var(--accent-blue)] flex items-center justify-between">
-              <span>Privy Flow</span>
-              <span>Phase 6</span>
-            </div>
           </div>
         </section>
       </main>
@@ -244,9 +251,19 @@ export default function DashboardClient() {
         onClose={() => setSelectedActionState(null)}
       />
 
-      {/* Footer */}
-      <footer className="border-t border-[var(--border-color)] bg-[var(--bg-surface)] py-6 px-6 text-center text-xs font-mono text-[var(--text-muted)]">
-        <p>ChainPilot — Built for ETHOnline 2026. Evidence-backed copilot, non-custodial and transparent.</p>
+      {/* Terminal Status Footer Ticker */}
+      <footer className="border-t border-slate-800 bg-[#0a0d14] py-3.5 px-6 font-mono text-[11px] text-slate-400 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-1.5 text-slate-300">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#BAF24A]"></span>
+            THE GRAPH GATEWAY: ONLINE
+          </span>
+          <span className="flex items-center gap-1.5 text-slate-300">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#00F0FF]"></span>
+            GEMINI 3.6 ENGINE: ACTIVE
+          </span>
+        </div>
+        <p className="text-slate-400">ChainPilot — Built for ETHOnline 2026. Non-custodial & Transparent.</p>
       </footer>
     </div>
   );

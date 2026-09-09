@@ -2,57 +2,31 @@
 
 @layer base {
   :root {
-    /* Light Mode Design System Tokens */
-    --bg-primary: #f4f6fb;
-    --bg-surface: #ffffff;
-    --bg-surface-elevated: #ffffff;
-    --border-color: #e2e8f0;
-    --border-color-hover: #cbd5e1;
+    /* ChainPilot Premium Dark DeFi Terminal Tokens */
+    --bg-primary: #05070c;
+    --bg-surface: #0a0d14;
+    --bg-surface-elevated: #0f131f;
+    --bg-surface-highlight: #141a29;
 
-    --text-primary: #0b0f19;
-    --text-secondary: #475569;
-    --text-muted: #94a3b8;
-
-    --accent-purple: #9333ea;
-    --accent-purple-glow: rgba(147, 51, 234, 0.15);
-    --accent-orange: #ff5c16;
-    --accent-orange-glow: rgba(255, 92, 22, 0.15);
-    --accent-blue: #2563eb;
-    --accent-blue-glow: rgba(37, 99, 235, 0.15);
-
-    --status-green: #16a34a;
-    --status-green-bg: rgba(22, 163, 74, 0.1);
-    --status-amber: #d97706;
-    --status-amber-bg: rgba(217, 119, 6, 0.1);
-    --status-red: #dc2626;
-    --status-red-bg: rgba(220, 38, 38, 0.1);
-  }
-
-  .dark {
-    /* Dark Mode Design System Tokens (Default Web3 Baseline) */
-    --bg-primary: #070910;
-    --bg-surface: #0e1320;
-    --bg-surface-elevated: #141a2b;
-    --border-color: #1c2436;
-    --border-color-hover: #2e3a54;
+    --border-color: #172033;
+    --border-color-hover: #263352;
+    --border-color-active: #00F0FF;
 
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --text-muted: #64748b;
 
-    --accent-purple: #d075ff;
-    --accent-purple-glow: rgba(208, 117, 255, 0.2);
+    --accent-lime: #baf24a;
+    --accent-lime-glow: rgba(186, 242, 74, 0.18);
+    --accent-cyan: #00f0ff;
+    --accent-cyan-glow: rgba(0, 240, 255, 0.18);
     --accent-orange: #ff5c16;
-    --accent-orange-glow: rgba(255, 92, 22, 0.2);
-    --accent-blue: #89b0ff;
-    --accent-blue-glow: rgba(137, 176, 255, 0.2);
+    --accent-orange-glow: rgba(255, 92, 22, 0.18);
+    --accent-purple: #d075ff;
 
     --status-green: #baf24a;
-    --status-green-bg: rgba(186, 242, 74, 0.12);
     --status-amber: #ff8a00;
-    --status-amber-bg: rgba(255, 138, 0, 0.12);
     --status-red: #ff3b30;
-    --status-red-bg: rgba(255, 59, 48, 0.12);
   }
 }
 
@@ -69,71 +43,77 @@
   font-family: var(--font-jetbrains-mono), monospace;
 }
 
-/* Sharp Geometric Panel Utilities */
-.panel-sharp {
+/* Terminal Sharp Panel Utilities */
+.panel-terminal {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border-radius: 0px;
 }
 
-.panel-sharp-hover {
+.panel-terminal-elevated {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 0px;
+}
+
+.panel-terminal-hover {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.panel-sharp-hover:hover {
+.panel-terminal-hover:hover {
   border-color: var(--border-color-hover);
-  transform: translateY(-1px);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.05);
 }
 
 /* Angular Header & Accent Borders */
-.border-accent-top {
-  border-top: 2px solid var(--accent-purple);
+.border-lime-top {
+  border-top: 2px solid var(--accent-lime);
+}
+
+.border-cyan-top {
+  border-top: 2px solid var(--accent-cyan);
 }
 
 .border-orange-top {
   border-top: 2px solid var(--accent-orange);
 }
 
-.border-blue-top {
-  border-top: 2px solid var(--accent-blue);
-}
-
 /* Geometric Grid Background Pattern */
 .bg-grid-pattern {
-  background-image: linear-gradient(to right, var(--border-color) 0.5px, transparent 0.5px),
-                    linear-gradient(to bottom, var(--border-color) 0.5px, transparent 0.5px);
-  background-size: 36px 36px;
+  background-image: linear-gradient(to right, rgba(23, 32, 51, 0.5) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(23, 32, 51, 0.5) 1px, transparent 1px);
+  background-size: 32px 32px;
   background-position: center center;
 }
 
-/* Signature ChainPilot Gradient Text Utilities */
+/* Signature ChainPilot Text Gradient */
+.gradient-text-terminal {
+  background: linear-gradient(135deg, #00f0ff 0%, #baf24a 50%, #d075ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .gradient-text-hero {
-  background: linear-gradient(135deg, #d075ff 0%, #89b0ff 50%, #ff5c16 100%);
+  background: linear-gradient(135deg, #00f0ff 0%, #baf24a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.gradient-text-purple {
-  background: linear-gradient(135deg, #eac2ff 0%, #d075ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Custom Web3 Scrollbar */
+/* Custom Web3 Terminal Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: #05070c;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 4px;
+  background: #172033;
+  border-radius: 0px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--border-color-hover);
+  background: #00f0ff;
 }
