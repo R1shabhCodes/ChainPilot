@@ -13,8 +13,9 @@ export default function PrivyAuthButton({ onWalletSelect }: PrivyAuthButtonProps
   // Render a clean fallback indicator when NEXT_PUBLIC_PRIVY_APP_ID is unconfigured
   if (!privyAppId || privyAppId === 'placeholder-privy-app-id') {
     return (
-      <div className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900/90 border border-slate-800 text-slate-400">
-        Wallet Auth Ready
+      <div className="px-3 py-1.5 text-xs font-mono font-semibold rounded panel-sharp border-[var(--border-color)] text-[var(--text-muted)] flex items-center gap-1.5">
+        <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-purple)]"></span>
+        <span>Wallet Auth Ready</span>
       </div>
     );
   }
@@ -46,7 +47,7 @@ function PrivyAuthButtonInner({ onWalletSelect }: PrivyAuthButtonProps) {
   // Render loading skeleton while Privy SDK initializes
   if (!ready) {
     return (
-      <div className="px-4 py-2 text-xs font-semibold rounded-lg bg-slate-900 border border-slate-800 text-slate-500 animate-pulse">
+      <div className="px-4 py-2 text-xs font-mono rounded panel-sharp border-[var(--border-color)] text-[var(--text-muted)] animate-pulse">
         Initializing Auth...
       </div>
     );
@@ -57,9 +58,9 @@ function PrivyAuthButtonInner({ onWalletSelect }: PrivyAuthButtonProps) {
     return (
       <button
         onClick={login}
-        className="px-4 py-2 text-xs font-semibold rounded-lg bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white shadow-md shadow-cyan-500/20 transition-all flex items-center gap-1.5"
+        className="px-4 py-2 text-xs font-display font-bold rounded bg-[var(--accent-orange)] hover:bg-[#E54E0E] text-white transition-colors flex items-center gap-2 cursor-pointer shadow-md shadow-[var(--accent-orange-glow)]"
       >
-        <span className="h-2 w-2 rounded-full bg-cyan-200 animate-pulse"></span>
+        <span className="h-2 w-2 rounded-full bg-white animate-pulse"></span>
         Connect Wallet
       </button>
     );
@@ -72,13 +73,13 @@ function PrivyAuthButtonInner({ onWalletSelect }: PrivyAuthButtonProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="px-3 py-1.5 rounded-lg glass-panel bg-slate-900/90 border-slate-700/80 text-xs font-mono text-cyan-300 flex items-center gap-2">
-        <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
+      <div className="px-3 py-1.5 rounded panel-sharp border-[var(--border-color)] text-xs font-mono text-[var(--status-green)] flex items-center gap-2">
+        <span className="h-2 w-2 rounded-full bg-[var(--status-green)]"></span>
         <span>{displayName}</span>
       </div>
       <button
         onClick={handleLogout}
-        className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700/60 transition-colors"
+        className="px-3 py-1.5 text-xs font-sans font-semibold rounded bg-[var(--bg-surface-elevated)] hover:bg-[var(--border-color)] text-[var(--text-secondary)] border border-[var(--border-color)] transition-colors cursor-pointer"
       >
         Log Out
       </button>

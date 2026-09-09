@@ -7,6 +7,7 @@ import NativeBalanceCard from './NativeBalanceCard';
 import PositionFilterTabs, { PositionFilter } from './PositionFilterTabs';
 import AIRiskCard, { AnalyzeStatusNotice } from './AIRiskCard';
 import ActionApprovalModal from './ActionApprovalModal';
+import ChainPilotCompass from './ChainPilotCompass';
 import { PortfolioAnalysisResponse, SuggestedAction, PositionRiskSummary } from '@/lib/ai/types';
 
 export default function DashboardClient() {
@@ -88,41 +89,44 @@ export default function DashboardClient() {
   }, [selectedAddress, fetchAiAnalysis]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#090d16] text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200">
-      {/* Top Header Navigation */}
-      <header className="w-full border-b border-slate-800/80 bg-slate-950/40 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)] bg-grid-pattern selection:bg-[var(--accent-purple-glow)] selection:text-[var(--accent-purple)]">
+      {/* Top Navigation Bar */}
+      <header className="w-full border-b border-[var(--border-color)] bg-[var(--bg-surface)] border-orange-top sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-cyan-500/20">
+          <div className="h-9 w-9 rounded panel-sharp bg-[var(--bg-surface-elevated)] border-[var(--border-color)] flex items-center justify-center font-display font-bold text-[var(--accent-orange)] text-sm shadow-sm">
             CP
           </div>
           <div>
-            <h1 className="font-bold text-lg leading-none tracking-tight">
-              Chain<span className="gradient-text">Pilot</span>
+            <h1 className="font-display font-extrabold text-lg leading-none tracking-tight">
+              Chain<span className="gradient-text-purple">Pilot</span>
             </h1>
-            <p className="text-xs text-slate-400 font-medium">DeFi Risk & Portfolio Copilot</p>
+            <p className="text-[11px] font-mono text-[var(--text-muted)] mt-0.5">DeFi Risk & Portfolio Copilot</p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-950/80 text-cyan-400 border border-cyan-800/50">
-            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded text-xs font-mono font-semibold bg-[var(--bg-surface-elevated)] text-[var(--accent-purple)] border border-[var(--border-color)]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-orange)] animate-pulse"></span>
             ETHOnline 2026
           </span>
           <PrivyAuthButton onWalletSelect={(address) => setSelectedAddress(address)} />
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main Content Area */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-6 py-10 flex flex-col gap-10">
-        {/* Hero Section */}
-        <section className="text-center max-w-2xl mx-auto flex flex-col items-center gap-4 py-4">
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+        {/* Hero Section & 3D Compass Motif */}
+        <section className="text-center max-w-3xl mx-auto flex flex-col items-center gap-5 py-4">
+          <ChainPilotCompass />
+
+          <h2 className="text-3xl sm:text-5xl font-display font-extrabold tracking-tight leading-tight">
             Turn On-Chain Complexity Into <br />
-            <span className="gradient-text">Evidence-Backed Insights</span>
+            <span className="gradient-text-hero">Evidence-Backed Intelligence</span>
           </h2>
-          <p className="text-sm text-slate-400 leading-relaxed">
-            Enter an EVM wallet address or connect your wallet to query indexed live protocol data via 
-            The Graph, receive transparent AI risk analysis, and review suggested actions.
+          
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
+            Connect your wallet or enter an EVM address to query indexed Uniswap v3 position health 
+            via The Graph and receive transparent, evidence-backed AI risk evaluations.
           </p>
 
           {/* Reusable Address Input */}
@@ -151,7 +155,7 @@ export default function DashboardClient() {
 
             {/* Position Category Filter Controls */}
             <div className="flex flex-col gap-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--text-muted)]">
                 Position Overview Filters
               </h4>
               <PositionFilterTabs
@@ -162,51 +166,51 @@ export default function DashboardClient() {
           </section>
         )}
 
-        {/* Feature Grid Placeholders */}
+        {/* System Architecture Feature Cards */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Card 1: Subgraph Data */}
-          <div className="glass-panel glass-panel-hover rounded-2xl p-6 flex flex-col gap-3">
-            <div className="h-10 w-10 rounded-lg bg-cyan-950/60 border border-cyan-800/40 text-cyan-400 flex items-center justify-center font-semibold text-sm">
+          <div className="panel-sharp panel-sharp-hover p-6 flex flex-col gap-3 border-accent-top">
+            <div className="h-9 w-9 rounded panel-sharp bg-[var(--bg-surface-elevated)] text-[var(--accent-purple)] flex items-center justify-center font-mono font-bold text-xs">
               01
             </div>
-            <h3 className="font-bold text-base text-slate-100">Indexed On-Chain Data</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Queries real-time positions, liquidity mints/burns, and health metrics directly from 
+            <h3 className="font-display font-bold text-base text-[var(--text-primary)]">Indexed On-Chain Telemetry</h3>
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+              Queries real-time positions, liquidity mints/burns, and pool tick health directly from 
               The Graph network subgraphs.
             </p>
-            <div className="mt-auto pt-4 border-t border-slate-800/60 text-xs font-mono text-cyan-400/90 flex items-center justify-between">
+            <div className="mt-auto pt-4 border-t border-[var(--border-color)] text-xs font-mono text-[var(--accent-purple)] flex items-center justify-between">
               <span>The Graph Integration</span>
               <span>Phase 3</span>
             </div>
           </div>
 
           {/* Card 2: AI Reasoning */}
-          <div className="glass-panel glass-panel-hover rounded-2xl p-6 flex flex-col gap-3">
-            <div className="h-10 w-10 rounded-lg bg-indigo-950/60 border border-indigo-800/40 text-indigo-400 flex items-center justify-center font-semibold text-sm">
+          <div className="panel-sharp panel-sharp-hover p-6 flex flex-col gap-3 border-orange-top">
+            <div className="h-9 w-9 rounded panel-sharp bg-[var(--bg-surface-elevated)] text-[var(--accent-orange)] flex items-center justify-center font-mono font-bold text-xs">
               02
             </div>
-            <h3 className="font-bold text-base text-slate-100">Evidence-Backed AI Analysis</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Processes raw subgraph data to produce risk evaluations, position alerts, and 
+            <h3 className="font-display font-bold text-base text-[var(--text-primary)]">Evidence-Backed AI Intelligence</h3>
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+              Processes raw subgraph telemetry to produce risk evaluations, position alerts, and 
               verifiable on-chain evidence citations.
             </p>
-            <div className="mt-auto pt-4 border-t border-slate-800/60 text-xs font-mono text-indigo-400/90 flex items-center justify-between">
-              <span>AI Engine</span>
+            <div className="mt-auto pt-4 border-t border-[var(--border-color)] text-xs font-mono text-[var(--accent-orange)] flex items-center justify-between">
+              <span>Gemini AI Engine</span>
               <span>Phase 4</span>
             </div>
           </div>
 
           {/* Card 3: Execution Flow */}
-          <div className="glass-panel glass-panel-hover rounded-2xl p-6 flex flex-col gap-3">
-            <div className="h-10 w-10 rounded-lg bg-emerald-950/60 border border-emerald-800/40 text-emerald-400 flex items-center justify-center font-semibold text-sm">
+          <div className="panel-sharp panel-sharp-hover p-6 flex flex-col gap-3 border-blue-top">
+            <div className="h-9 w-9 rounded panel-sharp bg-[var(--bg-surface-elevated)] text-[var(--accent-blue)] flex items-center justify-center font-mono font-bold text-xs">
               03
             </div>
-            <h3 className="font-bold text-base text-slate-100">User-Approved Execution</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Prepares transparent transaction options for user sign-off via Privy embedded 
+            <h3 className="font-display font-bold text-base text-[var(--text-primary)]">User-Approved Safety Flow</h3>
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+              Prepares transparent transaction proposals for user sign-off via Privy embedded 
               wallets with zero automatic actions.
             </p>
-            <div className="mt-auto pt-4 border-t border-slate-800/60 text-xs font-mono text-emerald-400/90 flex items-center justify-between">
+            <div className="mt-auto pt-4 border-t border-[var(--border-color)] text-xs font-mono text-[var(--accent-blue)] flex items-center justify-between">
               <span>Privy Flow</span>
               <span>Phase 6</span>
             </div>
@@ -223,7 +227,7 @@ export default function DashboardClient() {
       />
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-slate-950/60 py-6 px-6 text-center text-xs text-slate-500">
+      <footer className="border-t border-[var(--border-color)] bg-[var(--bg-surface)] py-6 px-6 text-center text-xs font-mono text-[var(--text-muted)]">
         <p>ChainPilot — Built for ETHOnline 2026. Evidence-backed copilot, non-custodial and transparent.</p>
       </footer>
     </div>

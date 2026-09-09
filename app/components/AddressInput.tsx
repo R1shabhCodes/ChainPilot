@@ -87,12 +87,12 @@ export default function AddressInput({ externalAddress, onAnalyze }: AddressInpu
               if (error) setError(null);
             }}
             placeholder="Enter EVM wallet address (0x...)"
-            className={`w-full px-4 py-3.5 text-sm rounded-xl glass-panel bg-slate-900/90 text-slate-100 placeholder-slate-500 focus:outline-none transition-colors ${
+            className={`w-full px-4 py-3.5 text-sm font-mono rounded panel-sharp bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none transition-colors ${
               error
-                ? 'border-red-500/80 focus:border-red-400'
+                ? 'border-[var(--status-red)]'
                 : activeAddress
-                ? 'border-emerald-500/80 focus:border-emerald-400'
-                : 'border-slate-700/80 focus:border-cyan-500'
+                ? 'border-[var(--status-green)]'
+                : 'border-[var(--border-color)] focus:border-[var(--accent-purple)]'
             }`}
             disabled={isLoading}
           />
@@ -100,7 +100,7 @@ export default function AddressInput({ externalAddress, onAnalyze }: AddressInpu
             <button
               type="button"
               onClick={handleClear}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-xs px-2 py-1 rounded bg-slate-800/80"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] text-xs font-mono px-2 py-1 rounded bg-[var(--bg-surface)] border border-[var(--border-color)] transition-colors cursor-pointer"
               disabled={isLoading}
             >
               Clear
@@ -111,7 +111,7 @@ export default function AddressInput({ externalAddress, onAnalyze }: AddressInpu
         <button
           type="submit"
           disabled={isLoading}
-          className="px-6 py-3.5 text-sm font-semibold rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white shadow-lg shadow-cyan-500/20 disabled:opacity-50 transition-all flex items-center justify-center gap-2 min-w-[150px]"
+          className="px-6 py-3.5 text-sm font-display font-bold rounded bg-[var(--accent-purple)] hover:bg-[#B54CE6] text-white shadow-lg shadow-[var(--accent-purple-glow)] disabled:opacity-50 transition-all flex items-center justify-center gap-2 min-w-[160px] cursor-pointer"
         >
           {isLoading ? (
             <>
@@ -126,7 +126,7 @@ export default function AddressInput({ externalAddress, onAnalyze }: AddressInpu
 
       {/* Validation Error Alert */}
       {error && (
-        <div className="px-4 py-2.5 rounded-lg bg-red-950/60 border border-red-800/50 text-red-300 text-xs flex items-center gap-2 animate-fadeIn">
+        <div className="px-4 py-2.5 rounded panel-sharp border-[var(--status-red)] bg-[var(--status-red-bg)] text-[var(--status-red)] text-xs font-mono flex items-center gap-2 animate-fadeIn">
           <span className="font-bold">⚠️ Notice:</span>
           <span>{error}</span>
         </div>
@@ -134,15 +134,15 @@ export default function AddressInput({ externalAddress, onAnalyze }: AddressInpu
 
       {/* Active Address Status Banner */}
       {activeAddress && !error && (
-        <div className="px-4 py-3 rounded-xl glass-panel border-emerald-800/50 bg-emerald-950/30 text-emerald-300 text-xs flex items-center justify-between">
+        <div className="px-4 py-3 rounded panel-sharp border-[var(--status-green)] bg-[var(--status-green-bg)] text-[var(--status-green)] text-xs flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="font-medium">Active Address:</span>
-            <span className="font-mono text-slate-200">{activeAddress}</span>
+            <span className="h-2 w-2 rounded-full bg-[var(--status-green)] animate-pulse"></span>
+            <span className="font-sans font-medium text-[var(--text-secondary)]">Active Address:</span>
+            <span className="font-mono font-semibold text-[var(--text-primary)]">{activeAddress}</span>
           </div>
           <button
             onClick={handleClear}
-            className="text-slate-400 hover:text-slate-200 underline text-xs"
+            className="text-[var(--text-muted)] hover:text-[var(--text-primary)] underline text-xs font-sans cursor-pointer"
           >
             Change Address
           </button>
