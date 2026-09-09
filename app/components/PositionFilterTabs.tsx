@@ -26,26 +26,26 @@ export default function PositionFilterTabs({
   ];
 
   return (
-    <div className="w-full flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+    <div className="w-full flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none font-mono">
       {tabs.map((tab) => {
         const isActive = activeFilter === tab.key;
         return (
           <button
             key={tab.key}
             onClick={() => onFilterChange(tab.key)}
-            className={`px-4 py-2.5 text-xs font-mono font-bold rounded border transition-all flex items-center gap-2.5 whitespace-nowrap cursor-pointer ${
+            className={`px-3.5 py-2 text-xs font-bold uppercase border transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
               isActive
-                ? 'bg-[var(--bg-surface-elevated)] text-[var(--accent-purple)] border-[var(--accent-purple)] shadow-sm shadow-[var(--accent-purple-glow)]'
-                : 'panel-sharp bg-[var(--bg-surface)] text-[var(--text-muted)] border-[var(--border-color)] hover:text-[var(--text-primary)] hover:border-[var(--border-color-hover)]'
+                ? 'bg-[#00F0FF]/10 text-[#00F0FF] border-[#00F0FF] shadow-sm shadow-[#00F0FF]/20'
+                : 'bg-[#090b10] text-slate-400 border-slate-800 hover:text-slate-200 hover:border-slate-700'
             }`}
           >
             <span>{tab.label}</span>
             {tab.count !== undefined && (
               <span
-                className={`px-2 py-0.5 rounded text-[10px] font-mono ${
+                className={`px-1.5 py-0.2 text-[10px] font-mono ${
                   isActive
-                    ? 'bg-[var(--accent-purple-glow)] text-[var(--accent-purple)] border border-[var(--accent-purple)]'
-                    : 'bg-[var(--bg-surface-elevated)] text-[var(--text-muted)] border border-[var(--border-color)]'
+                    ? 'bg-slate-950 text-[#00F0FF] border border-[#00F0FF]/40'
+                    : 'bg-slate-950 text-slate-400 border border-slate-800'
                 }`}
               >
                 {tab.count}

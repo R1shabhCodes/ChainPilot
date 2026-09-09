@@ -61,17 +61,17 @@ export default function NativeBalanceCard({ address }: NativeBalanceCardProps) {
   }
 
   return (
-    <div className="w-full panel-sharp border-blue-top p-6 flex flex-col gap-5 animate-fadeIn">
+    <div className="w-full bg-[#090b10] border border-slate-800 p-5 font-mono flex flex-col gap-4 shadow-2xl animate-fadeIn">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
+      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
         <div className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-[var(--status-green)] animate-pulse"></span>
-          <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--text-muted)]">
-            Native On-Chain Balance
+          <span className="h-2 w-2 bg-[#BAF24A] animate-pulse"></span>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">
+            NATIVE ON-CHAIN TELEMETRY
           </h3>
         </div>
         {data && (
-          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-[var(--bg-surface-elevated)] text-[var(--accent-blue)] border border-[var(--border-color)]">
+          <span className="text-[10px] font-mono px-2 py-0.5 bg-slate-950 text-cyan-300 border border-slate-800">
             Block #{data.blockNumber}
           </span>
         )}
@@ -79,19 +79,19 @@ export default function NativeBalanceCard({ address }: NativeBalanceCardProps) {
 
       {/* Loading State */}
       {loading && (
-        <div className="py-8 flex flex-col items-center justify-center gap-2 text-[var(--text-muted)]">
-          <div className="h-6 w-6 rounded-full border-2 border-[var(--accent-blue-glow)] border-t-[var(--accent-blue)] animate-spin"></div>
+        <div className="py-6 flex flex-col items-center justify-center gap-2 text-slate-400">
+          <div className="h-5 w-5 border-2 border-[#00F0FF]/20 border-t-[#00F0FF] animate-spin"></div>
           <span className="text-xs font-mono">Querying Live EVM RPC Node...</span>
         </div>
       )}
 
       {/* Error State */}
       {error && (
-        <div className="p-3 rounded panel-sharp border-[var(--status-red)] bg-[var(--status-red-bg)] text-[var(--status-red)] text-xs font-mono flex items-center justify-between">
+        <div className="p-3 bg-red-950/60 border border-red-800 text-red-300 text-xs font-mono flex items-center justify-between">
           <span>⚠️ {error}</span>
           <button
             onClick={() => setData(null)}
-            className="text-[var(--text-muted)] hover:text-[var(--text-primary)] underline cursor-pointer"
+            className="text-slate-400 hover:text-slate-200 underline cursor-pointer"
           >
             Dismiss
           </button>
@@ -102,32 +102,33 @@ export default function NativeBalanceCard({ address }: NativeBalanceCardProps) {
       {data && !loading && !error && (
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
-              Ethereum Native Balance
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+              NATIVE ETHEREUM BALANCE
             </span>
             <div className="flex items-baseline justify-between">
               <div className="flex items-baseline gap-2">
-                <span className="font-display font-extrabold text-4xl sm:text-5xl text-[var(--text-primary)] tracking-tight">
+                <span className="font-display font-black text-4xl sm:text-5xl text-slate-100 tracking-tight">
                   {data.ethBalance}
                 </span>
-                <span className="font-mono font-bold text-[var(--accent-blue)] text-base">ETH</span>
+                <span className="font-mono font-bold text-[#00F0FF] text-sm">ETH</span>
               </div>
-              <span className="text-[11px] font-mono text-[var(--text-muted)]">
-                Via {data.rpcSource}
-              </span>
             </div>
           </div>
 
-          <div className="p-3 rounded panel-sharp bg-[var(--bg-surface-elevated)] text-xs font-mono flex flex-col gap-1.5 border-[var(--border-color)]">
+          <div className="p-3 bg-slate-950 border border-slate-800 text-xs font-mono flex flex-col gap-1.5">
             <div className="flex justify-between">
-              <span className="text-[var(--text-muted)]">Target Address:</span>
-              <span className="text-[var(--text-primary)] font-semibold">
-                {data.address.slice(0, 10)}...{data.address.slice(-8)}
+              <span className="text-slate-400">Target Address:</span>
+              <span className="text-slate-200 font-semibold">
+                {data.address.slice(0, 8)}...{data.address.slice(-6)}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[var(--text-muted)]">Raw Wei Quantity:</span>
-              <span className="text-[var(--text-secondary)]">{data.weiBalance} Wei</span>
+              <span className="text-slate-400">RPC Source:</span>
+              <span className="text-cyan-300 font-semibold">{data.rpcSource}</span>
+            </div>
+            <div className="flex justify-between border-t border-slate-800/80 pt-1.5 mt-0.5">
+              <span className="text-slate-400">Raw Wei Quantity:</span>
+              <span className="text-slate-300 text-[11px]">{data.weiBalance} Wei</span>
             </div>
           </div>
         </div>

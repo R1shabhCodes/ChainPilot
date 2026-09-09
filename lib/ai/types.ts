@@ -37,6 +37,9 @@ export interface PositionRiskSummary {
   evidence: EvidenceCitation[];
   summary: string;
   suggestedAction?: SuggestedAction;
+  tickLower?: number;
+  tickUpper?: number;
+  currentTick?: number | null;
 }
 
 export interface PortfolioAnalysisResponse {
