@@ -76,6 +76,7 @@ export interface PositionRiskSummary {
   poolAddress?: string;
   token0Address?: string;
   token1Address?: string;
+  feeTier?: string;
 }
 
 export interface PortfolioAnalysisResponse {

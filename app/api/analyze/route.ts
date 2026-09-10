@@ -142,6 +142,7 @@ export async function POST(request: Request) {
         poolAddress: summary.poolAddress || origPos?.poolAddress,
         token0Address: summary.token0Address || origPos?.token0Address,
         token1Address: summary.token1Address || origPos?.token1Address,
+        feeTier: summary.feeTier || origPos?.feeTier,
       };
     });
 

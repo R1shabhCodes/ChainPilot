@@ -12,9 +12,14 @@ import {
   getEtherscanNftUrl,
   getEtherscanPoolUrl,
   getEtherscanTokenUrl,
+  getEtherscanFactoryUrl,
+  getEtherscanNftManagerUrl,
+  getUniswapPoolUrl,
+  getUniswapPositionUrl,
   shortenAddress,
 } from '@/lib/utils/explorer';
 import { generateDecisionConsideration } from '@/lib/decision/decisionEngine';
+import { calculateProtocolGeometry } from '@/lib/decision/protocolGeometry';
 
 export interface AnalyzeStatusNotice {
   status: string;
@@ -436,6 +441,49 @@ export default function AIRiskCard({
                 Status: <span className="font-bold text-cyan-500">{pos.rangeStatus}</span>
               </div>
             )}
+
+            {/* PROTOCOL PARAMETERS & GRID STEPS */}
+            {(() => {
+              const protocolGeo = calculateProtocolGeometry(pos.feeTier, pos.tickLower, pos.tickUpper);
+              if (!protocolGeo) return null;
+              return (
+                <div className="mt-1 p-3 bg-[var(--cp-surface-elevated)] border t-border flex flex-col gap-2 font-mono">
+                  <div className="flex items-center justify-between border-b t-border pb-1.5">
+                    <span className="text-[9px] font-bold text-[#baf24a] uppercase tracking-widest flex items-center gap-1.5">
+                      <span className="h-1 w-1 bg-[#baf24a]"></span>
+                      PROTOCOL GEOMETRY & GRID STEPS
+                    </span>
+                    <span className="text-[8px] text-[#baf24a]/80 font-bold uppercase">
+                      UNISWAP V3 SPEC
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px]">
+                    <div className="flex flex-col gap-0.5 p-1.5 bg-[var(--cp-bg)] border t-border">
+                      <span className="t-text-muted uppercase text-[8px] font-bold">Fee Tier %</span>
+                      <span className="font-bold text-cyan-500">{protocolGeo.feePercentageString}</span>
+                    </div>
+                    <div className="flex flex-col gap-0.5 p-1.5 bg-[var(--cp-bg)] border t-border">
+                      <span className="t-text-muted uppercase text-[8px] font-bold">Tick Spacing</span>
+                      <span className="font-bold text-[#baf24a]">{protocolGeo.tickSpacing} ticks/step</span>
+                    </div>
+                    <div className="flex flex-col gap-0.5 p-1.5 bg-[var(--cp-bg)] border t-border">
+                      <span className="t-text-muted uppercase text-[8px] font-bold">Range Width</span>
+                      <span className="font-bold t-text">{protocolGeo.rangeWidthTicks.toLocaleString('en-US')} ticks</span>
+                    </div>
+                    <div className="flex flex-col gap-0.5 p-1.5 bg-[var(--cp-bg)] border t-border">
+                      <span className="t-text-muted uppercase text-[8px] font-bold">Grid Intervals</span>
+                      <span className="font-bold t-text">{protocolGeo.gridIntervalCount.toLocaleString('en-US')} bins</span>
+                    </div>
+                  </div>
+                  <div className="text-[8px] t-text-muted font-sans leading-tight mt-0.5 flex items-start gap-1">
+                    <span className="text-cyan-500 font-bold font-mono">*</span>
+                    <span>
+                      Fee tier ({protocolGeo.feeTierRaw}) sourced from pool contract via Graph. Tick spacing ({protocolGeo.tickSpacing}) derived deterministically from standard Uniswap V3 protocol specification.
+                    </span>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </div>
 
@@ -450,6 +498,15 @@ export default function AIRiskCard({
               {analysis.providerStatus?.activeProvider || 'AI ENGINE'}
             </span>
           </div>
+
+          {pos.riskLevel && (
+            <div className="flex items-center justify-between font-mono">
+              <span className="text-xs font-bold t-text-muted uppercase">EVALUATED RISK LEVEL</span>
+              <span className={`px-3 py-1 text-xs font-black uppercase border ${getRiskBadgeStyle(pos.riskLevel)}`}>
+                {pos.riskLevel} RISK
+              </span>
+            </div>
+          )}
 
           {analysis.aiStatus === 'UNAVAILABLE' ? (
             <div className="flex flex-col gap-3 font-mono">
@@ -520,6 +577,61 @@ export default function AIRiskCard({
           )}
         </div>
 
+      </div>
+
+      {/* UNISWAP V3 ECOSYSTEM DIRECT ACTIONS */}
+      <div className="w-full panel-architecture bg-[var(--cp-surface)] p-5 font-mono flex flex-col gap-3 border-t-2 border-t-cyan-500/60">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b t-border pb-2 gap-1">
+          <span className="text-[10px] font-black uppercase tracking-widest text-cyan-500 flex items-center gap-2">
+            <span className="h-1.5 w-1.5 bg-cyan-500"></span>
+            UNISWAP ECOSYSTEM DIRECT ACTIONS
+          </span>
+          <span className="text-[8px] t-text-muted uppercase tracking-wider font-sans">
+            External Read-Only Protocol Links
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
+          <a
+            href={getUniswapPositionUrl(pos.positionId)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2.5 bg-cyan-500/10 border border-cyan-500/40 text-cyan-500 hover:bg-cyan-500/20 text-center font-bold text-[10px] uppercase tracking-wider transition-colors flex items-center justify-center gap-1"
+          >
+            MANAGE ON UNISWAP ↗
+          </a>
+          <a
+            href={getUniswapPoolUrl(pos.poolAddress)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2.5 bg-[var(--cp-surface-elevated)] border t-border text-cyan-500 hover:bg-[var(--cp-bg)] text-center font-bold text-[10px] uppercase tracking-wider transition-colors flex items-center justify-center gap-1"
+          >
+            UNISWAP POOL INFO ↗
+          </a>
+          <a
+            href={getEtherscanNftManagerUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2.5 bg-[var(--cp-surface-elevated)] border t-border t-text hover:bg-[var(--cp-bg)] text-center font-bold text-[10px] uppercase tracking-wider transition-colors flex items-center justify-center gap-1"
+          >
+            NFT MANAGER CONTRACT ↗
+          </a>
+          <a
+            href={getEtherscanFactoryUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2.5 bg-[var(--cp-surface-elevated)] border t-border t-text hover:bg-[var(--cp-bg)] text-center font-bold text-[10px] uppercase tracking-wider transition-colors flex items-center justify-center gap-1"
+          >
+            V3 FACTORY CONTRACT ↗
+          </a>
+        </div>
+
+        <div className="text-[9px] t-text-muted font-sans flex items-center gap-1.5 pt-1">
+          <span className="h-1 w-1 rounded-full bg-cyan-500"></span>
+          <span>
+            ChainPilot is an analytical risk copilot and does not execute transactions directly. External links open official Uniswap or Etherscan interfaces in a new tab.
+          </span>
+        </div>
       </div>
 
       {/* EVIDENCE & PROVENANCE AUDIT SECTION */}

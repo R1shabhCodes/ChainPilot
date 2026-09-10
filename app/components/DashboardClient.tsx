@@ -12,7 +12,7 @@ import ActionApprovalModal from './ActionApprovalModal';
 import LandingPage from './LandingPage';
 import ThemeToggle from './ThemeToggle';
 import { PortfolioAnalysisResponse, SuggestedAction, PositionRiskSummary } from '@/lib/ai/types';
-import { getEtherscanAddressUrl } from '@/lib/utils/explorer';
+import { getEtherscanAddressUrl, getEtherscanFactoryUrl, getEtherscanNftManagerUrl } from '@/lib/utils/explorer';
 
 export default function DashboardClient() {
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
@@ -274,7 +274,26 @@ export default function DashboardClient() {
                   </div>
                   <div className="p-3 bg-[var(--cp-surface-elevated)] border t-border flex flex-col gap-1">
                     <span className="text-[9px] t-text-muted uppercase font-bold tracking-wider">PROTOCOL AUDITED</span>
-                    <span className="text-xs font-bold t-text">Uniswap V3 Core Factory</span>
+                    <div className="flex flex-col gap-0.5 text-xs font-bold font-mono">
+                      <a
+                        href={getEtherscanFactoryUrl()}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-cyan-500 hover:underline flex items-center justify-between"
+                      >
+                        <span>Uniswap V3 Factory</span>
+                        <span className="text-[10px]">↗</span>
+                      </a>
+                      <a
+                        href={getEtherscanNftManagerUrl()}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-cyan-500 hover:underline flex items-center justify-between"
+                      >
+                        <span>NFT Manager</span>
+                        <span className="text-[10px]">↗</span>
+                      </a>
+                    </div>
                   </div>
                   <div className="p-3 bg-[var(--cp-surface-elevated)] border t-border flex flex-col gap-1">
                     <span className="text-[9px] t-text-muted uppercase font-bold tracking-wider">DATA PROVIDER</span>
