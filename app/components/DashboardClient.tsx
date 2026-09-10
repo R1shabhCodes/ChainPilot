@@ -134,30 +134,14 @@ export default function DashboardClient() {
           </div>
         </div>
 
-        {/* Header Address Quick Switcher when in workspace mode */}
+        {/* Header Address Quick Indicator when in workspace mode */}
         {selectedAddress && (
-          <div className="flex items-center gap-3 panel-flat px-4 py-2 text-xs bg-[var(--cp-surface-elevated)]">
+          <div className="hidden md:flex items-center gap-2 px-3 py-1 text-xs bg-[var(--cp-surface-elevated)] border t-border">
             <span className="h-2 w-2 bg-[#00f0ff] animate-pulse"></span>
-            <span className="t-text-muted font-bold uppercase tracking-widest text-[10px]">Target:</span>
-            <a
-              href={getEtherscanAddressUrl(selectedAddress)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="t-text font-bold font-mono hover:text-cyan-400 hover:underline flex items-center gap-1.5 transition-colors"
-              title="Verify Target Wallet on Etherscan"
-            >
+            <span className="t-text-muted font-bold uppercase tracking-widest text-[9px]">Target:</span>
+            <span className="t-text font-bold font-mono text-[11px]">
               {selectedAddress.slice(0, 8)}...{selectedAddress.slice(-6)}
-              <span className="text-[9px] font-mono px-1.5 py-0.5 bg-cyan-500/10 border border-cyan-500/30 text-cyan-500 font-bold uppercase tracking-wider">
-                VERIFY ON ETHERSCAN ↗
-              </span>
-            </a>
-            <div className="w-px h-3 t-border-strong mx-1 bg-[var(--cp-border-strong)]"></div>
-            <button
-              onClick={() => setSelectedAddress(null)}
-              className="text-[10px] text-cyan-500 hover:text-cyan-400 uppercase font-black cursor-pointer transition-colors"
-            >
-              [ SWITCH ]
-            </button>
+            </span>
           </div>
         )}
 
@@ -172,7 +156,7 @@ export default function DashboardClient() {
       </header>
 
       {/* Main Viewport Content */}
-      <main className={`flex-1 w-full mx-auto flex flex-col transition-layout ${selectedAddress ? 'px-4 sm:px-8 py-8' : ''}`}>
+      <main className={`flex-1 w-full mx-auto flex flex-col transition-layout ${selectedAddress ? 'px-3 sm:px-6 py-4 sm:py-6' : ''}`}>
         
         {/* STATE 1: SCROLLABLE LANDING EXPERIENCE */}
         {!selectedAddress && (
@@ -181,34 +165,57 @@ export default function DashboardClient() {
 
         {/* STATE 2: FULL-WIDTH ANALYZED DEFI WORKSPACE */}
         {selectedAddress && (
-          <section className="w-full max-w-[1600px] mx-auto flex flex-col gap-6 animate-fadeIn">
-            {/* Top Workspace Command Bar */}
-            <div className="w-full panel-flat p-4 font-mono flex flex-col lg:flex-row items-center justify-between gap-6 border-cyan-top bg-[var(--cp-surface)]">
-              <div className="flex items-center gap-4">
-                <div className="h-3 w-3 bg-[#00F0FF] animate-pulse"></div>
-                <span className="text-sm font-black t-text-heading uppercase tracking-widest">
+          <section className="w-full max-w-[1600px] mx-auto flex flex-col gap-4 sm:gap-5 animate-fadeIn">
+            {/* COMPACT WORKSPACE COMMAND BAR */}
+            <div className="w-full panel-flat p-3.5 sm:p-4 font-mono flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-cyan-top bg-[var(--cp-surface)]">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="h-2.5 w-2.5 bg-[#00F0FF] animate-pulse"></span>
+                <span className="text-xs sm:text-sm font-black t-text-heading uppercase tracking-widest">
                   PORTFOLIO // <span className="text-cyan-500">{aiAnalysis?.positionSummaries?.length || 0} POSITIONS</span>
                 </span>
-                <span className="text-[10px] t-text-muted font-mono">
-                  {aiAnalysis?.analyzedAt ? `LAST ANALYZED: ${new Date(aiAnalysis.analyzedAt).toLocaleTimeString()}` : ''}
-                </span>
+                <div className="w-px h-3.5 bg-[var(--cp-border-strong)] hidden sm:block"></div>
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="t-text-muted font-bold uppercase tracking-wider text-[10px]">TARGET:</span>
+                  <a
+                    href={getEtherscanAddressUrl(selectedAddress)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="t-text font-bold font-mono hover:text-cyan-400 hover:underline flex items-center gap-1 transition-colors text-xs"
+                    title="Verify Target Wallet on Etherscan"
+                  >
+                    {selectedAddress.slice(0, 8)}...{selectedAddress.slice(-6)}
+                    <span className="text-[9px] font-mono px-1.5 py-0.5 bg-cyan-500/10 border border-cyan-500/30 text-cyan-500 font-bold uppercase tracking-wider ml-1">
+                      VERIFY ON ETHERSCAN ↗
+                    </span>
+                  </a>
+                </div>
+                {aiAnalysis?.analyzedAt && (
+                  <>
+                    <div className="w-px h-3.5 bg-[var(--cp-border-strong)] hidden md:block"></div>
+                    <span className="text-[10px] t-text-muted font-mono hidden md:inline">
+                      LAST ANALYZED: {new Date(aiAnalysis.analyzedAt).toLocaleTimeString()}
+                    </span>
+                  </>
+                )}
               </div>
 
-              <div className="flex items-center gap-3 w-full lg:w-auto">
+              <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
                 <button
                   onClick={() => selectedAddress && fetchAiAnalysis(selectedAddress)}
                   disabled={aiLoading}
-                  className="px-3 py-2 bg-[var(--cp-surface-elevated)] hover:bg-[var(--cp-surface-highlight)] text-cyan-500 border border-cyan-500/40 text-xs font-black uppercase tracking-widest transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="px-3 py-1.5 bg-[var(--cp-surface-elevated)] hover:bg-[var(--cp-surface-highlight)] text-cyan-500 border border-cyan-500/40 text-[11px] font-black uppercase tracking-widest transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                  title="Refresh On-Chain Subgraph State"
                 >
                   <span className={`h-2 w-2 bg-cyan-500 ${aiLoading ? 'animate-spin' : ''}`}></span>
-                  {aiLoading ? 'REFRESHING...' : 'REFRESH ON-CHAIN STATE'}
+                  {aiLoading ? 'REFRESHING...' : 'REFRESH'}
                 </button>
-                <div className="w-full lg:w-[340px]">
-                  <AddressInput
-                    externalAddress={selectedAddress}
-                    onAnalyze={(address) => setSelectedAddress(address)}
-                  />
-                </div>
+                <button
+                  onClick={() => setSelectedAddress(null)}
+                  className="px-3 py-1.5 bg-[var(--cp-surface-elevated)] hover:bg-[var(--cp-surface-highlight)] t-text-secondary hover:t-text border t-border text-[11px] font-black uppercase tracking-widest transition-colors cursor-pointer"
+                  title="Switch target wallet address"
+                >
+                  [ SWITCH WALLET ]
+                </button>
               </div>
             </div>
 
