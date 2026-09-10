@@ -8,8 +8,8 @@ interface AddressInputProps {
 }
 
 const SAMPLE_ADDRESSES = [
-  { label: 'Uniswap V3 LP (Mainnet)', address: '0x50EC05A6E8280758E2077fcBC08D878d4aEf79C3' },
-  { label: 'Zero Positions Test', address: '0x0000000000000000000000000000000000000000' },
+  { label: 'Uniswap V3 LP (Mainnet)', address: '0x50ec05ade8280758e2077fcbc08d878d4aef79c3' },
+  { label: 'Zero Positions Test', address: '0x1111111111111111111111111111111111111111' },
 ];
 
 export default function AddressInput({ externalAddress, onAnalyze }: AddressInputProps) {
