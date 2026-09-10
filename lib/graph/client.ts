@@ -136,6 +136,9 @@ export async function fetchUniswapPositions(address: string): Promise<GraphFetch
         token1Symbol,
         feeTier: pos.pool?.feeTier || '3000',
         subgraphSourceRef: `The Graph Subgraph (ID: ${SUBGRAPH_DEPLOYMENT_ID}) - NFT #${pos.id}`,
+        poolAddress: pos.pool?.id,
+        token0Address: pos.token0?.id,
+        token1Address: pos.token1?.id,
       };
     });
 

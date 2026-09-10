@@ -66,6 +66,9 @@ export interface PositionRiskSummary {
   tickUpper?: number;
   currentTick?: number | null;
   computedMetrics?: ComputedPositionMetrics;
+  poolAddress?: string;
+  token0Address?: string;
+  token1Address?: string;
 }
 
 export interface PortfolioAnalysisResponse {

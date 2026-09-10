@@ -243,6 +243,9 @@ export async function evaluatePortfolioWithProviders(
       tickLower: pos.tickLower,
       tickUpper: pos.tickUpper,
       currentTick: pos.currentTick,
+      poolAddress: pos.poolAddress,
+      token0Address: pos.token0Address,
+      token1Address: pos.token1Address,
     };
   });
 

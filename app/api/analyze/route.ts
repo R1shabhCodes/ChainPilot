@@ -109,20 +109,27 @@ export async function POST(request: Request) {
 
     const positions = graphResult.positions || [];
 
-    // Step 3: Compute deterministic metrics outside the LLM for every position
+    const posMap: Record<string, NormalizedPositionData> = {};
     const computedMetricsMap: Record<string, ComputedPositionMetrics> = {};
     positions.forEach((pos) => {
+      posMap[pos.positionId] = pos;
       computedMetricsMap[pos.positionId] = computePositionMetrics(pos);
     });
 
     // Step 4: Evaluate with multi-provider AI resilience engine (Groq -> Gemini -> Fallback)
     const aiAnalysis = await evaluatePortfolioWithProviders(address, graphResult.rawJson || '[]', positions);
 
-    // Merge computed metrics into position summaries
-    const enrichedSummaries = aiAnalysis.positionSummaries.map((summary) => ({
-      ...summary,
-      computedMetrics: computedMetricsMap[summary.positionId],
-    }));
+    // Merge computed metrics & contract addresses into position summaries
+    const enrichedSummaries = aiAnalysis.positionSummaries.map((summary) => {
+      const origPos = posMap[summary.positionId];
+      return {
+        ...summary,
+        computedMetrics: computedMetricsMap[summary.positionId],
+        poolAddress: summary.poolAddress || origPos?.poolAddress,
+        token0Address: summary.token0Address || origPos?.token0Address,
+        token1Address: summary.token1Address || origPos?.token1Address,
+      };
+    });
 
     return NextResponse.json(
       {

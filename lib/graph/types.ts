@@ -54,6 +54,9 @@ export interface NormalizedPositionData {
   token1Symbol: string;
   feeTier: string;
   subgraphSourceRef: string;
+  poolAddress?: string;
+  token0Address?: string;
+  token1Address?: string;
 }
 
 export type GraphFetchResult =

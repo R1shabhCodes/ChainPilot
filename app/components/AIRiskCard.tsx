@@ -8,6 +8,12 @@ import {
   SuggestedAction,
 } from '@/lib/ai/types';
 import LiquidityRangeVisualizer from './LiquidityRangeVisualizer';
+import {
+  getEtherscanNftUrl,
+  getEtherscanPoolUrl,
+  getEtherscanTokenUrl,
+  shortenAddress,
+} from '@/lib/utils/explorer';
 
 export interface AnalyzeStatusNotice {
   status: string;
@@ -157,17 +163,11 @@ export default function AIRiskCard({
   }
 
   // Determine which position to show in the dominant view
-  const pos = focusedPositionId 
-    ? analysis.positionSummaries.find(p => p.positionId === focusedPositionId) 
+  const pos = focusedPositionId
+    ? analysis.positionSummaries.find((p) => p.positionId === focusedPositionId) || analysis.positionSummaries[0]
     : analysis.positionSummaries[0];
 
-  if (!pos) {
-    return (
-      <div className="w-full panel-architecture p-8 flex items-center justify-center text-slate-500 font-mono text-xs">
-        Position details unavailable.
-      </div>
-    );
-  }
+  if (!pos) return null;
 
   const { tickLower, tickUpper, currentTick } = extractTicks(pos);
 
@@ -182,13 +182,19 @@ export default function AIRiskCard({
                 {pos.tokenPair}
               </span>
             </div>
-            <div className="flex items-center gap-3 mt-1 font-mono">
+            <div className="flex items-center gap-3 mt-1 font-mono flex-wrap">
               <span className="text-[10px] t-text-muted uppercase tracking-widest bg-[var(--cp-bg)] border t-border px-2 py-1">
                 {pos.protocol}
               </span>
-              <span className="text-[10px] t-text-muted font-bold">
-                POSITION NFT #{pos.positionId}
-              </span>
+              <a
+                href={getEtherscanNftUrl(pos.positionId)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] text-cyan-500 hover:text-cyan-400 font-bold font-mono uppercase tracking-widest flex items-center gap-1.5 bg-cyan-500/10 border border-cyan-500/30 px-2 py-1 transition-colors"
+                title="Verify Position NFT on Etherscan"
+              >
+                POSITION NFT #{pos.positionId} ↗
+              </a>
             </div>
           </div>
           
@@ -227,9 +233,17 @@ export default function AIRiskCard({
           </div>
 
           <div className="flex flex-col gap-2 font-mono text-xs">
-            <div className="flex justify-between border-b t-border pb-2">
-              <span className="t-text-muted uppercase text-[10px]">Position NFT ID</span>
-              <span className="font-bold t-text">#{pos.positionId}</span>
+            <div className="flex justify-between items-center border-b t-border pb-2">
+              <span className="t-text-muted uppercase text-[10px]">Position NFT</span>
+              <a
+                href={getEtherscanNftUrl(pos.positionId)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold text-cyan-500 hover:underline flex items-center gap-1"
+                title="Verify NFT on Etherscan"
+              >
+                #{pos.positionId} ↗
+              </a>
             </div>
             <div className="flex justify-between border-b t-border pb-2">
               <span className="t-text-muted uppercase text-[10px]">Token Pair</span>
@@ -239,6 +253,48 @@ export default function AIRiskCard({
               <span className="t-text-muted uppercase text-[10px]">Protocol</span>
               <span className="font-bold t-text">{pos.protocol}</span>
             </div>
+            {pos.poolAddress && (
+              <div className="flex justify-between items-center border-b t-border pb-2">
+                <span className="t-text-muted uppercase text-[10px]">Pool Contract</span>
+                <a
+                  href={getEtherscanPoolUrl(pos.poolAddress)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold text-cyan-500 hover:underline flex items-center gap-1"
+                  title={pos.poolAddress}
+                >
+                  {shortenAddress(pos.poolAddress)} ↗
+                </a>
+              </div>
+            )}
+            {pos.token0Address && (
+              <div className="flex justify-between items-center border-b t-border pb-2">
+                <span className="t-text-muted uppercase text-[10px]">Token0 Contract</span>
+                <a
+                  href={getEtherscanTokenUrl(pos.token0Address)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold text-cyan-500 hover:underline flex items-center gap-1"
+                  title={pos.token0Address}
+                >
+                  {shortenAddress(pos.token0Address)} ↗
+                </a>
+              </div>
+            )}
+            {pos.token1Address && (
+              <div className="flex justify-between items-center border-b t-border pb-2">
+                <span className="t-text-muted uppercase text-[10px]">Token1 Contract</span>
+                <a
+                  href={getEtherscanTokenUrl(pos.token1Address)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold text-cyan-500 hover:underline flex items-center gap-1"
+                  title={pos.token1Address}
+                >
+                  {shortenAddress(pos.token1Address)} ↗
+                </a>
+              </div>
+            )}
             <div className="flex justify-between border-b t-border pb-2">
               <span className="t-text-muted uppercase text-[10px]">Current Pool Tick</span>
               <span className="font-bold text-cyan-500">{currentTick !== null ? currentTick.toLocaleString('en-US') : 'N/A'}</span>
@@ -254,7 +310,7 @@ export default function AIRiskCard({
           </div>
         </div>
 
-        {/* LAYER 2: COMPUTED RANGE DIAGNOSIS (DETERMINISTIC APPLICATION LOGIC) */}
+        {/* LAYER 2: COMPUTED RANGE DIAGNOSIS */}
         <div className="panel-architecture bg-[var(--cp-surface)] p-5 flex flex-col gap-4 border-t-2 border-t-[#baf24a]/80">
           <div className="flex items-center justify-between border-b t-border pb-3">
             <span className="text-[10px] font-black uppercase tracking-widest text-[#baf24a] flex items-center gap-2">
@@ -281,40 +337,40 @@ export default function AIRiskCard({
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-[10px]">
-                  <div className="p-2.5 bg-[var(--cp-surface-elevated)] border t-border">
-                    <span className="t-text-muted block uppercase font-bold text-[8px]">Dist From Lower</span>
-                    <span className="t-text font-bold text-xs mt-0.5 block">
-                      {pos.computedMetrics.tickDistanceLower !== null 
-                        ? `${pos.computedMetrics.tickDistanceLower > 0 ? '+' : ''}${pos.computedMetrics.tickDistanceLower.toLocaleString('en-US')} ticks`
+                  <div className="p-2.5 bg-[var(--cp-surface-elevated)] border t-border flex flex-col gap-0.5">
+                    <span className="t-text-muted uppercase font-bold">Lower Bound Dist</span>
+                    <span className="font-bold text-xs t-text">
+                      {pos.computedMetrics.tickDistanceLower !== null
+                        ? `${pos.computedMetrics.tickDistanceLower.toLocaleString('en-US')} ticks`
                         : 'N/A'}
                     </span>
                   </div>
-                  <div className="p-2.5 bg-[var(--cp-surface-elevated)] border t-border">
-                    <span className="t-text-muted block uppercase font-bold text-[8px]">Dist From Upper</span>
-                    <span className="t-text font-bold text-xs mt-0.5 block">
-                      {pos.computedMetrics.tickDistanceUpper !== null 
-                        ? `${pos.computedMetrics.tickDistanceUpper > 0 ? '+' : ''}${pos.computedMetrics.tickDistanceUpper.toLocaleString('en-US')} ticks`
+                  <div className="p-2.5 bg-[var(--cp-surface-elevated)] border t-border flex flex-col gap-0.5">
+                    <span className="t-text-muted uppercase font-bold">Upper Bound Dist</span>
+                    <span className="font-bold text-xs t-text">
+                      {pos.computedMetrics.tickDistanceUpper !== null
+                        ? `${pos.computedMetrics.tickDistanceUpper.toLocaleString('en-US')} ticks`
                         : 'N/A'}
                     </span>
                   </div>
                 </div>
               </>
             ) : (
-              <div className="p-3 bg-[var(--cp-surface-elevated)] border t-border text-xs t-text-secondary font-mono">
-                {pos.rangeStatus === 'IN_RANGE' ? 'Position is within active tick bounds.' : 'Position is outside active tick bounds.'}
+              <div className="p-3 bg-[var(--cp-surface-elevated)] border t-border text-xs t-text-muted">
+                Status: <span className="font-bold text-cyan-500">{pos.rangeStatus}</span>
               </div>
             )}
           </div>
         </div>
 
         {/* LAYER 3: AI RISK INTERPRETATION */}
-        <div className="panel-architecture bg-[var(--cp-surface)] p-5 flex flex-col gap-4 border-t-2 border-t-[#d075ff]/80">
+        <div className="panel-architecture bg-[var(--cp-surface)] p-5 flex flex-col gap-4 border-t-2 border-t-purple-500/80">
           <div className="flex items-center justify-between border-b t-border pb-3">
-            <span className="text-[10px] font-black uppercase tracking-widest text-[#d075ff] flex items-center gap-2">
-              <span className={`h-1.5 w-1.5 ${analysis.aiStatus === 'UNAVAILABLE' ? 'bg-amber-400' : 'bg-[#d075ff]'}`}></span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-purple-400 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 bg-purple-500"></span>
               LAYER 3: AI RISK INTERPRETATION
             </span>
-            <span className="text-[8px] text-[#d075ff]/60 uppercase tracking-widest font-mono">
+            <span className="text-[8px] text-purple-400/80 uppercase tracking-widest font-mono font-bold">
               {analysis.providerStatus?.activeProvider || 'AI ENGINE'}
             </span>
           </div>
@@ -386,7 +442,17 @@ export default function AIRiskCard({
               <div key={idx} className="p-2.5 bg-[var(--cp-surface-elevated)] border t-border flex flex-col gap-1">
                 <span className="text-[9px] t-text-muted font-bold uppercase tracking-wider">{ev.field}</span>
                 <span className="text-xs font-bold t-text">{ev.value}</span>
-                <span className="text-[8px] text-cyan-500 truncate mt-0.5">{ev.sourceRef}</span>
+                <div className="flex items-center justify-between mt-0.5">
+                  <span className="text-[8px] text-cyan-500 truncate">{ev.sourceRef}</span>
+                  <a
+                    href={getEtherscanNftUrl(pos.positionId)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[8px] text-cyan-500 hover:underline font-bold"
+                  >
+                    VERIFY ↗
+                  </a>
+                </div>
               </div>
             ))}
           </div>

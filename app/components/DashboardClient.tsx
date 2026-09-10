@@ -11,6 +11,7 @@ import ActionApprovalModal from './ActionApprovalModal';
 import LandingPage from './LandingPage';
 import ThemeToggle from './ThemeToggle';
 import { PortfolioAnalysisResponse, SuggestedAction, PositionRiskSummary } from '@/lib/ai/types';
+import { getEtherscanAddressUrl } from '@/lib/utils/explorer';
 
 export default function DashboardClient() {
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
@@ -138,9 +139,18 @@ export default function DashboardClient() {
           <div className="flex items-center gap-3 panel-flat px-4 py-2 text-xs bg-[var(--cp-surface-elevated)]">
             <span className="h-2 w-2 bg-[#00f0ff] animate-pulse"></span>
             <span className="t-text-muted font-bold uppercase tracking-widest text-[10px]">Target:</span>
-            <span className="t-text font-bold font-mono">
+            <a
+              href={getEtherscanAddressUrl(selectedAddress)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="t-text font-bold font-mono hover:text-cyan-400 hover:underline flex items-center gap-1.5 transition-colors"
+              title="Verify Target Wallet on Etherscan"
+            >
               {selectedAddress.slice(0, 8)}...{selectedAddress.slice(-6)}
-            </span>
+              <span className="text-[9px] font-mono px-1.5 py-0.5 bg-cyan-500/10 border border-cyan-500/30 text-cyan-500 font-bold uppercase tracking-wider">
+                VERIFY ON ETHERSCAN ↗
+              </span>
+            </a>
             <div className="w-px h-3 t-border-strong mx-1 bg-[var(--cp-border-strong)]"></div>
             <button
               onClick={() => setSelectedAddress(null)}
@@ -220,13 +230,26 @@ export default function DashboardClient() {
                       ZERO ACTIVE UNISWAP V3 POSITIONS
                     </h3>
                   </div>
-                  <span className="text-xs px-2 py-0.5 bg-cyan-500/10 border border-cyan-500/40 text-cyan-500 font-bold">
-                    VERIFIED ON-CHAIN
-                  </span>
+                  <a
+                    href={getEtherscanAddressUrl(selectedAddress)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs px-2 py-0.5 bg-cyan-500/10 border border-cyan-500/40 text-cyan-500 font-bold hover:underline"
+                  >
+                    VERIFY WALLET ON ETHERSCAN ↗
+                  </a>
                 </div>
 
                 <p className="text-xs font-sans t-text-secondary leading-relaxed max-w-3xl">
-                  {aiNotice.message} No active indexed Uniswap V3 liquidity positions with non-zero liquidity were detected for address <span className="font-mono text-cyan-500 font-bold">{selectedAddress}</span>.
+                  {aiNotice.message} No active indexed Uniswap V3 liquidity positions with non-zero liquidity were detected for address{' '}
+                  <a
+                    href={getEtherscanAddressUrl(selectedAddress)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-cyan-500 font-bold hover:underline"
+                  >
+                    {selectedAddress} ↗
+                  </a>.
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">

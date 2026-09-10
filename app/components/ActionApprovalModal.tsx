@@ -1,6 +1,12 @@
 'use client';
 
 import { SuggestedAction, PositionRiskSummary } from '@/lib/ai/types';
+import {
+  getEtherscanNftUrl,
+  getEtherscanPoolUrl,
+  getEtherscanTokenUrl,
+  shortenAddress,
+} from '@/lib/utils/explorer';
 
 export interface ActionApprovalModalProps {
   isOpen: boolean;
@@ -60,16 +66,73 @@ export default function ActionApprovalModal({
           <p className="text-xs t-text-secondary leading-relaxed">{action.description}</p>
         </div>
 
-        {/* Position Context */}
+        {/* Position Context & On-Chain Provenance Links */}
         {position && (
           <div className="flex flex-col gap-2">
-            <h5 className="text-[11px] font-bold uppercase tracking-wider t-text-muted">
-              Target Position Context
-            </h5>
-            <div className="p-3 rounded-xl bg-[var(--cp-surface-elevated)] border t-border flex items-center justify-between text-xs font-mono">
-              <span className="t-text font-bold">{position.tokenPair}</span>
-              <span className="t-text-secondary">Range: {position.rangeStatus}</span>
-              <span className="t-text-secondary">Risk: {position.riskLevel}</span>
+            <div className="flex items-center justify-between">
+              <h5 className="text-[11px] font-bold uppercase tracking-wider t-text-muted">
+                Target Position Context
+              </h5>
+              <a
+                href={getEtherscanNftUrl(position.positionId)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-mono text-cyan-500 hover:underline font-bold"
+              >
+                Verify NFT #{position.positionId} ↗
+              </a>
+            </div>
+            <div className="p-3 rounded-xl bg-[var(--cp-surface-elevated)] border t-border flex flex-col gap-2 text-xs font-mono">
+              <div className="flex items-center justify-between">
+                <span className="t-text font-bold">{position.tokenPair}</span>
+                <span className="t-text-secondary">Range: {position.rangeStatus}</span>
+                <span className="t-text-secondary">Risk: {position.riskLevel}</span>
+              </div>
+
+              {/* Explorer Contract Address Provenance Links */}
+              <div className="flex flex-wrap items-center gap-2 pt-1.5 border-t t-border text-[10px]">
+                <a
+                  href={getEtherscanNftUrl(position.positionId)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/30 text-cyan-500 hover:bg-cyan-500/20 transition-colors"
+                >
+                  NFT #{position.positionId} ↗
+                </a>
+                {position.poolAddress && (
+                  <a
+                    href={getEtherscanPoolUrl(position.poolAddress)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-2 py-0.5 rounded bg-[var(--cp-surface)] border t-border text-cyan-500 hover:border-cyan-500/40 transition-colors"
+                    title={position.poolAddress}
+                  >
+                    Pool: {shortenAddress(position.poolAddress)} ↗
+                  </a>
+                )}
+                {position.token0Address && (
+                  <a
+                    href={getEtherscanTokenUrl(position.token0Address)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-2 py-0.5 rounded bg-[var(--cp-surface)] border t-border text-cyan-500 hover:border-cyan-500/40 transition-colors"
+                    title={position.token0Address}
+                  >
+                    Token0 ↗
+                  </a>
+                )}
+                {position.token1Address && (
+                  <a
+                    href={getEtherscanTokenUrl(position.token1Address)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-2 py-0.5 rounded bg-[var(--cp-surface)] border t-border text-cyan-500 hover:border-cyan-500/40 transition-colors"
+                    title={position.token1Address}
+                  >
+                    Token1 ↗
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         )}
