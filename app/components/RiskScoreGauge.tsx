@@ -181,13 +181,49 @@ export default function RiskScoreGauge({
       )}
 
       {/* Telemetry Footer */}
-      <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-mono text-slate-300">
-        <div className="flex items-center gap-2">
-          <span className="h-1.5 w-1.5 bg-[#00F0FF]"></span>
-          <span>Analyzed Positions:</span>
-          <span className="font-bold text-[#00F0FF]">{positionCount}</span>
+      <div className="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-slate-300">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 bg-[#00F0FF]"></span>
+            <span>Positions:</span>
+            <span className="font-bold text-[#00F0FF]">{positionCount}</span>
+          </div>
+          <div className="flex items-center gap-2 text-[10px]">
+            <span className="text-slate-500">IN RANGE:</span>
+            <span className="text-[#baf24a] font-bold">
+              {analysis.positionSummaries?.filter((p) => p.rangeStatus === 'IN_RANGE').length || 0}
+            </span>
+            <span className="text-slate-500 ml-2">OUT OF RANGE:</span>
+            <span className="text-red-400 font-bold">
+              {analysis.positionSummaries?.filter((p) => p.rangeStatus === 'OUT_OF_RANGE').length || 0}
+            </span>
+          </div>
         </div>
-        <span className="text-[10px] text-slate-400">The Graph Subgraph Payload</span>
+
+        {/* Real Provider Status Badges */}
+        {analysis.providerStatus && (
+          <div className="flex items-center gap-2 text-[9px] font-mono">
+            <span className="text-slate-500 uppercase font-bold">Provider Status:</span>
+            <span className={`px-2 py-0.5 border font-bold uppercase ${
+              analysis.providerStatus.activeProvider === 'GROQ'
+                ? 'bg-[#00F0FF]/10 text-[#00F0FF] border-[#00F0FF]/40'
+                : analysis.providerStatus.groqStatus === 'RATE_LIMITED'
+                ? 'bg-amber-950/80 text-amber-300 border-amber-800'
+                : 'bg-slate-900 text-slate-500 border-slate-800'
+            }`}>
+              Groq: {analysis.providerStatus.groqStatus}
+            </span>
+            <span className={`px-2 py-0.5 border font-bold uppercase ${
+              analysis.providerStatus.activeProvider === 'GEMINI'
+                ? 'bg-[#d075ff]/10 text-[#d075ff] border-[#d075ff]/40'
+                : analysis.providerStatus.geminiStatus === 'RATE_LIMITED'
+                ? 'bg-amber-950/80 text-amber-300 border-amber-800'
+                : 'bg-slate-900 text-slate-500 border-slate-800'
+            }`}>
+              Gemini: {analysis.providerStatus.geminiStatus}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
