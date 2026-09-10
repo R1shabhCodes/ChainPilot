@@ -25,6 +25,36 @@
     --accent-violet: #d075ff;
     --accent-blue: #0055ff;
   }
+
+  [data-theme='light'] {
+    --bg-primary: #f8fafc;
+    --bg-surface: #ffffff;
+    --bg-surface-elevated: #f1f5f9;
+    --bg-surface-highlight: #e2e8f0;
+
+    --border-subtle: #cbd5e1;
+    --border-strong: #cbd5e1;
+    --border-focus: #0284c7;
+
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+
+    --accent-cyan: #0284c7;
+    --accent-lime: #4d7c0f;
+    --accent-orange: #ea580c;
+    --accent-violet: #9333ea;
+    --accent-blue: #2563eb;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Typography Font Mappings */

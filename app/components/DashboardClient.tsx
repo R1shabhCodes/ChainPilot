@@ -9,6 +9,7 @@ import PositionFilterTabs, { PositionFilter } from './PositionFilterTabs';
 import AIRiskCard, { AnalyzeStatusNotice } from './AIRiskCard';
 import ActionApprovalModal from './ActionApprovalModal';
 import LandingPage from './LandingPage';
+import ThemeToggle from './ThemeToggle';
 import { PortfolioAnalysisResponse, SuggestedAction, PositionRiskSummary } from '@/lib/ai/types';
 
 export default function DashboardClient() {
@@ -150,7 +151,8 @@ export default function DashboardClient() {
           </div>
         )}
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
           <span className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 text-[10px] font-mono font-bold text-slate-300 bg-[#0a0d14] border border-[#1e283d]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#d075ff]"></span>
             ETHONLINE 2026
