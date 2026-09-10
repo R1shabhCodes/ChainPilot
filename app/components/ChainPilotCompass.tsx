@@ -49,10 +49,7 @@ export default function ChainPilotCompass() {
           strokeWidth="12"
           strokeLinecap="square"
         />
-        {/* Sector Label */}
-        <text x="300" y="100" fill="#baf24a" fontSize="10" fontFamily="monospace" fontWeight="bold" letterSpacing="1" transform="rotate(45, 300, 100)">
-          ACTIVE BOUNDS
-        </text>
+
 
         {/* Out-of-Bounds Exposure Sector (Orange) */}
         <path
@@ -62,9 +59,7 @@ export default function ChainPilotCompass() {
           strokeLinecap="square"
           opacity="0.8"
         />
-        <text x="90" y="100" fill="#ff5c16" fontSize="10" fontFamily="monospace" fontWeight="bold" letterSpacing="1" transform="rotate(-45, 90, 100)">
-          EXPOSURE ZONE
-        </text>
+
 
         {/* Deep Out of bounds */}
         <path

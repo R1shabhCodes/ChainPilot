@@ -8,7 +8,7 @@ import RiskScoreGauge from './RiskScoreGauge';
 import PositionFilterTabs, { PositionFilter } from './PositionFilterTabs';
 import AIRiskCard, { AnalyzeStatusNotice } from './AIRiskCard';
 import ActionApprovalModal from './ActionApprovalModal';
-import ChainPilotCompass from './ChainPilotCompass';
+import LandingPage from './LandingPage';
 import { PortfolioAnalysisResponse, SuggestedAction, PositionRiskSummary } from '@/lib/ai/types';
 
 export default function DashboardClient() {
@@ -160,79 +160,11 @@ export default function DashboardClient() {
       </header>
 
       {/* Main Viewport Content */}
-      <main className="flex-1 w-full mx-auto px-4 sm:px-8 py-8 flex flex-col transition-layout">
+      <main className={`flex-1 w-full mx-auto flex flex-col transition-layout ${selectedAddress ? 'px-4 sm:px-8 py-8' : ''}`}>
         
-        {/* STATE 1: UNANALYZED LANDING EXPERIENCE */}
+        {/* STATE 1: SCROLLABLE LANDING EXPERIENCE */}
         {!selectedAddress && (
-          <div className="w-full max-w-screen-2xl mx-auto min-h-[80vh] flex flex-col justify-center animate-fadeIn">
-            <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative">
-              
-              {/* Background Architectural Lines */}
-              <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
-                <div className="absolute top-0 left-1/4 w-px h-full bg-cyan-500/30"></div>
-                <div className="absolute top-1/3 left-0 w-full h-px bg-cyan-500/30"></div>
-              </div>
-
-              {/* Left Column: Editorial Headline & Search Input */}
-              <div className="lg:col-span-6 flex flex-col gap-8 z-10">
-                <div className="inline-flex items-center gap-3 px-3 py-1.5 panel-flat text-[10px] font-mono text-[#00F0FF] w-fit font-bold tracking-widest uppercase">
-                  <span className="h-1.5 w-1.5 bg-[#00F0FF]"></span>
-                  Verified On-Chain DeFi Intelligence
-                </div>
-
-                <div className="flex flex-col">
-                  <h2 className="text-6xl sm:text-[80px] md:text-[100px] font-display font-black tracking-tighter leading-[0.85] uppercase text-stroke-cyan">
-                    SEE THE
-                  </h2>
-                  <h2 className="text-6xl sm:text-[80px] md:text-[100px] font-display font-black tracking-tighter leading-[0.85] uppercase text-[#baf24a] -ml-2">
-                    RANGE.
-                  </h2>
-                  <h2 className="text-6xl sm:text-[80px] md:text-[100px] font-display font-black tracking-tighter leading-[0.85] uppercase text-white mt-4">
-                    KNOW THE
-                  </h2>
-                  <h2 className="text-6xl sm:text-[80px] md:text-[100px] font-display font-black tracking-tighter leading-[0.85] uppercase text-[#ff5c16] -ml-2">
-                    RISK.
-                  </h2>
-                </div>
-
-                <p className="text-base text-slate-400 leading-relaxed max-w-lg font-sans border-l-2 border-[#1e283d] pl-4">
-                  ChainPilot queries indexed Uniswap v3 positions directly from The Graph and applies transparent 
-                  Gemini AI evaluations to detect range status, out-of-bounds exposure, and evidence-backed mitigation steps.
-                </p>
-
-                {/* Search Command Input Bar */}
-                <div className="w-full max-w-xl pt-4">
-                  <div className="panel-architecture bg-[#0a0d14] p-1.5">
-                    <AddressInput
-                      externalAddress={selectedAddress}
-                      onAnalyze={(address) => setSelectedAddress(address)}
-                    />
-                  </div>
-                  <div className="flex gap-4 mt-4 text-[10px] font-mono text-slate-500 font-bold uppercase tracking-widest">
-                    <span>[ LIVE ETHEREUM DATA ]</span>
-                    <span>[ UNISWAP V3 ]</span>
-                    <span>[ AI RISK ANALYSIS ]</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column: Massive Signature Visual Object */}
-              <div className="lg:col-span-6 relative flex items-center justify-center min-h-[500px]">
-                <div className="absolute w-[150%] h-[150%] -right-[20%] top-1/2 -translate-y-1/2 pointer-events-none opacity-90 z-0 mix-blend-screen">
-                  <ChainPilotCompass />
-                </div>
-                {/* Structural Anchors around compass */}
-                <div className="absolute top-10 right-10 text-[9px] font-mono text-cyan-500/50 text-right uppercase tracking-widest hidden md:block">
-                  <div className="border-b border-cyan-500/30 pb-1 mb-1">SEC 01 - ACTIVE BOUNDS</div>
-                  <div>TICK RANGE EXPOSURE</div>
-                </div>
-                <div className="absolute bottom-10 left-10 text-[9px] font-mono text-lime-500/50 uppercase tracking-widest hidden md:block">
-                  <div className="border-b border-lime-500/30 pb-1 mb-1">SEC 02 - TELEMETRY</div>
-                  <div>GRAPH INDEX SYNC</div>
-                </div>
-              </div>
-            </section>
-          </div>
+          <LandingPage onAnalyze={(address) => setSelectedAddress(address)} />
         )}
 
         {/* STATE 2: FULL-WIDTH ANALYZED DEFI WORKSPACE */}
@@ -355,7 +287,7 @@ export default function DashboardClient() {
                   statusNotice={aiNotice}
                   error={aiError}
                   focusedPositionId={focusedPositionId}
-                  onRetry={() => fetchAiAnalysis(selectedAddress)}
+                  onRetry={() => selectedAddress && fetchAiAnalysis(selectedAddress)}
                   onSelectAction={(action, position) => setSelectedActionState({ action, position })}
                 />
               </div>
@@ -374,18 +306,18 @@ export default function DashboardClient() {
       />
 
       {/* Terminal Status Footer Ticker */}
-      <footer className="border-t border-[#1e283d] bg-[#020306] py-3 px-6 font-mono text-[10px] text-slate-500 flex flex-wrap items-center justify-between gap-4 uppercase font-bold tracking-widest z-50 relative">
+      <footer className="border-t border-[#1e283d] bg-[#020306] py-4 px-6 font-mono text-[10px] text-slate-500 flex flex-wrap items-center justify-between gap-4 uppercase font-bold tracking-widest z-50 relative">
         <div className="flex items-center gap-6">
-          <span className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 bg-[#baf24a]"></span>
-            SUBGRAPH: ONLINE
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 bg-[#00f0ff]"></span>
-            AI ENGINE: ACTIVE
-          </span>
+          <span className="text-slate-300">CHAINPILOT</span>
+          <span className="text-slate-600">|</span>
+          <span>AI-POWERED DEFI RISK INTELLIGENCE</span>
         </div>
-        <p>ChainPilot — Built for ETHOnline 2026.</p>
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-1.5"><span className="h-1 w-1 bg-[#00F0FF]"></span>THE GRAPH</span>
+          <span className="flex items-center gap-1.5"><span className="h-1 w-1 bg-[#d075ff]"></span>GEMINI</span>
+          <span className="flex items-center gap-1.5"><span className="h-1 w-1 bg-[#baf24a]"></span>PRIVY</span>
+          <span className="flex items-center gap-1.5"><span className="h-1 w-1 bg-[#ff5c16]"></span>ETHONLINE 2026</span>
+        </div>
       </footer>
     </div>
   );

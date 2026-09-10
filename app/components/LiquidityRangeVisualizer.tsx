@@ -120,7 +120,7 @@ export default function LiquidityRangeVisualizer({
             {isBelow && '◀ '}
             {isInRange && '● '}
             {isAbove && '▶ '}
-            TICK: {curr.toLocaleString()}
+            TICK: {curr.toLocaleString('en-US')}
           </span>
           <div className={`w-0.5 h-4 ${isInRange ? 'bg-[#baf24a]' : 'bg-red-500'}`}></div>
         </div>
@@ -159,7 +159,7 @@ export default function LiquidityRangeVisualizer({
             style={{ left: `${pctLower}%` }}
           >
             <div className="w-px h-2 bg-[#1e283d] mb-1"></div>
-            <span className="text-slate-300">{lower.toLocaleString()}</span>
+            <span className="text-slate-300">{lower.toLocaleString('en-US')}</span>
             <span className="text-[8px] mt-0.5">LOWER</span>
           </div>
 
@@ -168,7 +168,7 @@ export default function LiquidityRangeVisualizer({
             style={{ left: `${pctUpper}%` }}
           >
             <div className="w-px h-2 bg-[#1e283d] mb-1"></div>
-            <span className="text-slate-300">{upper.toLocaleString()}</span>
+            <span className="text-slate-300">{upper.toLocaleString('en-US')}</span>
             <span className="text-[8px] mt-0.5">UPPER</span>
           </div>
         </div>
@@ -178,17 +178,17 @@ export default function LiquidityRangeVisualizer({
       <div className="grid grid-cols-3 gap-0 border border-[#141a29] text-[10px] mt-2 z-10 relative">
         <div className="p-3 bg-[#06080d] border-r border-[#141a29] flex flex-col items-center justify-center text-center">
           <span className="text-slate-500 uppercase font-black tracking-widest mb-1">Lower Bound</span>
-          <span className="font-bold text-slate-200 text-sm">{lower.toLocaleString()}</span>
+          <span className="font-bold text-slate-200 text-sm">{lower.toLocaleString('en-US')}</span>
         </div>
         <div className={`p-3 border-r flex flex-col items-center justify-center text-center ${isInRange ? 'bg-[#0a0d14] border-[#141a29]' : 'bg-red-500/10 border-red-500/30'}`}>
           <span className="text-slate-500 uppercase font-black tracking-widest mb-1">Pool Tick</span>
           <span className={`font-bold text-sm ${isInRange ? 'text-[#baf24a]' : 'text-red-400'}`}>
-            {curr.toLocaleString()}
+            {curr.toLocaleString('en-US')}
           </span>
         </div>
         <div className="p-3 bg-[#06080d] flex flex-col items-center justify-center text-center">
           <span className="text-slate-500 uppercase font-black tracking-widest mb-1">Upper Bound</span>
-          <span className="font-bold text-slate-200 text-sm">{upper.toLocaleString()}</span>
+          <span className="font-bold text-slate-200 text-sm">{upper.toLocaleString('en-US')}</span>
         </div>
       </div>
     </div>
