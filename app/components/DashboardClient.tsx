@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import PrivyAuthButton from './PrivyAuthButton';
 import AddressInput from './AddressInput';
 import NativeBalanceCard from './NativeBalanceCard';
@@ -146,6 +147,13 @@ export default function DashboardClient() {
         )}
 
         <div className="flex items-center gap-3">
+          <Link
+            href="/learn"
+            className="px-3 py-1.5 text-[11px] font-mono font-bold text-[#00F0FF] hover:text-[#baf24a] bg-[var(--cp-surface-elevated)] hover:bg-[var(--cp-surface-highlight)] border border-[#00F0FF]/30 hover:border-[#baf24a]/50 transition-colors uppercase tracking-wider flex items-center gap-1.5"
+            title="Educational Guide & Architecture Docs"
+          >
+            <span>[ LEARN / HOW IT WORKS ]</span>
+          </Link>
           <ThemeToggle />
           <span className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 text-[10px] font-mono font-bold t-text-secondary bg-[var(--cp-surface-elevated)] border t-border">
             <span className="h-1.5 w-1.5 rounded-full bg-[#d075ff]"></span>

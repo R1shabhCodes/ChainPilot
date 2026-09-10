@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
+import Link from 'next/link';
 import AddressInput from './AddressInput';
 import ChainPilotCompass from './ChainPilotCompass';
 import LiquidityRangeVisualizer from './LiquidityRangeVisualizer';
@@ -67,10 +68,18 @@ export default function LandingPage({ onAnalyze }: LandingPageProps) {
                   onAnalyze={onAnalyze}
                 />
               </div>
-              <div className="flex gap-4 mt-4 text-[10px] font-mono t-text-muted font-bold uppercase tracking-widest">
-                <span>[ LIVE ETHEREUM DATA ]</span>
-                <span>[ UNISWAP V3 ]</span>
-                <span>[ AI RISK ANALYSIS ]</span>
+              <div className="flex flex-wrap items-center justify-between gap-3 mt-4 text-[10px] font-mono t-text-muted font-bold uppercase tracking-widest">
+                <div className="flex items-center gap-3">
+                  <span>[ LIVE ETHEREUM DATA ]</span>
+                  <span>[ UNISWAP V3 ]</span>
+                  <span>[ AI RISK ANALYSIS ]</span>
+                </div>
+                <Link
+                  href="/learn"
+                  className="text-[#00F0FF] hover:text-[#baf24a] hover:underline transition-colors flex items-center gap-1 font-bold"
+                >
+                  HOW IT WORKS & LEARN →
+                </Link>
               </div>
             </div>
           </div>
