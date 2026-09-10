@@ -3,11 +3,15 @@ import { fetchUniswapPositions } from '@/lib/graph/client';
 import { evaluatePortfolioWithProviders } from '@/lib/ai/provider';
 import { NormalizedPositionData } from '@/lib/graph/types';
 import { ComputedPositionMetrics } from '@/lib/ai/types';
+import { calculateRangeGeometry } from '@/lib/decision/rangeGeometry';
+import { buildDecisionFromGeometry, generatePortfolioDecisionSummary } from '@/lib/decision/decisionEngine';
 
 function computePositionMetrics(pos: NormalizedPositionData): ComputedPositionMetrics {
   const lower = pos.tickLower;
   const upper = pos.tickUpper;
   const curr = pos.currentTick;
+
+  const geometry = calculateRangeGeometry(lower, upper, curr);
 
   let isInRange = false;
   let isBelow = false;
@@ -39,6 +43,8 @@ function computePositionMetrics(pos: NormalizedPositionData): ComputedPositionMe
     }
   }
 
+  const decisionConsideration = geometry ? buildDecisionFromGeometry(geometry) : null;
+
   return {
     positionId: pos.positionId,
     lowerBound: lower,
@@ -51,6 +57,8 @@ function computePositionMetrics(pos: NormalizedPositionData): ComputedPositionMe
     tickDistanceUpper,
     ticksFromActiveRange,
     rangeDiagnosisText,
+    rangeRatio: geometry ? geometry.rangeRatio : null,
+    decisionConsideration,
   };
 }
 
@@ -119,12 +127,18 @@ export async function POST(request: Request) {
     // Step 4: Evaluate with multi-provider AI resilience engine (Groq -> Gemini -> Fallback)
     const aiAnalysis = await evaluatePortfolioWithProviders(address, graphResult.rawJson || '[]', positions);
 
-    // Merge computed metrics & contract addresses into position summaries
+    // Generate portfolio-level decision summary
+    const allGeometries = positions.map((p) => calculateRangeGeometry(p.tickLower, p.tickUpper, p.currentTick));
+    const portfolioDecisionSummary = generatePortfolioDecisionSummary(allGeometries);
+
+    // Merge computed metrics, decision considerations & contract addresses into position summaries
     const enrichedSummaries = aiAnalysis.positionSummaries.map((summary) => {
       const origPos = posMap[summary.positionId];
+      const metrics = computedMetricsMap[summary.positionId];
       return {
         ...summary,
-        computedMetrics: computedMetricsMap[summary.positionId],
+        computedMetrics: metrics,
+        decisionConsideration: metrics?.decisionConsideration || null,
         poolAddress: summary.poolAddress || origPos?.poolAddress,
         token0Address: summary.token0Address || origPos?.token0Address,
         token1Address: summary.token1Address || origPos?.token1Address,
@@ -135,6 +149,7 @@ export async function POST(request: Request) {
       {
         ...aiAnalysis,
         positionSummaries: enrichedSummaries,
+        portfolioDecisionSummary,
         verifiedPositions: positions,
         rawJson: graphResult.rawJson,
       },

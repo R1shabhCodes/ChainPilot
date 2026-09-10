@@ -14,6 +14,7 @@ import {
   getEtherscanTokenUrl,
   shortenAddress,
 } from '@/lib/utils/explorer';
+import { generateDecisionConsideration } from '@/lib/decision/decisionEngine';
 
 export interface AnalyzeStatusNotice {
   status: string;
@@ -216,6 +217,81 @@ export default function AIRiskCard({
           />
         </div>
       </div>
+
+      {/* PORTFOLIO-LEVEL DECISION SUMMARY CALLOUT */}
+      {analysis.portfolioDecisionSummary && (
+        <div className="w-full panel-flat bg-[var(--cp-surface)] p-4 border-l-4 border-l-[#00F0FF] font-mono flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-3">
+            <span className="h-2 w-2 bg-[#00F0FF] animate-pulse"></span>
+            <span className="font-bold t-text uppercase tracking-wider">PORTFOLIO SUMMARY:</span>
+            <span className="t-text-secondary font-sans">{analysis.portfolioDecisionSummary.summaryText}</span>
+          </div>
+          <div className="t-text-muted font-sans text-xs italic">
+            {analysis.portfolioDecisionSummary.generalConsideration}
+          </div>
+        </div>
+      )}
+
+      {/* DETERMINISTIC DECISION-SUPPORT LAYER: WHAT SHOULD I CONSIDER? */}
+      {(() => {
+        const decision = pos.decisionConsideration || pos.computedMetrics?.decisionConsideration || generateDecisionConsideration(tickLower, tickUpper, currentTick);
+        if (!decision) return null;
+
+        const isOut = decision.state === 'OUT_BELOW' || decision.state === 'OUT_ABOVE';
+        const isNear = decision.state === 'NEAR_LOWER' || decision.state === 'NEAR_UPPER';
+
+        const borderColor = isOut ? 'border-t-[#ff5c16]' : isNear ? 'border-t-amber-400' : 'border-t-[#baf24a]';
+        const badgeStyle = isOut
+          ? 'bg-[#ff5c16]/10 text-[#ff5c16] border-[#ff5c16]/40'
+          : isNear
+          ? 'bg-amber-400/10 text-amber-400 border-amber-400/40'
+          : 'bg-[#baf24a]/10 text-[#baf24a] border-[#baf24a]/40';
+
+        return (
+          <div className={`w-full panel-architecture bg-[var(--cp-surface)] p-6 border-t-2 ${borderColor} font-mono flex flex-col gap-4 shadow-lg`}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b t-border pb-3">
+              <div className="flex items-center gap-3">
+                <span className="h-2 w-2 bg-[#00F0FF]"></span>
+                <h3 className="text-sm font-black uppercase tracking-widest t-text-heading">
+                  WHAT SHOULD I CONSIDER?
+                </h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] t-text-muted uppercase tracking-widest">[STATUS]</span>
+                <span className={`px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider border ${badgeStyle}`}>
+                  {decision.statusHeading}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <div className="p-3 bg-[var(--cp-surface-elevated)] border t-border flex flex-col gap-1">
+                <span className="text-[10px] font-bold t-text-muted uppercase tracking-widest">[WHY]</span>
+                <p className="text-xs font-sans t-text-secondary leading-relaxed">
+                  {decision.whyText}
+                </p>
+              </div>
+
+              <div className="p-4 bg-[var(--cp-surface-elevated)] border t-border flex flex-col gap-2">
+                <span className="text-[10px] font-bold text-[#00F0FF] uppercase tracking-widest">[CONSIDER]</span>
+                <ul className="space-y-1.5 font-sans text-xs t-text-secondary">
+                  {decision.considerations.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <span className="text-[#00F0FF] font-mono font-bold">•</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-2 text-[10px] t-text-muted font-sans border-t t-border">
+                <span>[USER CONTROL] {decision.userControlNotice}</span>
+                <span className="font-mono text-[#00F0FF] hidden md:inline">DETERMINISTIC ENGINE // VERIFIED</span>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* THREE EXPLICIT DATA LAYERS: VERIFIED ON-CHAIN DATA | COMPUTED DIAGNOSIS | AI INTERPRETATION */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

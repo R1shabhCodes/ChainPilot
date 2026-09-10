@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { calculateRangeGeometry } from '@/lib/decision/rangeGeometry';
 
 export interface LiquidityRangeVisualizerProps {
   tickLower: number | null;
@@ -42,10 +43,11 @@ export default function LiquidityRangeVisualizer({
   const curr = simulatedTick ?? realCurr;
   const isSimulating = simulatedTick !== null && simulatedTick !== realCurr;
 
-  // Recompute deterministic Layer 2 range diagnosis dynamically
-  const isInRange = curr >= lower && curr <= upper;
-  const isBelow = curr < lower;
-  const isAbove = curr > upper;
+  // Use pure deterministic range geometry calculator
+  const geometry = calculateRangeGeometry(lower, upper, curr);
+  const isInRange = geometry ? geometry.isInRange : (curr >= lower && curr <= upper);
+  const isBelow = geometry ? geometry.isBelow : (curr < lower);
+  const isAbove = geometry ? geometry.isAbove : (curr > upper);
 
   // Range span math for slider & spectrum calculation
   const tickSpan = Math.max(upper - lower, 100);

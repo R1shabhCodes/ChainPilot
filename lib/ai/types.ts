@@ -15,6 +15,8 @@ export interface ProviderStatusReport {
   details?: string;
 }
 
+import { DecisionConsideration, PortfolioDecisionSummary } from '@/lib/decision/decisionEngine';
+
 export interface ComputedPositionMetrics {
   positionId: string;
   lowerBound: number;
@@ -27,6 +29,8 @@ export interface ComputedPositionMetrics {
   tickDistanceUpper: number | null;
   ticksFromActiveRange: number | null;
   rangeDiagnosisText: string;
+  rangeRatio?: number | null;
+  decisionConsideration?: DecisionConsideration | null;
 }
 
 export interface EvidenceCitation {
@@ -66,6 +70,7 @@ export interface PositionRiskSummary {
   tickUpper?: number;
   currentTick?: number | null;
   computedMetrics?: ComputedPositionMetrics;
+  decisionConsideration?: DecisionConsideration | null;
   poolAddress?: string;
   token0Address?: string;
   token1Address?: string;
@@ -78,6 +83,7 @@ export interface PortfolioAnalysisResponse {
   aiStatus: AIStatus;
   providerStatus: ProviderStatusReport;
   positionSummaries: PositionRiskSummary[];
+  portfolioDecisionSummary?: PortfolioDecisionSummary | null;
   analyzedAt: string;
   summaryText?: string;
 }
