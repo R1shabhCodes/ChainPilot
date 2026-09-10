@@ -1,6 +1,58 @@
 import { NextResponse } from 'next/server';
 import { fetchUniswapPositions } from '@/lib/graph/client';
-import { evaluatePositionsWithGemini } from '@/lib/ai/geminiClient';
+import { evaluatePortfolioWithProviders } from '@/lib/ai/provider';
+import { NormalizedPositionData } from '@/lib/graph/types';
+import { ComputedPositionMetrics } from '@/lib/ai/types';
+
+function computePositionMetrics(pos: NormalizedPositionData): ComputedPositionMetrics {
+  const lower = pos.tickLower;
+  const upper = pos.tickUpper;
+  const curr = pos.currentTick;
+
+  let isInRange = false;
+  let isBelow = false;
+  let isAbove = false;
+  let tickDistanceLower: number | null = null;
+  let tickDistanceUpper: number | null = null;
+  let ticksFromActiveRange: number | null = null;
+  let rangeDiagnosisText = 'UNKNOWN RANGE STATUS';
+
+  if (curr !== null) {
+    isInRange = curr >= lower && curr <= upper;
+    isBelow = curr < lower;
+    isAbove = curr > upper;
+
+    tickDistanceLower = curr - lower;
+    tickDistanceUpper = upper - curr;
+
+    if (isInRange) {
+      const distToLower = curr - lower;
+      const distToUpper = upper - curr;
+      ticksFromActiveRange = 0;
+      rangeDiagnosisText = `POSITION IN RANGE (${distToLower.toLocaleString('en-US')} ticks above lower bound, ${distToUpper.toLocaleString('en-US')} ticks below upper bound)`;
+    } else if (isBelow) {
+      ticksFromActiveRange = lower - curr;
+      rangeDiagnosisText = `${ticksFromActiveRange.toLocaleString('en-US')} TICKS BELOW LOWER ACTIVE BOUND`;
+    } else {
+      ticksFromActiveRange = curr - upper;
+      rangeDiagnosisText = `${ticksFromActiveRange.toLocaleString('en-US')} TICKS ABOVE UPPER ACTIVE BOUND`;
+    }
+  }
+
+  return {
+    positionId: pos.positionId,
+    lowerBound: lower,
+    upperBound: upper,
+    currentTick: curr,
+    isInRange,
+    isBelow,
+    isAbove,
+    tickDistanceLower,
+    tickDistanceUpper,
+    ticksFromActiveRange,
+    rangeDiagnosisText,
+  };
+}
 
 export async function POST(request: Request) {
   try {
@@ -48,16 +100,39 @@ export async function POST(request: Request) {
           message: graphResult.message,
           address,
           canAnalyze: false,
+          positions: [],
           timestamp: new Date().toISOString(),
         },
         { status: 200 }
       );
     }
 
-    // Step 3: Verified positions exist -> Call Gemini AI reasoning engine with verified data only
-    const aiAnalysis = await evaluatePositionsWithGemini(address, graphResult.rawJson);
+    const positions = graphResult.positions || [];
 
-    return NextResponse.json(aiAnalysis, { status: 200 });
+    // Step 3: Compute deterministic metrics outside the LLM for every position
+    const computedMetricsMap: Record<string, ComputedPositionMetrics> = {};
+    positions.forEach((pos) => {
+      computedMetricsMap[pos.positionId] = computePositionMetrics(pos);
+    });
+
+    // Step 4: Evaluate with multi-provider AI resilience engine (Groq -> Gemini -> Fallback)
+    const aiAnalysis = await evaluatePortfolioWithProviders(address, graphResult.rawJson || '[]', positions);
+
+    // Merge computed metrics into position summaries
+    const enrichedSummaries = aiAnalysis.positionSummaries.map((summary) => ({
+      ...summary,
+      computedMetrics: computedMetricsMap[summary.positionId],
+    }));
+
+    return NextResponse.json(
+      {
+        ...aiAnalysis,
+        positionSummaries: enrichedSummaries,
+        verifiedPositions: positions,
+        rawJson: graphResult.rawJson,
+      },
+      { status: 200 }
+    );
   } catch (error: any) {
     console.error('Error in /api/analyze route handler:', error);
     return NextResponse.json(
