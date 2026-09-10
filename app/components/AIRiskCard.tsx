@@ -174,26 +174,26 @@ export default function AIRiskCard({
   return (
     <div className="w-full flex flex-col gap-6 animate-fadeIn">
       {/* DOMINANT POSITION HEADER */}
-      <div className="w-full panel-architecture bg-[#06080d] p-6 flex flex-col gap-4 border-t-2 border-t-[#00F0FF] shadow-2xl">
-        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#141a29] pb-4">
+      <div className="w-full panel-architecture bg-[var(--cp-surface)] p-6 flex flex-col gap-4 border-t-2 border-t-cyan-500 shadow-2xl">
+        <div className="flex flex-wrap items-start justify-between gap-4 border-b t-border pb-4">
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-3">
-              <span className="font-display font-black text-3xl text-white tracking-tighter uppercase">
+              <span className="font-display font-black text-3xl t-text-heading tracking-tighter uppercase">
                 {pos.tokenPair}
               </span>
             </div>
             <div className="flex items-center gap-3 mt-1 font-mono">
-              <span className="text-[10px] text-slate-400 uppercase tracking-widest bg-[#020306] border border-[#141a29] px-2 py-1">
+              <span className="text-[10px] t-text-muted uppercase tracking-widest bg-[var(--cp-bg)] border t-border px-2 py-1">
                 {pos.protocol}
               </span>
-              <span className="text-[10px] text-slate-500 font-bold">
+              <span className="text-[10px] t-text-muted font-bold">
                 POSITION NFT #{pos.positionId}
               </span>
             </div>
           </div>
           
           <div className="flex flex-col items-end gap-2 font-mono">
-            <span className="text-[9px] text-slate-500 uppercase tracking-widest font-bold">AI Risk Assessment</span>
+            <span className="text-[9px] t-text-muted uppercase tracking-widest font-bold">AI Risk Assessment</span>
             <span className={`px-3 py-1 text-xs font-black uppercase tracking-widest ${getRiskBadgeStyle(pos.riskLevel)}`}>
               {pos.riskLevel} RISK
             </span>
@@ -215,53 +215,53 @@ export default function AIRiskCard({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* LAYER 1: VERIFIED ON-CHAIN DATA */}
-        <div className="panel-architecture bg-[#020306] p-5 flex flex-col gap-4 border-t-2 border-t-cyan-500/80">
-          <div className="flex items-center justify-between border-b border-[#141a29] pb-3">
-            <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 bg-cyan-400"></span>
+        <div className="panel-architecture bg-[var(--cp-surface)] p-5 flex flex-col gap-4 border-t-2 border-t-cyan-500/80">
+          <div className="flex items-center justify-between border-b t-border pb-3">
+            <span className="text-[10px] font-black uppercase tracking-widest text-cyan-500 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 bg-cyan-500"></span>
               LAYER 1: VERIFIED ON-CHAIN DATA
             </span>
-            <span className="text-[8px] text-cyan-500/50 uppercase tracking-widest font-mono">
+            <span className="text-[8px] text-cyan-500/60 uppercase tracking-widest font-mono">
               THE GRAPH SUBGRAPH
             </span>
           </div>
 
           <div className="flex flex-col gap-2 font-mono text-xs">
-            <div className="flex justify-between border-b border-[#141a29] pb-2">
-              <span className="text-slate-500 uppercase text-[10px]">Position NFT ID</span>
-              <span className="font-bold text-slate-200">#{pos.positionId}</span>
+            <div className="flex justify-between border-b t-border pb-2">
+              <span className="t-text-muted uppercase text-[10px]">Position NFT ID</span>
+              <span className="font-bold t-text">#{pos.positionId}</span>
             </div>
-            <div className="flex justify-between border-b border-[#141a29] pb-2">
-              <span className="text-slate-500 uppercase text-[10px]">Token Pair</span>
-              <span className="font-bold text-slate-200">{pos.tokenPair}</span>
+            <div className="flex justify-between border-b t-border pb-2">
+              <span className="t-text-muted uppercase text-[10px]">Token Pair</span>
+              <span className="font-bold t-text">{pos.tokenPair}</span>
             </div>
-            <div className="flex justify-between border-b border-[#141a29] pb-2">
-              <span className="text-slate-500 uppercase text-[10px]">Protocol</span>
-              <span className="font-bold text-slate-200">{pos.protocol}</span>
+            <div className="flex justify-between border-b t-border pb-2">
+              <span className="t-text-muted uppercase text-[10px]">Protocol</span>
+              <span className="font-bold t-text">{pos.protocol}</span>
             </div>
-            <div className="flex justify-between border-b border-[#141a29] pb-2">
-              <span className="text-slate-500 uppercase text-[10px]">Current Pool Tick</span>
-              <span className="font-bold text-cyan-300">{currentTick !== null ? currentTick.toLocaleString('en-US') : 'N/A'}</span>
+            <div className="flex justify-between border-b t-border pb-2">
+              <span className="t-text-muted uppercase text-[10px]">Current Pool Tick</span>
+              <span className="font-bold text-cyan-500">{currentTick !== null ? currentTick.toLocaleString('en-US') : 'N/A'}</span>
             </div>
-            <div className="flex justify-between border-b border-[#141a29] pb-2">
-              <span className="text-slate-500 uppercase text-[10px]">Lower Tick Bound</span>
-              <span className="font-bold text-slate-300">{tickLower !== null ? tickLower.toLocaleString('en-US') : 'N/A'}</span>
+            <div className="flex justify-between border-b t-border pb-2">
+              <span className="t-text-muted uppercase text-[10px]">Lower Tick Bound</span>
+              <span className="font-bold t-text-secondary">{tickLower !== null ? tickLower.toLocaleString('en-US') : 'N/A'}</span>
             </div>
-            <div className="flex justify-between border-b border-[#141a29] pb-2">
-              <span className="text-slate-500 uppercase text-[10px]">Upper Tick Bound</span>
-              <span className="font-bold text-slate-300">{tickUpper !== null ? tickUpper.toLocaleString('en-US') : 'N/A'}</span>
+            <div className="flex justify-between border-b t-border pb-2">
+              <span className="t-text-muted uppercase text-[10px]">Upper Tick Bound</span>
+              <span className="font-bold t-text-secondary">{tickUpper !== null ? tickUpper.toLocaleString('en-US') : 'N/A'}</span>
             </div>
           </div>
         </div>
 
         {/* LAYER 2: COMPUTED RANGE DIAGNOSIS (DETERMINISTIC APPLICATION LOGIC) */}
-        <div className="panel-architecture bg-[#06080d] p-5 flex flex-col gap-4 border-t-2 border-t-[#baf24a]/80">
-          <div className="flex items-center justify-between border-b border-[#141a29] pb-3">
+        <div className="panel-architecture bg-[var(--cp-surface)] p-5 flex flex-col gap-4 border-t-2 border-t-[#baf24a]/80">
+          <div className="flex items-center justify-between border-b t-border pb-3">
             <span className="text-[10px] font-black uppercase tracking-widest text-[#baf24a] flex items-center gap-2">
               <span className="h-1.5 w-1.5 bg-[#baf24a]"></span>
               LAYER 2: COMPUTED RANGE DIAGNOSIS
             </span>
-            <span className="text-[8px] text-[#baf24a]/50 uppercase tracking-widest font-mono">
+            <span className="text-[8px] text-[#baf24a]/60 uppercase tracking-widest font-mono">
               DETERMINISTIC ENGINE
             </span>
           </div>
@@ -269,8 +269,8 @@ export default function AIRiskCard({
           <div className="flex flex-col gap-3 font-mono">
             {pos.computedMetrics ? (
               <>
-                <div className="p-3 bg-[#020306] border border-[#141a29]">
-                  <span className="text-[9px] uppercase font-bold text-slate-500 block mb-1">
+                <div className="p-3 bg-[var(--cp-surface-elevated)] border t-border">
+                  <span className="text-[9px] uppercase font-bold t-text-muted block mb-1">
                     STATUS DIAGNOSIS
                   </span>
                   <span className={`text-xs font-black uppercase ${
@@ -281,17 +281,17 @@ export default function AIRiskCard({
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-[10px]">
-                  <div className="p-2.5 bg-[#020306] border border-[#141a29]">
-                    <span className="text-slate-500 block uppercase font-bold text-[8px]">Dist From Lower</span>
-                    <span className="text-slate-200 font-bold text-xs mt-0.5 block">
+                  <div className="p-2.5 bg-[var(--cp-surface-elevated)] border t-border">
+                    <span className="t-text-muted block uppercase font-bold text-[8px]">Dist From Lower</span>
+                    <span className="t-text font-bold text-xs mt-0.5 block">
                       {pos.computedMetrics.tickDistanceLower !== null 
                         ? `${pos.computedMetrics.tickDistanceLower > 0 ? '+' : ''}${pos.computedMetrics.tickDistanceLower.toLocaleString('en-US')} ticks`
                         : 'N/A'}
                     </span>
                   </div>
-                  <div className="p-2.5 bg-[#020306] border border-[#141a29]">
-                    <span className="text-slate-500 block uppercase font-bold text-[8px]">Dist From Upper</span>
-                    <span className="text-slate-200 font-bold text-xs mt-0.5 block">
+                  <div className="p-2.5 bg-[var(--cp-surface-elevated)] border t-border">
+                    <span className="t-text-muted block uppercase font-bold text-[8px]">Dist From Upper</span>
+                    <span className="t-text font-bold text-xs mt-0.5 block">
                       {pos.computedMetrics.tickDistanceUpper !== null 
                         ? `${pos.computedMetrics.tickDistanceUpper > 0 ? '+' : ''}${pos.computedMetrics.tickDistanceUpper.toLocaleString('en-US')} ticks`
                         : 'N/A'}
@@ -300,7 +300,7 @@ export default function AIRiskCard({
                 </div>
               </>
             ) : (
-              <div className="p-3 bg-[#020306] border border-[#141a29] text-xs text-slate-400 font-mono">
+              <div className="p-3 bg-[var(--cp-surface-elevated)] border t-border text-xs t-text-secondary font-mono">
                 {pos.rangeStatus === 'IN_RANGE' ? 'Position is within active tick bounds.' : 'Position is outside active tick bounds.'}
               </div>
             )}
@@ -308,13 +308,13 @@ export default function AIRiskCard({
         </div>
 
         {/* LAYER 3: AI RISK INTERPRETATION */}
-        <div className="panel-architecture bg-[#06080d] p-5 flex flex-col gap-4 border-t-2 border-t-[#d075ff]/80">
-          <div className="flex items-center justify-between border-b border-[#141a29] pb-3">
+        <div className="panel-architecture bg-[var(--cp-surface)] p-5 flex flex-col gap-4 border-t-2 border-t-[#d075ff]/80">
+          <div className="flex items-center justify-between border-b t-border pb-3">
             <span className="text-[10px] font-black uppercase tracking-widest text-[#d075ff] flex items-center gap-2">
               <span className={`h-1.5 w-1.5 ${analysis.aiStatus === 'UNAVAILABLE' ? 'bg-amber-400' : 'bg-[#d075ff]'}`}></span>
               LAYER 3: AI RISK INTERPRETATION
             </span>
-            <span className="text-[8px] text-[#d075ff]/50 uppercase tracking-widest font-mono">
+            <span className="text-[8px] text-[#d075ff]/60 uppercase tracking-widest font-mono">
               {analysis.providerStatus?.activeProvider || 'AI ENGINE'}
             </span>
           </div>
@@ -325,13 +325,13 @@ export default function AIRiskCard({
                 <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">
                   ⚠️ AI INTERPRETATION UNAVAILABLE
                 </span>
-                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                <p className="text-xs t-text-secondary leading-relaxed font-sans">
                   On-chain position data and computed range diagnoses are 100% verified above. Natural language AI interpretation is currently offline or rate-limited.
                 </p>
                 {onRetry && (
                   <button
                     onClick={onRetry}
-                    className="mt-2 bg-amber-500 hover:bg-amber-400 text-[#020306] text-[10px] font-black uppercase tracking-widest py-1.5 px-3 transition-colors"
+                    className="mt-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-widest py-1.5 px-3 transition-colors"
                   >
                     [ RETRY AI ANALYSIS ]
                   </button>
@@ -339,19 +339,19 @@ export default function AIRiskCard({
               </div>
             </div>
           ) : (
-            <p className="text-xs text-slate-300 leading-relaxed font-sans mt-1">
+            <p className="text-xs t-text-secondary leading-relaxed font-sans mt-1">
               {pos.summary}
             </p>
           )}
 
           {/* Suggested Action Trigger */}
           {pos.suggestedAction && (
-            <div className="mt-auto pt-4 border-t border-[#141a29] flex flex-col gap-3 font-mono">
+            <div className="mt-auto pt-4 border-t t-border flex flex-col gap-3 font-mono">
               <div className="flex justify-between items-start gap-2">
                 <span className="font-bold text-[11px] text-[#baf24a]">
                   RECOMMENDED: {pos.suggestedAction.title}
                 </span>
-                <span className="text-[8px] px-1.5 py-0.5 bg-[#020306] border border-[#141a29] text-slate-400 font-mono uppercase">
+                <span className="text-[8px] px-1.5 py-0.5 bg-[var(--cp-bg)] border t-border t-text-muted font-mono uppercase">
                   {pos.suggestedAction.actionType}
                 </span>
               </div>
@@ -359,7 +359,7 @@ export default function AIRiskCard({
               {onSelectAction && (
                 <button
                   onClick={() => onSelectAction(pos.suggestedAction!, pos)}
-                  className="w-full bg-[#00F0FF] hover:bg-cyan-300 text-[#020306] font-black text-[10px] uppercase tracking-widest py-2.5 px-4 transition-colors text-center cursor-pointer"
+                  className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-[10px] uppercase tracking-widest py-2.5 px-4 transition-colors text-center cursor-pointer"
                 >
                   REVIEW ACTION PROPOSAL
                 </button>
@@ -372,21 +372,21 @@ export default function AIRiskCard({
 
       {/* EVIDENCE & PROVENANCE AUDIT SECTION */}
       {pos.evidence && pos.evidence.length > 0 && (
-        <div className="w-full panel-architecture bg-[#020306] p-5 font-mono flex flex-col gap-3 border-cyan-top">
-          <div className="flex items-center justify-between border-b border-[#141a29] pb-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-300 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 bg-[#00F0FF]"></span>
+        <div className="w-full panel-architecture bg-[var(--cp-surface)] p-5 font-mono flex flex-col gap-3 border-cyan-top">
+          <div className="flex items-center justify-between border-b t-border pb-2">
+            <span className="text-[10px] font-black uppercase tracking-widest t-text flex items-center gap-2">
+              <span className="h-1.5 w-1.5 bg-cyan-500"></span>
               EVIDENCE & PROVENANCE AUDIT
             </span>
-            <span className="text-[9px] text-slate-500 uppercase">SUBGRAPH SOURCE CITATIONS</span>
+            <span className="text-[9px] t-text-muted uppercase">SUBGRAPH SOURCE CITATIONS</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {pos.evidence.map((ev, idx) => (
-              <div key={idx} className="p-2.5 bg-[#06080d] border border-[#141a29] flex flex-col gap-1">
-                <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">{ev.field}</span>
-                <span className="text-xs font-bold text-slate-200">{ev.value}</span>
-                <span className="text-[8px] text-cyan-400/80 truncate mt-0.5">{ev.sourceRef}</span>
+              <div key={idx} className="p-2.5 bg-[var(--cp-surface-elevated)] border t-border flex flex-col gap-1">
+                <span className="text-[9px] t-text-muted font-bold uppercase tracking-wider">{ev.field}</span>
+                <span className="text-xs font-bold t-text">{ev.value}</span>
+                <span className="text-[8px] text-cyan-500 truncate mt-0.5">{ev.sourceRef}</span>
               </div>
             ))}
           </div>

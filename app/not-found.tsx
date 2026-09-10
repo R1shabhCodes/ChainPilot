@@ -2,11 +2,11 @@ import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#090d16] text-slate-100 p-6 text-center">
-      <div className="max-w-md w-full glass-panel rounded-2xl p-8 flex flex-col items-center gap-4">
-        <div className="text-4xl font-extrabold text-cyan-400">404</div>
-        <h2 className="text-xl font-bold text-slate-100">Page Not Found</h2>
-        <p className="text-xs text-slate-400 leading-relaxed">
+    <div className="min-h-screen flex flex-col items-center justify-center t-bg t-text p-6 text-center">
+      <div className="max-w-md w-full bg-[var(--cp-surface)] border t-border rounded-2xl p-8 flex flex-col items-center gap-4">
+        <div className="text-4xl font-extrabold text-cyan-500">404</div>
+        <h2 className="text-xl font-bold t-text-heading">Page Not Found</h2>
+        <p className="text-xs t-text-secondary leading-relaxed">
           The requested page or route does not exist. Return to the main dashboard to continue using ChainPilot.
         </p>
 

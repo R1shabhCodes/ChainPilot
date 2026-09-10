@@ -89,17 +89,17 @@ export default function LiquidityRangeVisualizer({
   }
 
   return (
-    <div className="w-full bg-[#020306] border border-[#141a29] p-5 font-mono flex flex-col gap-6 text-xs select-none relative overflow-hidden">
+    <div className="w-full bg-[var(--cp-surface)] border t-border p-5 font-mono flex flex-col gap-6 text-xs select-none relative overflow-hidden">
       {/* Background Architectural Watermark */}
       <div className="absolute right-0 top-0 opacity-5 pointer-events-none text-9xl font-black -mt-6 -mr-4 text-cyan-500">
         CP
       </div>
 
       {/* Visualizer Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#141a29] pb-3 relative z-10">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b t-border pb-3 relative z-10">
         <div className="flex items-center gap-2">
           <span className={`h-2 w-2 ${isInRange ? 'bg-[#baf24a]' : 'bg-red-500'} animate-pulse`}></span>
-          <span className="text-[11px] font-black tracking-widest text-slate-300 uppercase">
+          <span className="text-[11px] font-black tracking-widest t-text uppercase">
             LIQUIDITY TICK RANGE INSTRUMENT
           </span>
         </div>
@@ -126,9 +126,9 @@ export default function LiquidityRangeVisualizer({
         </div>
 
         {/* Track Line Axis */}
-        <div className="w-full h-4 bg-[#06080d] border border-[#141a29] relative overflow-hidden">
+        <div className="w-full h-4 bg-[var(--cp-surface-elevated)] border t-border relative overflow-hidden">
           {/* Grid Tick Hash Lines */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e283d_1px,transparent_1px)] bg-[size:5%_100%] opacity-60"></div>
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--cp-border)_1px,transparent_1px)] bg-[size:5%_100%] opacity-60"></div>
 
           {/* Active Liquidity Zone Box */}
           <div
@@ -153,13 +153,13 @@ export default function LiquidityRangeVisualizer({
         </div>
 
         {/* Boundary Ticks Axis Labels */}
-        <div className="relative mt-3 text-[10px] text-slate-500 flex justify-between font-mono font-bold tracking-widest uppercase">
+        <div className="relative mt-3 text-[10px] t-text-muted flex justify-between font-mono font-bold tracking-widest uppercase">
           <div
             className="absolute transform -translate-x-1/2 flex flex-col items-center"
             style={{ left: `${pctLower}%` }}
           >
-            <div className="w-px h-2 bg-[#1e283d] mb-1"></div>
-            <span className="text-slate-300">{lower.toLocaleString('en-US')}</span>
+            <div className="w-px h-2 bg-[var(--cp-border-strong)] mb-1"></div>
+            <span className="t-text-secondary">{lower.toLocaleString('en-US')}</span>
             <span className="text-[8px] mt-0.5">LOWER</span>
           </div>
 
@@ -167,28 +167,28 @@ export default function LiquidityRangeVisualizer({
             className="absolute transform -translate-x-1/2 flex flex-col items-center"
             style={{ left: `${pctUpper}%` }}
           >
-            <div className="w-px h-2 bg-[#1e283d] mb-1"></div>
-            <span className="text-slate-300">{upper.toLocaleString('en-US')}</span>
+            <div className="w-px h-2 bg-[var(--cp-border-strong)] mb-1"></div>
+            <span className="t-text-secondary">{upper.toLocaleString('en-US')}</span>
             <span className="text-[8px] mt-0.5">UPPER</span>
           </div>
         </div>
       </div>
 
       {/* Numerical Telemetry Data Bar */}
-      <div className="grid grid-cols-3 gap-0 border border-[#141a29] text-[10px] mt-2 z-10 relative">
-        <div className="p-3 bg-[#06080d] border-r border-[#141a29] flex flex-col items-center justify-center text-center">
-          <span className="text-slate-500 uppercase font-black tracking-widest mb-1">Lower Bound</span>
-          <span className="font-bold text-slate-200 text-sm">{lower.toLocaleString('en-US')}</span>
+      <div className="grid grid-cols-3 gap-0 border t-border text-[10px] mt-2 z-10 relative">
+        <div className="p-3 bg-[var(--cp-surface-elevated)] border-r t-border flex flex-col items-center justify-center text-center">
+          <span className="t-text-muted uppercase font-black tracking-widest mb-1">Lower Bound</span>
+          <span className="font-bold t-text text-sm">{lower.toLocaleString('en-US')}</span>
         </div>
-        <div className={`p-3 border-r flex flex-col items-center justify-center text-center ${isInRange ? 'bg-[#0a0d14] border-[#141a29]' : 'bg-red-500/10 border-red-500/30'}`}>
-          <span className="text-slate-500 uppercase font-black tracking-widest mb-1">Pool Tick</span>
+        <div className={`p-3 border-r flex flex-col items-center justify-center text-center ${isInRange ? 'bg-[var(--cp-surface-highlight)] t-border' : 'bg-red-500/10 border-red-500/30'}`}>
+          <span className="t-text-muted uppercase font-black tracking-widest mb-1">Pool Tick</span>
           <span className={`font-bold text-sm ${isInRange ? 'text-[#baf24a]' : 'text-red-400'}`}>
             {curr.toLocaleString('en-US')}
           </span>
         </div>
-        <div className="p-3 bg-[#06080d] flex flex-col items-center justify-center text-center">
-          <span className="text-slate-500 uppercase font-black tracking-widest mb-1">Upper Bound</span>
-          <span className="font-bold text-slate-200 text-sm">{upper.toLocaleString('en-US')}</span>
+        <div className="p-3 bg-[var(--cp-surface-elevated)] flex flex-col items-center justify-center text-center">
+          <span className="t-text-muted uppercase font-black tracking-widest mb-1">Upper Bound</span>
+          <span className="font-bold t-text text-sm">{upper.toLocaleString('en-US')}</span>
         </div>
       </div>
     </div>

@@ -3,20 +3,21 @@
 @layer base {
   :root {
     /* ChainPilot Core Architecture Colors */
-    --bg-primary: #020306;
-    --bg-surface: #06080d;
-    --bg-surface-elevated: #0a0d14;
-    --bg-surface-highlight: #111623;
+    --cp-bg: #020306;
+    --cp-surface: #06080d;
+    --cp-surface-elevated: #0a0d14;
+    --cp-surface-highlight: #111623;
 
     /* Structural Borders */
-    --border-subtle: #141a29;
-    --border-strong: #1e283d;
-    --border-focus: #00F0FF;
+    --cp-border: #141a29;
+    --cp-border-strong: #1e283d;
+    --cp-border-focus: #00F0FF;
 
     /* Typography */
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
+    --cp-text: #f8fafc;
+    --cp-text-secondary: #94a3b8;
+    --cp-text-muted: #64748b;
+    --cp-text-heading: #ffffff;
 
     /* Semantic Accents */
     --accent-cyan: #00f0ff;
@@ -24,27 +25,66 @@
     --accent-orange: #ff5c16;
     --accent-violet: #d075ff;
     --accent-blue: #0055ff;
+
+    /* Grid/Decoration */
+    --cp-grid: rgba(30, 40, 61, 0.4);
+    --cp-dot: rgba(30, 40, 61, 0.8);
+
+    /* Step Number Colors (landing page) */
+    --cp-step-number: #1e283d;
+
+    /* Shadows */
+    --cp-shadow: rgba(0, 0, 0, 0.3);
+
+    /* Compass SVG */
+    --cp-compass-hub: #06080d;
+    --cp-compass-inner: #020306;
+    --cp-compass-crosshair: #141a29;
+
+    /* Legacy aliases for layout.tsx compatibility */
+    --bg-primary: var(--cp-bg);
+    --bg-surface: var(--cp-surface);
+    --bg-surface-elevated: var(--cp-surface-elevated);
+    --bg-surface-highlight: var(--cp-surface-highlight);
+    --border-subtle: var(--cp-border);
+    --border-strong: var(--cp-border-strong);
+    --border-focus: var(--cp-border-focus);
+    --text-primary: var(--cp-text);
+    --text-secondary: var(--cp-text-secondary);
+    --text-muted: var(--cp-text-muted);
   }
 
   [data-theme='light'] {
-    --bg-primary: #f8fafc;
-    --bg-surface: #ffffff;
-    --bg-surface-elevated: #f1f5f9;
-    --bg-surface-highlight: #e2e8f0;
+    --cp-bg: #f0f4f8;
+    --cp-surface: #ffffff;
+    --cp-surface-elevated: #f8fafc;
+    --cp-surface-highlight: #e2e8f0;
 
-    --border-subtle: #cbd5e1;
-    --border-strong: #cbd5e1;
-    --border-focus: #0284c7;
+    --cp-border: #e2e8f0;
+    --cp-border-strong: #cbd5e1;
+    --cp-border-focus: #0284c7;
 
-    --text-primary: #0f172a;
-    --text-secondary: #334155;
-    --text-muted: #64748b;
+    --cp-text: #0f172a;
+    --cp-text-secondary: #475569;
+    --cp-text-muted: #94a3b8;
+    --cp-text-heading: #0f172a;
 
-    --accent-cyan: #0284c7;
-    --accent-lime: #4d7c0f;
+    --accent-cyan: #0891b2;
+    --accent-lime: #65a30d;
     --accent-orange: #ea580c;
     --accent-violet: #9333ea;
     --accent-blue: #2563eb;
+
+    --cp-grid: rgba(148, 163, 184, 0.15);
+    --cp-dot: rgba(148, 163, 184, 0.2);
+
+    --cp-step-number: #e2e8f0;
+
+    --cp-shadow: rgba(0, 0, 0, 0.06);
+
+    --cp-compass-hub: #e2e8f0;
+    --cp-compass-inner: #f0f4f8;
+    --cp-compass-crosshair: #cbd5e1;
   }
 }
 
@@ -70,10 +110,10 @@
   font-family: var(--font-jetbrains-mono), monospace;
 }
 
-/* Sharp Architectural Panels */
+/* Sharp Architectural Panels - consumes theme tokens */
 .panel-architecture {
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-strong);
+  background-color: var(--cp-surface);
+  border: 1px solid var(--cp-border-strong);
   border-radius: 0;
   clip-path: polygon(
     0 0,
@@ -86,21 +126,21 @@
 }
 
 .panel-flat {
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-strong);
+  background-color: var(--cp-surface);
+  border: 1px solid var(--cp-border-strong);
   border-radius: 0;
 }
 
 /* Geometric Grid Background Pattern */
 .bg-grid-pattern {
-  background-image: linear-gradient(to right, rgba(30, 40, 61, 0.4) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(30, 40, 61, 0.4) 1px, transparent 1px);
+  background-image: linear-gradient(to right, var(--cp-grid) 1px, transparent 1px),
+                    linear-gradient(to bottom, var(--cp-grid) 1px, transparent 1px);
   background-size: 40px 40px;
   background-position: center center;
 }
 
 .bg-dot-pattern {
-  background-image: radial-gradient(rgba(30, 40, 61, 0.8) 1px, transparent 1px);
+  background-image: radial-gradient(var(--cp-dot) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
@@ -110,9 +150,43 @@
   color: transparent;
 }
 
+/* Semantic top-border accent */
+.border-cyan-top {
+  border-top: 2px solid var(--accent-cyan);
+}
+
 /* Transitions */
 .transition-layout {
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===== THEME-AWARE UTILITY CLASSES ===== */
+/* These replace hardcoded hex colors in components */
+
+/* Backgrounds */
+.t-bg { background-color: var(--cp-bg); }
+.t-surface { background-color: var(--cp-surface); }
+.t-surface-el { background-color: var(--cp-surface-elevated); }
+.t-surface-hl { background-color: var(--cp-surface-highlight); }
+
+/* Text */
+.t-text { color: var(--cp-text); }
+.t-text-secondary { color: var(--cp-text-secondary); }
+.t-text-muted { color: var(--cp-text-muted); }
+.t-text-heading { color: var(--cp-text-heading); }
+
+/* Borders */
+.t-border { border-color: var(--cp-border); }
+.t-border-strong { border-color: var(--cp-border-strong); }
+
+/* Combined panel utility for data cells/rows */
+.t-data-cell {
+  background-color: var(--cp-bg);
+  border: 1px solid var(--cp-border);
+}
+
+.t-data-row {
+  border-bottom: 1px solid var(--cp-border);
 }
 
 /* Custom Web3 Terminal Scrollbar */
@@ -122,11 +196,11 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: var(--cp-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
+  background: var(--cp-border-strong);
   border-radius: 0;
 }
 

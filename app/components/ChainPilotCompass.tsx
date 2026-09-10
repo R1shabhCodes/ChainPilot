@@ -21,22 +21,22 @@ export default function ChainPilotCompass() {
         </defs>
 
         {/* Structural Background Grid / Crosshairs */}
-        <line x1="200" y1="0" x2="200" y2="400" stroke="#141a29" strokeWidth="1" />
-        <line x1="0" y1="200" x2="400" y2="200" stroke="#141a29" strokeWidth="1" />
-        <circle cx="200" cy="200" r="180" stroke="#1e283d" strokeWidth="1" strokeDasharray="4 8" />
+        <line x1="200" y1="0" x2="200" y2="400" stroke="var(--cp-compass-crosshair)" strokeWidth="1" />
+        <line x1="0" y1="200" x2="400" y2="200" stroke="var(--cp-compass-crosshair)" strokeWidth="1" />
+        <circle cx="200" cy="200" r="180" stroke="var(--cp-border-strong)" strokeWidth="1" strokeDasharray="4 8" />
 
         {/* Outer Orbital Telemetry Ring (Slow Counter-Clockwise Rotation) */}
         <g className="origin-center animate-[spin_60s_linear_infinite_reverse]">
-          <circle cx="200" cy="200" r="160" stroke="#141a29" strokeWidth="2" />
+          <circle cx="200" cy="200" r="160" stroke="var(--cp-compass-crosshair)" strokeWidth="2" />
           
           {/* Node Attachments */}
           <rect x="196" y="36" width="8" height="8" fill="#00F0FF" />
-          <rect x="356" y="196" width="8" height="8" fill="#1e283d" />
+          <rect x="356" y="196" width="8" height="8" fill="var(--cp-border-strong)" />
           <rect x="196" y="356" width="8" height="8" fill="#ff5c16" />
           <rect x="36" y="196" width="8" height="8" fill="#baf24a" />
           
           {/* Tick Data Points */}
-          <circle cx="200" cy="40" r="2" fill="#020306" />
+          <circle cx="200" cy="40" r="2" fill="var(--cp-compass-inner)" />
           <circle cx="360" cy="200" r="2" fill="#00F0FF" />
         </g>
 
@@ -64,7 +64,7 @@ export default function ChainPilotCompass() {
         {/* Deep Out of bounds */}
         <path
           d="M 200 340 A 140 140 0 0 1 60 200"
-          stroke="#1e283d"
+          stroke="var(--cp-border-strong)"
           strokeWidth="6"
           strokeLinecap="square"
         />
@@ -94,13 +94,13 @@ export default function ChainPilotCompass() {
           <polygon points="200,85 192,200 200,210" fill="#00F0FF" opacity="0.4" />
 
           {/* South Counterweight */}
-          <polygon points="200,315 205,200 200,190" fill="#1e283d" opacity="0.8" />
-          <polygon points="200,315 195,200 200,190" fill="#1e283d" opacity="0.4" />
+          <polygon points="200,315 205,200 200,190" fill="var(--cp-border-strong)" opacity="0.8" />
+          <polygon points="200,315 195,200 200,190" fill="var(--cp-border-strong)" opacity="0.4" />
         </g>
 
         {/* Central Hub Mechanism */}
-        <circle cx="200" cy="200" r="22" fill="#06080d" stroke="#00F0FF" strokeWidth="3" />
-        <circle cx="200" cy="200" r="10" fill="#020306" stroke="#baf24a" strokeWidth="1.5" />
+        <circle cx="200" cy="200" r="22" fill="var(--cp-compass-hub)" stroke="#00F0FF" strokeWidth="3" />
+        <circle cx="200" cy="200" r="10" fill="var(--cp-compass-inner)" stroke="#baf24a" strokeWidth="1.5" />
         <circle cx="200" cy="200" r="3" fill="#00F0FF" />
 
       </svg>

@@ -103,12 +103,12 @@ export default function AddressInput({ externalAddress, onAnalyze }: AddressInpu
               if (error) setError(null);
             }}
             placeholder="Enter EVM Wallet Address (0x...)"
-            className={`w-full pl-9 pr-16 py-3 text-xs font-mono bg-[#07090e] text-slate-100 placeholder-slate-400 border transition-all focus:outline-none ${
+            className={`w-full pl-9 pr-16 py-3 text-xs font-mono bg-[var(--cp-surface-elevated)] t-text placeholder:text-[var(--cp-text-muted)] border transition-all focus:outline-none ${
               error
                 ? 'border-red-500/80 focus:border-red-500'
                 : activeAddress
                 ? 'border-[#BAF24A]/60 focus:border-[#BAF24A]'
-                : 'border-slate-800 focus:border-[#00F0FF]'
+                : 't-border focus:border-[#00F0FF]'
             }`}
             disabled={isLoading}
           />
@@ -116,7 +116,7 @@ export default function AddressInput({ externalAddress, onAnalyze }: AddressInpu
             <button
               type="button"
               onClick={handleClear}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-[10px] uppercase font-bold px-1.5 py-0.5 bg-slate-900 border border-slate-700 cursor-pointer"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 t-text-muted hover:t-text text-[10px] uppercase font-bold px-1.5 py-0.5 bg-[var(--cp-surface)] border t-border cursor-pointer"
               disabled={isLoading}
             >
               Clear
@@ -127,7 +127,7 @@ export default function AddressInput({ externalAddress, onAnalyze }: AddressInpu
         <button
           type="submit"
           disabled={isLoading}
-          className="px-6 py-3 text-xs font-bold uppercase tracking-wider bg-[#00F0FF] hover:bg-[#33F3FF] text-slate-950 border border-[#00F0FF] shadow-lg shadow-[#00F0FF]/10 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 min-w-[170px]"
+          className="px-6 py-3 text-xs font-bold uppercase tracking-wider bg-cyan-500 hover:bg-cyan-400 text-slate-950 border border-cyan-500 shadow-lg shadow-cyan-500/10 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 min-w-[170px]"
         >
           {isLoading ? (
             <>
@@ -149,17 +149,17 @@ export default function AddressInput({ externalAddress, onAnalyze }: AddressInpu
       )}
 
       {/* Quick Sample Address Selector Bar */}
-      <div className="flex flex-wrap items-center gap-2 text-[10px] text-slate-400 select-none">
-        <span className="uppercase font-semibold tracking-wider text-slate-400">Sample Addresses:</span>
+      <div className="flex flex-wrap items-center gap-2 text-[10px] t-text-muted select-none">
+        <span className="uppercase font-semibold tracking-wider t-text-muted">Sample Addresses:</span>
         {SAMPLE_ADDRESSES.map((sample, idx) => (
           <button
             key={idx}
             type="button"
             onClick={() => handleSelectSample(sample.address)}
-            className={`px-2.5 py-1 bg-slate-950 border text-[10px] font-mono transition-colors cursor-pointer ${
+            className={`px-2.5 py-1 bg-[var(--cp-surface-elevated)] border text-[10px] font-mono transition-colors cursor-pointer ${
               activeAddress?.toLowerCase() === sample.address.toLowerCase()
                 ? 'border-[#BAF24A] text-[#BAF24A] font-bold'
-                : 'border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                : 't-border t-text-muted hover:t-text hover:t-border-strong'
             }`}
           >
             {sample.label}

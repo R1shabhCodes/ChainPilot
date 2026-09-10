@@ -35,8 +35,8 @@ export default function PositionFilterTabs({
             onClick={() => onFilterChange(tab.key)}
             className={`px-3.5 py-2 text-xs font-bold uppercase border transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
               isActive
-                ? 'bg-[#00F0FF]/10 text-[#00F0FF] border-[#00F0FF] shadow-sm shadow-[#00F0FF]/20'
-                : 'bg-[#090b10] text-slate-400 border-slate-800 hover:text-slate-200 hover:border-slate-700'
+                ? 'bg-cyan-500/10 text-cyan-500 border-cyan-500 shadow-sm shadow-cyan-500/20'
+                : 'bg-[var(--cp-surface-elevated)] t-text-muted t-border hover:t-text hover:t-border-strong'
             }`}
           >
             <span>{tab.label}</span>
@@ -44,8 +44,8 @@ export default function PositionFilterTabs({
               <span
                 className={`px-1.5 py-0.2 text-[10px] font-mono ${
                   isActive
-                    ? 'bg-slate-950 text-[#00F0FF] border border-[#00F0FF]/40'
-                    : 'bg-slate-950 text-slate-400 border border-slate-800'
+                    ? 'bg-[var(--cp-surface)] text-cyan-500 border border-cyan-500/40'
+                    : 'bg-[var(--cp-surface)] t-text-muted border t-border'
                 }`}
               >
                 {tab.count}
