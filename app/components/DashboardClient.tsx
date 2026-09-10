@@ -11,6 +11,7 @@ import AIRiskCard, { AnalyzeStatusNotice } from './AIRiskCard';
 import ActionApprovalModal from './ActionApprovalModal';
 import LandingPage from './LandingPage';
 import ThemeToggle from './ThemeToggle';
+import GraphProvenancePanel from './GraphProvenancePanel';
 import { PortfolioAnalysisResponse, SuggestedAction, PositionRiskSummary } from '@/lib/ai/types';
 import { getEtherscanAddressUrl, getEtherscanFactoryUrl, getEtherscanNftManagerUrl } from '@/lib/utils/explorer';
 
@@ -66,6 +67,7 @@ export default function DashboardClient() {
             code: data.code || 'ZERO_POSITIONS',
             message: data.message || 'No active Uniswap v3 positions were found for this address.',
             canAnalyze: false,
+            graphMeta: data.graphMeta,
           });
           setAiLoading(false);
           return;
@@ -300,6 +302,11 @@ export default function DashboardClient() {
                     <span className="text-xs font-bold text-cyan-500">The Graph Subgraph Gateway</span>
                   </div>
                 </div>
+                {aiNotice.graphMeta && (
+                  <div className="pt-2">
+                    <GraphProvenancePanel graphMeta={aiNotice.graphMeta} />
+                  </div>
+                )}
               </div>
             )}
 

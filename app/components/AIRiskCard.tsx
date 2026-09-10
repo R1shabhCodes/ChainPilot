@@ -20,12 +20,16 @@ import {
 } from '@/lib/utils/explorer';
 import { generateDecisionConsideration } from '@/lib/decision/decisionEngine';
 import { calculateProtocolGeometry } from '@/lib/decision/protocolGeometry';
+import GraphProvenancePanel from './GraphProvenancePanel';
+
+import { GraphRequestMetadata } from '@/lib/graph/types';
 
 export interface AnalyzeStatusNotice {
   status: string;
   code: string;
   message: string;
   canAnalyze: boolean;
+  graphMeta?: GraphRequestMetadata;
 }
 
 export interface AIRiskCardProps {
@@ -178,7 +182,12 @@ export default function AIRiskCard({
   const { tickLower, tickUpper, currentTick } = extractTicks(pos);
 
   return (
-    <div className="w-full flex flex-col gap-6 animate-fadeIn">
+    <div className="w-full flex flex-col gap-6">
+      {/* LOAD-BEARING SUBGRAPH PROVENANCE AUDIT PANEL */}
+      <GraphProvenancePanel graphMeta={analysis.graphMeta} />
+
+      {/* WORKSPACE DOMINANT POSITION DISPLAY */}
+      <div key={pos.positionId} className="w-full flex flex-col gap-6 animate-fadeIn">
       {/* DOMINANT POSITION HEADER */}
       <div className="w-full panel-architecture bg-[var(--cp-surface)] p-6 flex flex-col gap-4 border-t-2 border-t-cyan-500 shadow-2xl">
         <div className="flex flex-wrap items-start justify-between gap-4 border-b t-border pb-4">
@@ -666,6 +675,7 @@ export default function AIRiskCard({
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

@@ -79,6 +79,8 @@ export interface PositionRiskSummary {
   feeTier?: string;
 }
 
+import { GraphRequestMetadata } from '@/lib/graph/types';
+
 export interface PortfolioAnalysisResponse {
   address: string;
   overallRiskScore?: number; // 0 to 100 (undefined if AI is unavailable)
@@ -89,4 +91,5 @@ export interface PortfolioAnalysisResponse {
   portfolioDecisionSummary?: PortfolioDecisionSummary | null;
   analyzedAt: string;
   summaryText?: string;
+  graphMeta?: GraphRequestMetadata;
 }

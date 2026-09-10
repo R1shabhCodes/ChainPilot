@@ -59,18 +59,31 @@ export interface NormalizedPositionData {
   token1Address?: string;
 }
 
+export interface GraphRequestMetadata {
+  deploymentId: string;
+  endpointMasked: string;
+  queryName: string;
+  queryText: string;
+  httpStatus: number;
+  latencyMs: number;
+  timestamp: string;
+  positionCount: number;
+}
+
 export type GraphFetchResult =
   | {
       success: true;
       status: 'POSITIONS_FOUND';
       positions: NormalizedPositionData[];
       rawJson: string;
+      graphMeta?: GraphRequestMetadata;
     }
   | {
       success: true;
       status: 'NO_POSITIONS_FOUND';
       positions: [];
       message: string;
+      graphMeta?: GraphRequestMetadata;
     }
   | {
       success: false;
@@ -83,3 +96,4 @@ export type GraphFetchResult =
       status: 'GRAPH_ERROR';
       message: string;
     };
+

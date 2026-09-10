@@ -60,6 +60,7 @@ export async function fetchUniswapPositions(address: string): Promise<GraphFetch
   // Ensure owner address is safely normalized to lowercase string
   const normalizedOwner = address.trim().toLowerCase();
   const endpoint = `https://gateway.thegraph.com/api/${apiKey}/subgraphs/id/${SUBGRAPH_DEPLOYMENT_ID}`;
+  const startTime = performance.now();
 
   try {
     const response = await fetch(endpoint, {
@@ -71,6 +72,8 @@ export async function fetchUniswapPositions(address: string): Promise<GraphFetch
       }),
       next: { revalidate: 30 }, // 30s cache for position queries
     });
+
+    const latencyMs = Math.round(performance.now() - startTime);
 
     if (!response.ok) {
       console.error(`The Graph Gateway returned HTTP status ${response.status}`);
@@ -95,12 +98,24 @@ export async function fetchUniswapPositions(address: string): Promise<GraphFetch
 
     const rawPositions: RawGraphPosition[] = payload.data?.positions || [];
 
+    const graphMeta = {
+      deploymentId: SUBGRAPH_DEPLOYMENT_ID,
+      endpointMasked: `https://gateway.thegraph.com/api/[SUBGRAPH_KEY_CONFIGURED]/subgraphs/id/${SUBGRAPH_DEPLOYMENT_ID}`,
+      queryName: 'GetUserPositions',
+      queryText: UNISWAP_V3_POSITIONS_QUERY.trim(),
+      httpStatus: response.status,
+      latencyMs,
+      timestamp: new Date().toISOString(),
+      positionCount: rawPositions.length,
+    };
+
     if (rawPositions.length === 0) {
       return {
         success: true,
         status: 'NO_POSITIONS_FOUND',
         positions: [],
         message: `No active Uniswap v3 liquidity positions were found on Ethereum mainnet for address ${address}.`,
+        graphMeta,
       };
     }
 
@@ -147,6 +162,7 @@ export async function fetchUniswapPositions(address: string): Promise<GraphFetch
       status: 'POSITIONS_FOUND',
       positions: normalizedPositions,
       rawJson: JSON.stringify(normalizedPositions, null, 2),
+      graphMeta,
     };
   } catch (error: any) {
     console.error('Error fetching from The Graph Gateway:', error);

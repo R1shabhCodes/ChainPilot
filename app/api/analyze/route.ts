@@ -109,6 +109,7 @@ export async function POST(request: Request) {
           address,
           canAnalyze: false,
           positions: [],
+          graphMeta: graphResult.graphMeta,
           timestamp: new Date().toISOString(),
         },
         { status: 200 }
@@ -153,6 +154,7 @@ export async function POST(request: Request) {
         portfolioDecisionSummary,
         verifiedPositions: positions,
         rawJson: graphResult.rawJson,
+        graphMeta: graphResult.graphMeta,
       },
       { status: 200 }
     );
