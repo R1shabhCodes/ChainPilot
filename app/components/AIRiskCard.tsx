@@ -471,9 +471,29 @@ export default function AIRiskCard({
               </div>
             </div>
           ) : (
-            <p className="text-xs t-text-secondary leading-relaxed font-sans mt-1">
-              {pos.summary}
-            </p>
+            <div className="flex flex-col gap-3 font-mono">
+              {pos.whatIFound && (
+                <div className="p-3 bg-[var(--cp-surface-elevated)] border t-border flex flex-col gap-1">
+                  <span className="text-[9px] font-bold text-purple-400 uppercase tracking-widest">[WHAT I FOUND]</span>
+                  <p className="text-xs t-text-secondary leading-relaxed font-sans">
+                    {pos.whatIFound}
+                  </p>
+                </div>
+              )}
+              {pos.whyItMatters && (
+                <div className="p-3 bg-[var(--cp-surface-elevated)] border t-border flex flex-col gap-1">
+                  <span className="text-[9px] font-bold text-purple-400 uppercase tracking-widest">[WHY IT MATTERS]</span>
+                  <p className="text-xs t-text-secondary leading-relaxed font-sans">
+                    {pos.whyItMatters}
+                  </p>
+                </div>
+              )}
+              {!pos.whatIFound && !pos.whyItMatters && (
+                <p className="text-xs t-text-secondary leading-relaxed font-sans mt-1">
+                  {pos.summary}
+                </p>
+              )}
+            </div>
           )}
 
           {/* Suggested Action Trigger */}

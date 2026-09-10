@@ -63,6 +63,8 @@ export interface PositionRiskSummary {
   tokenPair: string;
   riskLevel: RiskLevel;
   rangeStatus: RangeStatus;
+  whatIFound?: string;
+  whyItMatters?: string;
   evidence: EvidenceCitation[];
   summary: string;
   suggestedAction?: SuggestedAction;

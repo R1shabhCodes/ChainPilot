@@ -32,6 +32,8 @@ const GROQ_STRUCTURED_OUTPUT_SCHEMA = {
               tokenPair: { type: 'string' },
               riskLevel: { type: 'string', enum: ['LOW', 'MODERATE', 'HIGH', 'CRITICAL', 'UNKNOWN'] },
               rangeStatus: { type: 'string', enum: ['IN_RANGE', 'OUT_OF_RANGE', 'UNKNOWN'] },
+              whatIFound: { type: 'string' },
+              whyItMatters: { type: 'string' },
               summary: { type: 'string' },
               evidence: {
                 type: 'array',
@@ -47,7 +49,7 @@ const GROQ_STRUCTURED_OUTPUT_SCHEMA = {
                 },
               },
             },
-            required: ['positionId', 'protocol', 'tokenPair', 'riskLevel', 'rangeStatus', 'summary', 'evidence'],
+            required: ['positionId', 'protocol', 'tokenPair', 'riskLevel', 'rangeStatus', 'whatIFound', 'whyItMatters', 'summary', 'evidence'],
             additionalProperties: false,
           },
         },
@@ -70,8 +72,14 @@ function validateAnalysisSchema(parsed: any): parsed is PortfolioAnalysisRespons
     if (typeof pos.tokenPair !== 'string') return false;
     if (!['LOW', 'MODERATE', 'HIGH', 'CRITICAL', 'UNKNOWN'].includes(pos.riskLevel)) return false;
     if (!['IN_RANGE', 'OUT_OF_RANGE', 'UNKNOWN'].includes(pos.rangeStatus)) return false;
-    if (typeof pos.summary !== 'string') return false;
     if (!Array.isArray(pos.evidence)) return false;
+
+    // Ensure whatIFound and whyItMatters exist or populate fallback summary
+    if (typeof pos.whatIFound !== 'string') pos.whatIFound = pos.summary || '';
+    if (typeof pos.whyItMatters !== 'string') pos.whyItMatters = '';
+    if (typeof pos.summary !== 'string') {
+      pos.summary = `${pos.whatIFound} ${pos.whyItMatters}`.trim();
+    }
 
     for (const ev of pos.evidence) {
       if (typeof ev !== 'object' || !ev) return false;
@@ -228,18 +236,23 @@ export async function evaluatePortfolioWithProviders(
   // STEP 3: Both AI Providers Failed or Unavailable -> Deterministic Fallback Response
   // Rule 4: Do NOT silently present risk levels as AI judgments. Set riskLevel: 'UNKNOWN'.
   const fallbackSummaries: PositionRiskSummary[] = normalizedPositions.map((pos) => {
+    const whatIFound = `Position #${pos.positionId} (${pos.tokenPair}) verified on-chain. Selected tick range: ${pos.tickLower.toLocaleString()} to ${pos.tickUpper.toLocaleString()}; current pool tick: ${pos.currentTick !== null ? pos.currentTick.toLocaleString() : 'N/A'}.`;
+    const whyItMatters = `Position state is ${pos.rangeStatus}. ${pos.rangeStatus === 'IN_RANGE' ? 'Liquidity is currently active within the selected range and can earn swap fees.' : 'No new swap fees are earned while the position is inactive.'} AI risk evaluation is currently unavailable.`;
+
     return {
       positionId: pos.positionId,
       protocol: pos.protocol,
       tokenPair: pos.tokenPair,
       riskLevel: 'UNKNOWN',
       rangeStatus: pos.rangeStatus,
+      whatIFound,
+      whyItMatters,
       evidence: [
         { field: 'Current Tick', value: pos.currentTick !== null ? String(pos.currentTick) : 'N/A', sourceRef: 'Uniswap V3 Pool' },
         { field: 'Lower Tick', value: String(pos.tickLower), sourceRef: `NFT #${pos.positionId}` },
         { field: 'Upper Tick', value: String(pos.tickUpper), sourceRef: `NFT #${pos.positionId}` },
       ],
-      summary: `Position #${pos.positionId} (${pos.tokenPair}) is ${pos.rangeStatus}. On-chain tick bounds verified. AI risk level is UNKNOWN (AI provider offline).`,
+      summary: `${whatIFound} ${whyItMatters}`,
       tickLower: pos.tickLower,
       tickUpper: pos.tickUpper,
       currentTick: pos.currentTick,
