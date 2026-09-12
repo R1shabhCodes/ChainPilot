@@ -60,7 +60,7 @@ export default function RiskScoreGauge({
         </div>
         <div className="py-6 flex flex-col items-center justify-center gap-2 t-text-muted">
           <div className="h-5 w-5 border-2 border-cyan-500/20 border-t-cyan-500 animate-spin"></div>
-          <span className="text-xs font-mono">Evaluating On-Chain Telemetry via Gemini AI...</span>
+          <span className="text-xs font-mono t-text-muted">ANALYZING VERIFIED ON-CHAIN DATA & RANGE RISK...</span>
         </div>
       </div>
     );

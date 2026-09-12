@@ -55,36 +55,36 @@
   }
 
   [data-theme='light'] {
-    --cp-bg: #f0f4f8;
+    --cp-bg: #f1f5f9;
     --cp-surface: #ffffff;
     --cp-surface-elevated: #f8fafc;
     --cp-surface-highlight: #e2e8f0;
 
-    --cp-border: #e2e8f0;
-    --cp-border-strong: #cbd5e1;
+    --cp-border: #cbd5e1;
+    --cp-border-strong: #94a3b8;
     --cp-border-focus: #0284c7;
 
     --cp-text: #0f172a;
-    --cp-text-secondary: #475569;
-    --cp-text-muted: #94a3b8;
+    --cp-text-secondary: #334155;
+    --cp-text-muted: #475569;
     --cp-text-heading: #0f172a;
 
     --accent-cyan: #0891b2;
-    --accent-lime: #65a30d;
-    --accent-orange: #ea580c;
-    --accent-violet: #9333ea;
-    --accent-blue: #2563eb;
+    --accent-lime: #4d7c0f;
+    --accent-orange: #c2410c;
+    --accent-violet: #7e22ce;
+    --accent-blue: #1d4ed8;
 
-    --cp-grid: rgba(148, 163, 184, 0.15);
-    --cp-dot: rgba(148, 163, 184, 0.2);
+    --cp-grid: rgba(100, 116, 139, 0.18);
+    --cp-dot: rgba(100, 116, 139, 0.25);
 
-    --cp-step-number: #e2e8f0;
+    --cp-step-number: #cbd5e1;
 
-    --cp-shadow: rgba(0, 0, 0, 0.06);
+    --cp-shadow: rgba(0, 0, 0, 0.08);
 
-    --cp-compass-hub: #e2e8f0;
-    --cp-compass-inner: #f0f4f8;
-    --cp-compass-crosshair: #cbd5e1;
+    --cp-compass-hub: #cbd5e1;
+    --cp-compass-inner: #f1f5f9;
+    --cp-compass-crosshair: #94a3b8;
   }
 }
 
@@ -112,7 +112,6 @@
 
 /* Sharp Architectural Panels - consumes theme tokens */
 .panel-architecture {
-  background-color: var(--cp-surface);
   border: 1px solid var(--cp-border-strong);
   border-radius: 0;
   clip-path: polygon(
@@ -126,7 +125,6 @@
 }
 
 .panel-flat {
-  background-color: var(--cp-surface);
   border: 1px solid var(--cp-border-strong);
   border-radius: 0;
 }
