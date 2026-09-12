@@ -23,7 +23,7 @@ export default function LandingPage({ onAnalyze }: LandingPageProps) {
       {/* ================================================================
           SECTION 1 — HERO
           ================================================================ */}
-      <section className="w-full max-w-screen-2xl mx-auto px-6 sm:px-10 py-12 lg:py-20 min-h-[90vh] flex flex-col justify-center">
+      <section className="w-full max-w-screen-2xl mx-auto px-6 sm:px-10 py-12 sm:py-16 lg:py-24 flex flex-col justify-center">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative">
 
           {/* Background Architectural Lines */}
@@ -33,23 +33,23 @@ export default function LandingPage({ onAnalyze }: LandingPageProps) {
           </div>
 
           {/* Left: Headline + Input */}
-          <div className="lg:col-span-7 flex flex-col gap-8 z-10">
+          <div className="lg:col-span-7 flex flex-col gap-6 sm:gap-8 z-10">
             <div className="inline-flex items-center gap-3 px-3 py-1.5 panel-flat text-[10px] font-mono text-cyan-500 w-fit font-bold tracking-widest uppercase">
               <span className="h-1.5 w-1.5 bg-cyan-500"></span>
               Verified On-Chain DeFi Intelligence
             </div>
 
             <div className="flex flex-col">
-              <h2 className="text-6xl sm:text-[80px] md:text-[100px] font-display font-black tracking-tighter leading-[0.85] uppercase text-stroke-cyan">
+              <h2 className="text-5xl sm:text-7xl lg:text-8xl font-display font-black tracking-tighter leading-[0.88] uppercase text-stroke-cyan">
                 SEE THE
               </h2>
-              <h2 className="text-6xl sm:text-[80px] md:text-[100px] font-display font-black tracking-tighter leading-[0.85] uppercase text-[#baf24a] -ml-2">
+              <h2 className="text-5xl sm:text-7xl lg:text-8xl font-display font-black tracking-tighter leading-[0.88] uppercase text-[#baf24a] -ml-1 sm:-ml-2">
                 RANGE.
               </h2>
-              <h2 className="text-6xl sm:text-[80px] md:text-[100px] font-display font-black tracking-tighter leading-[0.85] uppercase t-text-heading mt-4">
+              <h2 className="text-5xl sm:text-7xl lg:text-8xl font-display font-black tracking-tighter leading-[0.88] uppercase t-text-heading mt-2 sm:mt-4">
                 KNOW THE
               </h2>
-              <h2 className="text-6xl sm:text-[80px] md:text-[100px] font-display font-black tracking-tighter leading-[0.85] uppercase text-[#ff5c16] -ml-2">
+              <h2 className="text-5xl sm:text-7xl lg:text-8xl font-display font-black tracking-tighter leading-[0.88] uppercase text-[#ff5c16] -ml-1 sm:-ml-2">
                 RISK.
               </h2>
             </div>

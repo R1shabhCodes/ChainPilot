@@ -120,12 +120,16 @@ export default function DashboardClient() {
     <div className="min-h-screen flex flex-col t-bg t-text bg-dot-pattern selection:bg-[#00F0FF]/20 selection:text-[#00F0FF] transition-layout">
       {/* Top Command & Navigation Bar */}
       <header className="w-full border-b t-border-strong bg-[var(--cp-surface)]/90 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex flex-wrap items-center justify-between gap-4 font-mono">
-        <div className="flex items-center gap-4">
-          <div className="h-10 w-10 bg-[#00F0FF] flex items-center justify-center font-black text-[#020306] text-sm panel-architecture">
+        <button
+          onClick={() => setSelectedAddress(null)}
+          className="flex items-center gap-4 group cursor-pointer text-left"
+          title="Return to ChainPilot Landing Page"
+        >
+          <div className="h-10 w-10 bg-[#00F0FF] group-hover:bg-[#baf24a] flex items-center justify-center font-black text-slate-950 text-sm panel-architecture transition-colors shadow-md">
             CP
           </div>
           <div className="flex flex-col">
-            <h1 className="font-display font-black text-lg leading-none tracking-tight flex items-center gap-2 uppercase t-text-heading">
+            <h1 className="font-display font-black text-lg leading-none tracking-tight flex items-center gap-2 uppercase t-text-heading group-hover:text-cyan-400 transition-colors">
               Chain<span className="text-[#00F0FF]">Pilot</span>
             </h1>
             <div className="flex items-center gap-2 mt-1">
@@ -135,7 +139,7 @@ export default function DashboardClient() {
               <p className="text-[10px] font-mono t-text-muted uppercase tracking-widest">Risk Intelligence</p>
             </div>
           </div>
-        </div>
+        </button>
 
         {/* Header Address Quick Indicator when in workspace mode */}
         {selectedAddress && (
@@ -181,7 +185,10 @@ export default function DashboardClient() {
               <div className="flex flex-wrap items-center gap-3">
                 <span className="h-2.5 w-2.5 bg-[#00F0FF] animate-pulse"></span>
                 <span className="text-xs sm:text-sm font-black t-text-heading uppercase tracking-widest">
-                  PORTFOLIO // <span className="text-cyan-500">{aiAnalysis?.positionSummaries?.length || 0} POSITIONS</span>
+                  PORTFOLIO // <span className="text-cyan-500">{aiAnalysis?.graphMeta?.positionCount ?? aiAnalysis?.positionSummaries?.length ?? 0} POSITIONS INDEXED</span>
+                  {activeFilter !== 'ALL' && (
+                    <span className="text-xs text-amber-400 font-mono ml-2">({filteredPositions.length} FILTERED)</span>
+                  )}
                 </span>
                 <div className="w-px h-3.5 bg-[var(--cp-border-strong)] hidden sm:block"></div>
                 <div className="flex items-center gap-2 text-xs">
@@ -436,9 +443,9 @@ export default function DashboardClient() {
           <span className="t-text-secondary">AI-POWERED DEFI RISK INTELLIGENCE</span>
         </div>
         <div className="flex items-center gap-4">
-          <span className="flex items-center gap-1.5"><span className="h-1 w-1 bg-cyan-500"></span>THE GRAPH</span>
-          <span className="flex items-center gap-1.5"><span className="h-1 w-1 bg-[#d075ff]"></span>GEMINI</span>
-          <span className="flex items-center gap-1.5"><span className="h-1 w-1 bg-[#baf24a]"></span>PRIVY</span>
+          <span className="flex items-center gap-1.5"><span className="h-1 w-1 bg-cyan-500"></span>THE GRAPH (INDEXED DATA)</span>
+          <span className="flex items-center gap-1.5"><span className="h-1 w-1 bg-[#d075ff]"></span>GROQ / GEMINI AI</span>
+          <span className="flex items-center gap-1.5"><span className="h-1 w-1 bg-[#baf24a]"></span>PRIVY AUTH READY</span>
           <span className="flex items-center gap-1.5"><span className="h-1 w-1 bg-[#ff5c16]"></span>ETHONLINE 2026</span>
         </div>
       </footer>
