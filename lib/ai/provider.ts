@@ -91,6 +91,59 @@ function validateAnalysisSchema(parsed: any): parsed is PortfolioAnalysisRespons
   return true;
 }
 
+function ensureAllPositionsSummarized(
+  summaries: PositionRiskSummary[],
+  normalizedPositions: NormalizedPositionData[]
+): PositionRiskSummary[] {
+  const summaryMap = new Map<string, PositionRiskSummary>();
+  summaries.forEach((s) => summaryMap.set(s.positionId, s));
+
+  const result: PositionRiskSummary[] = [];
+
+  for (const pos of normalizedPositions) {
+    const existing = summaryMap.get(pos.positionId);
+    if (existing) {
+      result.push({
+        ...existing,
+        tickLower: existing.tickLower ?? pos.tickLower,
+        tickUpper: existing.tickUpper ?? pos.tickUpper,
+        currentTick: existing.currentTick ?? pos.currentTick,
+        poolAddress: existing.poolAddress || pos.poolAddress,
+        token0Address: existing.token0Address || pos.token0Address,
+        token1Address: existing.token1Address || pos.token1Address,
+        feeTier: existing.feeTier || pos.feeTier,
+      });
+    } else {
+      const whatIFound = `Position #${pos.positionId} (${pos.tokenPair}) verified on-chain. Selected tick range: ${pos.tickLower.toLocaleString()} to ${pos.tickUpper.toLocaleString()}; current pool tick: ${pos.currentTick !== null ? pos.currentTick.toLocaleString() : 'N/A'}.`;
+      const whyItMatters = `Position state is ${pos.rangeStatus}. ${pos.rangeStatus === 'IN_RANGE' ? 'Liquidity is active within bounds.' : 'Position is inactive.'}`;
+      result.push({
+        positionId: pos.positionId,
+        protocol: pos.protocol,
+        tokenPair: pos.tokenPair,
+        riskLevel: 'UNKNOWN',
+        rangeStatus: pos.rangeStatus,
+        whatIFound,
+        whyItMatters,
+        evidence: [
+          { field: 'Current Tick', value: pos.currentTick !== null ? String(pos.currentTick) : 'N/A', sourceRef: 'Uniswap V3 Pool' },
+          { field: 'Lower Tick', value: String(pos.tickLower), sourceRef: `NFT #${pos.positionId}` },
+          { field: 'Upper Tick', value: String(pos.tickUpper), sourceRef: `NFT #${pos.positionId}` },
+        ],
+        summary: `${whatIFound} ${whyItMatters}`,
+        tickLower: pos.tickLower,
+        tickUpper: pos.tickUpper,
+        currentTick: pos.currentTick,
+        poolAddress: pos.poolAddress,
+        token0Address: pos.token0Address,
+        token1Address: pos.token1Address,
+        feeTier: pos.feeTier,
+      });
+    }
+  }
+
+  return result;
+}
+
 export async function evaluatePortfolioWithProviders(
   walletAddress: string,
   verifiedPositionsJson: string,
@@ -136,6 +189,7 @@ export async function evaluatePortfolioWithProviders(
         if (rawContent) {
           const parsed = JSON.parse(rawContent);
           if (validateAnalysisSchema(parsed)) {
+            const completedSummaries = ensureAllPositionsSummarized(parsed.positionSummaries, normalizedPositions);
             return {
               address: walletAddress,
               overallRiskScore: typeof parsed.overallRiskScore === 'number' ? parsed.overallRiskScore : 50,
@@ -147,7 +201,7 @@ export async function evaluatePortfolioWithProviders(
                 activeProvider: 'GROQ',
                 details: `Analyzed via Groq Structured Outputs (${groqModel})`,
               },
-              positionSummaries: parsed.positionSummaries,
+              positionSummaries: completedSummaries,
               analyzedAt: new Date().toISOString(),
               summaryText: parsed.summaryText || 'Portfolio analyzed successfully via Groq.',
             };
@@ -202,6 +256,7 @@ export async function evaluatePortfolioWithProviders(
         if (rawText) {
           const parsed = JSON.parse(rawText);
           if (validateAnalysisSchema(parsed)) {
+            const completedSummaries = ensureAllPositionsSummarized(parsed.positionSummaries, normalizedPositions);
             return {
               address: walletAddress,
               overallRiskScore: typeof parsed.overallRiskScore === 'number' ? parsed.overallRiskScore : 50,
@@ -213,7 +268,7 @@ export async function evaluatePortfolioWithProviders(
                 activeProvider: 'GEMINI',
                 details: `Analyzed via Gemini Fallback (${geminiModel})`,
               },
-              positionSummaries: parsed.positionSummaries,
+              positionSummaries: completedSummaries,
               analyzedAt: new Date().toISOString(),
               summaryText: parsed.summaryText || 'Portfolio analyzed successfully via Gemini fallback.',
             };

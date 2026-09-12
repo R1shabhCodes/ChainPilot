@@ -118,9 +118,9 @@ export default function AIRiskCard({
         <div className="h-10 w-10 border-t-2 border-r-2 border-[#00F0FF] animate-spin"></div>
         <div className="flex flex-col items-center gap-2 font-mono">
           <h3 className="text-sm font-black uppercase tracking-widest text-[#00F0FF]">
-            PROCESSING SUBGRAPH TELEMETRY
+            ANALYZING VERIFIED ON-CHAIN DATA
           </h3>
-          <span className="text-xs text-slate-500">Executing Gemini AI Reasoning Engine...</span>
+          <span className="text-xs t-text-muted font-mono">MEASURING RANGE RISK & BUILDING EXPLANATION...</span>
         </div>
       </div>
     );
