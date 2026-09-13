@@ -8,7 +8,8 @@ interface AddressInputProps {
 }
 
 const SAMPLE_ADDRESSES = [
-  { label: 'Uniswap V3 LP (Mainnet)', address: '0x50ec05ade8280758e2077fcbc08d878d4aef79c3' },
+  { label: 'Mixed Demo Wallet (3 Pos)', address: '0x50ec05ade8280758e2077fcbc08d878d4aef79c3' },
+  { label: 'In-Range Demo (1 Pos)', address: '0x7e80d4c662fac966f07c4df8e0b674d426816d56' },
   { label: 'Zero Positions Test', address: '0x1111111111111111111111111111111111111111' },
 ];
 

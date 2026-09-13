@@ -57,22 +57,56 @@ export default function LandingPage({ onAnalyze }: LandingPageProps) {
             <p className="text-base t-text-secondary leading-relaxed max-w-lg font-sans border-l-2 t-border-strong pl-4">
               An AI-powered copilot that analyzes DeFi liquidity positions
               and helps you understand on-chain risk — with verified data from The Graph
-              and transparent Gemini AI evaluations.
+              and transparent AI explanations.
             </p>
 
-            {/* Wallet Command Bar */}
-            <div className="w-full max-w-xl pt-2">
+            {/* Wallet Command Bar & Prominent Demo CTA */}
+            <div className="w-full max-w-xl pt-2 flex flex-col gap-4">
               <div className="panel-architecture bg-[var(--cp-surface-elevated)] p-1.5">
                 <AddressInput
                   externalAddress={null}
                   onAnalyze={onAnalyze}
                 />
               </div>
-              <div className="flex flex-wrap items-center justify-between gap-3 mt-4 text-[10px] font-mono t-text-muted font-bold uppercase tracking-widest">
-                <div className="flex items-center gap-3">
-                  <span>[ LIVE ETHEREUM DATA ]</span>
-                  <span>[ UNISWAP V3 ]</span>
-                  <span>[ AI RISK ANALYSIS ]</span>
+
+              {/* Prominent Live Demo Card for Judges */}
+              <div className="w-full panel-architecture bg-[var(--cp-surface-elevated)] border border-[#00F0FF]/40 p-4 font-mono flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl">
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 bg-[#00F0FF] animate-pulse"></span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#00F0FF]">
+                      TRY LIVE DEMO — VERIFIED MAINNET WALLET
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs flex-wrap">
+                    <span className="t-text font-bold font-mono text-xs">
+                      0x50ec...79c3
+                    </span>
+                    <span className="t-text-muted text-[10px]">· 3 positions · Mixed range state</span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => onAnalyze('0x50ec05ade8280758e2077fcbc08d878d4aef79c3')}
+                  className="w-full sm:w-auto px-4 py-2.5 text-xs font-black uppercase tracking-wider bg-[#baf24a] hover:bg-[#baf24a]/90 text-slate-950 border border-[#baf24a] shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                >
+                  <span>ANALYZE THIS WALLET</span>
+                  <span className="font-bold">→</span>
+                </button>
+              </div>
+
+              {/* Secondary Demo & Tech Badges */}
+              <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] font-mono t-text-muted font-bold uppercase tracking-widest pt-0.5">
+                <div className="flex items-center gap-2">
+                  <span className="t-text-muted">TRY ANOTHER:</span>
+                  <button
+                    type="button"
+                    onClick={() => onAnalyze('0x7e80d4c662fac966f07c4df8e0b674d426816d56')}
+                    className="text-cyan-400 hover:text-[#baf24a] hover:underline font-mono cursor-pointer"
+                  >
+                    0x7e80...6d56 (1 pos · In range)
+                  </button>
                 </div>
                 <Link
                   href="/learn"
@@ -225,7 +259,7 @@ export default function LandingPage({ onAnalyze }: LandingPageProps) {
               <h4 className="text-xl font-display font-black uppercase tracking-tight text-[#ff5c16] mt-4">EXPLAIN</h4>
               <div className="w-8 h-0.5 bg-[#ff5c16] mt-3"></div>
               <p className="text-sm t-text-secondary mt-4 font-sans leading-relaxed">
-                Gemini AI analyzes the verified position data and produces evidence-based risk interpretation, citing the exact on-chain values that inform each assessment.
+                AI copilot analyzes the verified position data and produces evidence-based risk interpretation, citing the exact on-chain values that inform each assessment.
               </p>
             </div>
           </div>
@@ -289,7 +323,7 @@ export default function LandingPage({ onAnalyze }: LandingPageProps) {
               </div>
 
               {[
-                { label: 'GEMINI AI — RISK REASONING', color: 'text-[#d075ff]', border: 'border-[#d075ff]/30', bg: 'bg-[#d075ff]/5' },
+                { label: 'AI ENGINE — RISK REASONING', color: 'text-[#d075ff]', border: 'border-[#d075ff]/30', bg: 'bg-[#d075ff]/5' },
                 { label: 'RISK INTERPRETATION + EVIDENCE', color: 'text-[#d075ff]', border: 'border-[#d075ff]/30', bg: 'bg-[var(--cp-bg)]' },
                 { label: 'USER — REVIEW & DECIDE', color: 't-text-heading', border: 't-border', bg: 'bg-[var(--cp-bg)]' },
               ].map((node, i) => (
@@ -383,7 +417,7 @@ export default function LandingPage({ onAnalyze }: LandingPageProps) {
                 <span className="text-stroke-cyan">NOT INVENT IT.</span>
               </h3>
               <p className="mt-8 text-sm t-text-secondary leading-relaxed font-sans max-w-md">
-                ChainPilot&apos;s Gemini AI layer receives verified position data and evaluates risk.
+                ChainPilot&apos;s AI reasoning layer receives verified position data and explains range risk.
                 Every interpretation cites the underlying on-chain evidence.
                 The AI never fabricates blockchain state.
               </p>
@@ -393,7 +427,7 @@ export default function LandingPage({ onAnalyze }: LandingPageProps) {
             <div className="font-mono text-xs flex flex-col gap-0">
               {[
                 { step: '01', label: 'VERIFIED ON-CHAIN DATA', desc: 'Position ticks, pool state, and liquidity values from The Graph.', color: 'text-cyan-500', accent: 'bg-cyan-500' },
-                { step: '02', label: 'AI RISK INTERPRETATION', desc: 'Gemini evaluates range status, exposure, and market position.', color: 'text-[#d075ff]', accent: 'bg-[#d075ff]' },
+                { step: '02', label: 'AI RISK INTERPRETATION', desc: 'AI copilot evaluates range status, exposure, and market position.', color: 'text-[#d075ff]', accent: 'bg-[#d075ff]' },
                 { step: '03', label: 'EVIDENCE CITATION', desc: 'Each risk assessment cites the exact data fields that informed it.', color: 'text-[#baf24a]', accent: 'bg-[#baf24a]' },
                 { step: '04', label: 'SUGGESTED ACTION', desc: 'An evidence-based recommendation the user can review and act on.', color: 'text-[#ff5c16]', accent: 'bg-[#ff5c16]' },
               ].map((item, i) => (
