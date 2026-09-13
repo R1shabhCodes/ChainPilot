@@ -34,11 +34,11 @@ ChainPilot is a read-only decision-support copilot designed for Uniswap V3 conce
 
 ## Relevant ChainPilot Code
 All Uniswap V3 data handling and range math in ChainPilot are open-source and modular:
-- [lib/graph/client.ts](file:///d:/ETH_Global/chainpilot/lib/graph/client.ts) — Live GraphQL position discovery via The Graph Subgraph Gateway.
-- [lib/graph/types.ts](file:///d:/ETH_Global/chainpilot/lib/graph/types.ts) — Raw Subgraph schemas and normalized position data contracts.
-- [lib/decision/rangeGeometry.ts](file:///d:/ETH_Global/chainpilot/lib/decision/rangeGeometry.ts) — Pure deterministic calculation of range width ($W$) and relative position ratio ($P$).
-- [lib/decision/riskCalculator.ts](file:///d:/ETH_Global/chainpilot/lib/decision/riskCalculator.ts) — Pure deterministic 0–100 LP RANGE RISK score calculator.
-- [lib/decision/protocolGeometry.ts](file:///d:/ETH_Global/chainpilot/lib/decision/protocolGeometry.ts) — Fee tier percentage, protocol tick spacing ($\Delta t$), and grid interval ($N_{\text{bins}}$) calculator.
-- [app/api/analyze/route.ts](file:///d:/ETH_Global/chainpilot/app/api/analyze/route.ts) — Server route orchestrating verified Graph data, deterministic math, and AI explanation.
-- [app/components/LiquidityRangeVisualizer.tsx](file:///d:/ETH_Global/chainpilot/app/components/LiquidityRangeVisualizer.tsx) — Position tick range visualizer and interactive tick drift simulator.
-- [lib/utils/explorer.ts](file:///d:/ETH_Global/chainpilot/lib/utils/explorer.ts) — Official Uniswap web app deep-link generators and Etherscan contract helpers.
+- [`lib/graph/client.ts`](https://github.com/R1shabhCodes/ChainPilot/blob/main/lib/graph/client.ts) — Live GraphQL position discovery via The Graph Subgraph Gateway.
+- [`lib/graph/types.ts`](https://github.com/R1shabhCodes/ChainPilot/blob/main/lib/graph/types.ts) — Raw Subgraph schemas and normalized position data contracts.
+- [`lib/decision/rangeGeometry.ts`](https://github.com/R1shabhCodes/ChainPilot/blob/main/lib/decision/rangeGeometry.ts) — Pure deterministic calculation of range width ($W$) and relative position ratio ($P$).
+- [`lib/decision/riskCalculator.ts`](https://github.com/R1shabhCodes/ChainPilot/blob/main/lib/decision/riskCalculator.ts) — Pure deterministic 0–100 LP RANGE RISK score calculator.
+- [`lib/decision/protocolGeometry.ts`](https://github.com/R1shabhCodes/ChainPilot/blob/main/lib/decision/protocolGeometry.ts) — Fee tier percentage, protocol tick spacing ($\Delta t$), and grid interval ($N_{\text{bins}}$) calculator.
+- [`app/api/analyze/route.ts`](https://github.com/R1shabhCodes/ChainPilot/blob/main/app/api/analyze/route.ts) — Server route orchestrating verified Graph data, deterministic math, and AI explanation.
+- [`app/components/LiquidityRangeVisualizer.tsx`](https://github.com/R1shabhCodes/ChainPilot/blob/main/app/components/LiquidityRangeVisualizer.tsx) — Position tick range visualizer and interactive tick drift simulator.
+- [`lib/utils/explorer.ts`](https://github.com/R1shabhCodes/ChainPilot/blob/main/lib/utils/explorer.ts) — Official Uniswap web app deep-link generators and Etherscan contract helpers.
