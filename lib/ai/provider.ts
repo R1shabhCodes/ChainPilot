@@ -91,6 +91,8 @@ function validateAnalysisSchema(parsed: any): parsed is PortfolioAnalysisRespons
   return true;
 }
 
+import { calculatePortfolioRisk, calculatePositionRiskScore } from '../decision/riskCalculator';
+
 function ensureAllPositionsSummarized(
   summaries: PositionRiskSummary[],
   normalizedPositions: NormalizedPositionData[]
@@ -101,10 +103,12 @@ function ensureAllPositionsSummarized(
   const result: PositionRiskSummary[] = [];
 
   for (const pos of normalizedPositions) {
+    const detRes = calculatePositionRiskScore(pos.tickLower, pos.tickUpper, pos.currentTick, pos.positionId);
     const existing = summaryMap.get(pos.positionId);
     if (existing) {
       result.push({
         ...existing,
+        riskLevel: detRes.positionRiskLevel,
         tickLower: existing.tickLower ?? pos.tickLower,
         tickUpper: existing.tickUpper ?? pos.tickUpper,
         currentTick: existing.currentTick ?? pos.currentTick,
@@ -114,13 +118,13 @@ function ensureAllPositionsSummarized(
         feeTier: existing.feeTier || pos.feeTier,
       });
     } else {
-      const whatIFound = `Position #${pos.positionId} (${pos.tokenPair}) verified on-chain. Selected tick range: ${pos.tickLower.toLocaleString()} to ${pos.tickUpper.toLocaleString()}; current pool tick: ${pos.currentTick !== null ? pos.currentTick.toLocaleString() : 'N/A'}.`;
-      const whyItMatters = `Position state is ${pos.rangeStatus}. ${pos.rangeStatus === 'IN_RANGE' ? 'Liquidity is active within bounds.' : 'Position is inactive.'}`;
+      const whatIFound = `Position #${pos.positionId} (${pos.tokenPair}) is verified from indexed on-chain data. Its selected tick range is ${pos.tickLower.toLocaleString('en-US')} to ${pos.tickUpper.toLocaleString('en-US')} and current pool tick is ${pos.currentTick !== null ? pos.currentTick.toLocaleString('en-US') : 'N/A'}.`;
+      const whyItMatters = `AI explanation unavailable. Deterministic analysis identifies this position as ${pos.rangeStatus === 'IN_RANGE' ? 'IN RANGE' : 'OUT OF RANGE'}.`;
       result.push({
         positionId: pos.positionId,
         protocol: pos.protocol,
         tokenPair: pos.tokenPair,
-        riskLevel: 'UNKNOWN',
+        riskLevel: detRes.positionRiskLevel,
         rangeStatus: pos.rangeStatus,
         whatIFound,
         whyItMatters,
@@ -159,7 +163,11 @@ export async function evaluatePortfolioWithProviders(
   let geminiStatus: ProviderStatusState = geminiApiKey ? 'STANDBY' : 'DISABLED';
   let details = '';
 
-  const userPrompt = buildAnalysisUserPrompt(walletAddress, verifiedPositionsJson);
+  // Calculate 100% deterministic LP Range Risk Score
+  const deterministicRisk = calculatePortfolioRisk(normalizedPositions);
+  const scoreInfoStr = `LP Range Risk Score: ${deterministicRisk.overallRiskScore}/100 (${deterministicRisk.overallRiskLevel} Risk Level). ${deterministicRisk.riskDescription}`;
+
+  const userPrompt = buildAnalysisUserPrompt(walletAddress, verifiedPositionsJson, scoreInfoStr);
 
   // STEP 1: Attempt Primary Provider (Groq API using Structured Outputs)
   if (groqApiKey) {
@@ -192,8 +200,9 @@ export async function evaluatePortfolioWithProviders(
             const completedSummaries = ensureAllPositionsSummarized(parsed.positionSummaries, normalizedPositions);
             return {
               address: walletAddress,
-              overallRiskScore: typeof parsed.overallRiskScore === 'number' ? parsed.overallRiskScore : 50,
-              overallRiskLevel: parsed.overallRiskLevel || 'MODERATE',
+              overallRiskScore: deterministicRisk.overallRiskScore,
+              overallRiskLevel: deterministicRisk.overallRiskLevel,
+              riskDescription: deterministicRisk.riskDescription,
               aiStatus: 'SUCCESS',
               providerStatus: {
                 groqStatus: 'ACTIVE',
@@ -259,8 +268,9 @@ export async function evaluatePortfolioWithProviders(
             const completedSummaries = ensureAllPositionsSummarized(parsed.positionSummaries, normalizedPositions);
             return {
               address: walletAddress,
-              overallRiskScore: typeof parsed.overallRiskScore === 'number' ? parsed.overallRiskScore : 50,
-              overallRiskLevel: parsed.overallRiskLevel || 'MODERATE',
+              overallRiskScore: deterministicRisk.overallRiskScore,
+              overallRiskLevel: deterministicRisk.overallRiskLevel,
+              riskDescription: deterministicRisk.riskDescription,
               aiStatus: 'SUCCESS',
               providerStatus: {
                 groqStatus,
@@ -289,16 +299,16 @@ export async function evaluatePortfolioWithProviders(
   }
 
   // STEP 3: Both AI Providers Failed or Unavailable -> Deterministic Fallback Response
-  // Rule 4: Do NOT silently present risk levels as AI judgments. Set riskLevel: 'UNKNOWN'.
   const fallbackSummaries: PositionRiskSummary[] = normalizedPositions.map((pos) => {
-    const whatIFound = `Position #${pos.positionId} (${pos.tokenPair}) verified on-chain. Selected tick range: ${pos.tickLower.toLocaleString()} to ${pos.tickUpper.toLocaleString()}; current pool tick: ${pos.currentTick !== null ? pos.currentTick.toLocaleString() : 'N/A'}.`;
-    const whyItMatters = `Position state is ${pos.rangeStatus}. ${pos.rangeStatus === 'IN_RANGE' ? 'Liquidity is currently active within the selected range and can earn swap fees.' : 'No new swap fees are earned while the position is inactive.'} AI risk evaluation is currently unavailable.`;
+    const detRes = calculatePositionRiskScore(pos.tickLower, pos.tickUpper, pos.currentTick, pos.positionId);
+    const whatIFound = `Position #${pos.positionId} (${pos.tokenPair}) is verified from indexed on-chain data. Its selected tick range is ${pos.tickLower.toLocaleString('en-US')} to ${pos.tickUpper.toLocaleString('en-US')} and current pool tick is ${pos.currentTick !== null ? pos.currentTick.toLocaleString('en-US') : 'N/A'}.`;
+    const whyItMatters = `AI explanation unavailable. Deterministic analysis identifies this position as ${pos.rangeStatus === 'IN_RANGE' ? 'IN RANGE' : 'OUT OF RANGE'}. ${pos.rangeStatus === 'IN_RANGE' ? 'Liquidity is active within selected bounds and earning swap fees.' : 'No new swap fees are collected while the position remains inactive outside bounds.'}`;
 
     return {
       positionId: pos.positionId,
       protocol: pos.protocol,
       tokenPair: pos.tokenPair,
-      riskLevel: 'UNKNOWN',
+      riskLevel: detRes.positionRiskLevel,
       rangeStatus: pos.rangeStatus,
       whatIFound,
       whyItMatters,
@@ -314,12 +324,15 @@ export async function evaluatePortfolioWithProviders(
       poolAddress: pos.poolAddress,
       token0Address: pos.token0Address,
       token1Address: pos.token1Address,
+      feeTier: pos.feeTier,
     };
   });
 
   return {
     address: walletAddress,
-    // overallRiskScore and overallRiskLevel left undefined when AI is offline
+    overallRiskScore: deterministicRisk.overallRiskScore,
+    overallRiskLevel: deterministicRisk.overallRiskLevel,
+    riskDescription: deterministicRisk.riskDescription,
     aiStatus: 'UNAVAILABLE',
     providerStatus: {
       groqStatus,
@@ -329,6 +342,6 @@ export async function evaluatePortfolioWithProviders(
     },
     positionSummaries: fallbackSummaries,
     analyzedAt: new Date().toISOString(),
-    summaryText: 'On-chain position data verified. AI natural language interpretation is currently unavailable.',
+    summaryText: `On-chain position data verified. ${deterministicRisk.riskDescription} AI natural language interpretation is currently unavailable.`,
   };
 }

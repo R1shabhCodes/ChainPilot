@@ -2,6 +2,7 @@
 
 import { PortfolioAnalysisResponse, RiskLevel } from '@/lib/ai/types';
 import { AnalyzeStatusNotice } from './AIRiskCard';
+import { TRANSPARENCY_NOTE, RISK_LEVEL_DESCRIPTIONS } from '@/lib/decision/riskCalculator';
 
 export interface RiskScoreGaugeProps {
   analysis: PortfolioAnalysisResponse | null;
@@ -54,13 +55,13 @@ export default function RiskScoreGauge({
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 bg-cyan-500 animate-pulse"></span>
             <h3 className="text-xs font-bold uppercase tracking-wider t-text">
-              PORTFOLIO RISK COMMAND HEADER
+              CURRENT LP RANGE RISK COMMAND CENTER
             </h3>
           </div>
         </div>
         <div className="py-6 flex flex-col items-center justify-center gap-2 t-text-muted">
           <div className="h-5 w-5 border-2 border-cyan-500/20 border-t-cyan-500 animate-spin"></div>
-          <span className="text-xs font-mono t-text-muted">ANALYZING VERIFIED ON-CHAIN DATA & RANGE RISK...</span>
+          <span className="text-xs font-mono t-text-muted">CALCULATING DETERMINISTIC RANGE RISK TELEMETRY...</span>
         </div>
       </div>
     );
@@ -88,7 +89,7 @@ export default function RiskScoreGauge({
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 bg-cyan-500"></span>
             <h3 className="text-xs font-bold uppercase tracking-wider text-cyan-500">
-              RISK EVALUATION STATUS
+              CURRENT LP RANGE RISK STATUS
             </h3>
           </div>
           <span className="text-[10px] font-mono px-2 py-0.5 bg-[var(--cp-surface-elevated)] text-cyan-500 border t-border">
@@ -106,20 +107,25 @@ export default function RiskScoreGauge({
   }
 
   // Verified Analysis State
-  const isAiAvailable = typeof analysis.overallRiskScore === 'number' && analysis.overallRiskLevel;
-  const level: RiskLevel = analysis.overallRiskLevel || 'MODERATE';
+  const isScorePresent = typeof analysis.overallRiskScore === 'number';
+  const scoreVal = isScorePresent ? analysis.overallRiskScore! : 0;
+  const level: RiskLevel = analysis.overallRiskLevel || 'LOW';
   const riskStyle = getRiskBadgeStyle(level);
   const positionCount = analysis.positionSummaries?.length || 0;
-  const clampedScore = isAiAvailable ? Math.min(100, Math.max(0, analysis.overallRiskScore!)) : 0;
+  const clampedScore = Math.min(100, Math.max(0, scoreVal));
+  const levelDesc =
+    analysis.riskDescription ||
+    RISK_LEVEL_DESCRIPTIONS[level] ||
+    RISK_LEVEL_DESCRIPTIONS.LOW;
 
   return (
     <div className="w-full bg-[var(--cp-surface)] border t-border p-5 font-mono flex flex-col gap-5 shadow-2xl animate-fadeIn">
       {/* Top Header */}
       <div className="flex items-center justify-between border-b t-border pb-3">
         <div className="flex items-center gap-2">
-          <span className={`h-2 w-2 ${isAiAvailable ? 'bg-cyan-500 animate-pulse' : 'bg-amber-400'}`}></span>
+          <span className="h-2 w-2 bg-cyan-500 animate-pulse"></span>
           <h3 className="text-xs font-bold uppercase tracking-wider t-text">
-            PORTFOLIO RISK COMMAND CENTER
+            CURRENT LP RANGE RISK
           </h3>
         </div>
         <span className="text-[10px] t-text-muted font-mono">
@@ -131,54 +137,55 @@ export default function RiskScoreGauge({
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="flex flex-col gap-1">
           <span className="text-[10px] uppercase font-bold t-text-muted tracking-wider">
-            OVERALL RISK SCORE
+            CURRENT LP RANGE RISK SCORE
           </span>
           <div className="flex items-baseline gap-3">
-            {isAiAvailable ? (
-              <>
-                <span className="font-display font-black text-5xl sm:text-6xl t-text-heading tracking-tight">
-                  {analysis.overallRiskScore}
-                </span>
-                <span className="text-sm t-text-muted font-bold">/ 100</span>
-              </>
-            ) : (
-              <span className="font-display font-bold text-xl text-amber-400 tracking-tight uppercase">
-                AI INTERPRETATION UNAVAILABLE
-              </span>
-            )}
+            <span className="font-display font-black text-5xl sm:text-6xl t-text-heading tracking-tight">
+              {clampedScore}
+            </span>
+            <span className="text-sm t-text-muted font-bold">/ 100</span>
           </div>
         </div>
 
         <div className="flex flex-col items-start sm:items-end gap-1.5">
-          <span className="text-[10px] uppercase font-bold t-text-muted tracking-wider">DATA TIER</span>
-          {isAiAvailable ? (
-            <span className={`px-3 py-1 text-xs font-black uppercase border ${riskStyle.colorClass}`}>
-              {analysis.overallRiskLevel} RISK
-            </span>
-          ) : (
-            <span className="px-3 py-1 text-xs font-black uppercase border bg-cyan-500/10 text-cyan-500 border-cyan-500/40">
-              ON-CHAIN DATA VERIFIED
-            </span>
-          )}
+          <span className="text-[10px] uppercase font-bold t-text-muted tracking-wider">RANGE RISK LEVEL</span>
+          <span className={`px-3 py-1 text-xs font-black uppercase border ${riskStyle.colorClass}`}>
+            {level} RISK
+          </span>
         </div>
       </div>
 
       {/* Financial Segmented Risk Meter Bar */}
-      {isAiAvailable && (
-        <div className="flex flex-col gap-1.5">
-          <div className="w-full h-3 bg-[var(--cp-surface-elevated)] border t-border relative overflow-hidden">
-            <div
-              className={`h-full transition-all duration-700 ease-out ${riskStyle.barFillClass}`}
-              style={{ width: `${clampedScore}%` }}
-            ></div>
-          </div>
-          <div className="flex justify-between text-[9px] font-mono t-text-muted pt-0.5 uppercase">
-            <span>0 (Low Risk)</span>
-            <span>50 (Moderate)</span>
-            <span>100 (Critical)</span>
-          </div>
+      <div className="flex flex-col gap-1.5">
+        <div className="w-full h-3 bg-[var(--cp-surface-elevated)] border t-border relative overflow-hidden">
+          <div
+            className={`h-full transition-all duration-700 ease-out ${riskStyle.barFillClass}`}
+            style={{ width: `${clampedScore}%` }}
+          ></div>
         </div>
-      )}
+        <div className="flex justify-between text-[9px] font-mono t-text-muted pt-0.5 uppercase">
+          <span>0 (Low Range Risk)</span>
+          <span>50 (Moderate Range Risk)</span>
+          <span>100 (Critical Range Risk)</span>
+        </div>
+      </div>
+
+      {/* Risk Level Description Notice */}
+      <div className="bg-[var(--cp-surface-elevated)] border t-border p-3 rounded-none text-xs font-sans t-text-secondary leading-relaxed flex items-start gap-2.5">
+        <span className="text-cyan-500 font-mono text-sm">ℹ️</span>
+        <div className="flex flex-col gap-1">
+          <span className="font-bold text-xs font-mono t-text-heading uppercase tracking-wide">
+            {level} RANGE RISK CONTEXT:
+          </span>
+          <span>{levelDesc}</span>
+        </div>
+      </div>
+
+      {/* Official Transparency Note - Theme Aware */}
+      <div className="p-2.5 t-surface-el border t-border text-[11px] font-mono t-text-secondary leading-snug">
+        <span className="t-text font-bold mr-1">TRANSPARENCY NOTICE:</span>
+        {TRANSPARENCY_NOTE}
+      </div>
 
       {/* Telemetry Footer */}
       <div className="pt-3 border-t t-border flex flex-wrap items-center justify-between gap-3 text-xs font-mono t-text-secondary">
@@ -228,3 +235,4 @@ export default function RiskScoreGauge({
     </div>
   );
 }
+

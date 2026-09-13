@@ -85,6 +85,7 @@ export interface PortfolioAnalysisResponse {
   address: string;
   overallRiskScore?: number; // 0 to 100 (undefined if AI is unavailable)
   overallRiskLevel?: RiskLevel;
+  riskDescription?: string;
   aiStatus: AIStatus;
   providerStatus: ProviderStatusReport;
   positionSummaries: PositionRiskSummary[];

@@ -8,7 +8,7 @@ const SUBGRAPH_DEPLOYMENT_ID = '5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV';
 
 const UNISWAP_V3_POSITIONS_QUERY = `
   query GetUserPositions($owner: Bytes!) {
-    positions(where: { owner: $owner, liquidity_gt: "0" }) {
+    positions(first: 1000, where: { owner: $owner, liquidity_gt: "0" }) {
       id
       owner
       liquidity
@@ -65,7 +65,10 @@ export async function fetchUniswapPositions(address: string): Promise<GraphFetch
   try {
     const response = await fetch(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'ChainPilot/1.0 (ETHGlobal Submission)',
+      },
       body: JSON.stringify({
         query: UNISWAP_V3_POSITIONS_QUERY,
         variables: { owner: normalizedOwner },
