@@ -40,3 +40,22 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local scratch & logs
+scratch/
+*.log
+
+# video & screen recordings
+*.mp4
+*.mkv
+*.webm
+*.mov
+*.avi
+
+# ide & editor metadata
+.idea/
+.vscode/
+.gemini/
+*.swp
+*.swo
+
