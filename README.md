@@ -72,7 +72,9 @@ ChainPilot provides objective measurements and AI explanations without relying o
 
 <br />
 
-![ChainPilot Landing Hero](docs/screenshots/landing-dark.png)
+![ChainPilot Landing Hero Dark](docs/screenshots/landing-dark.png)
+
+![ChainPilot Landing Hero Light](docs/screenshots/landing-light.png)
 
 ![ChainPilot Risk Workspace](docs/screenshots/workspace-dark.png)
 
