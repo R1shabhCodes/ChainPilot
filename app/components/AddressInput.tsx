@@ -150,17 +150,17 @@ export default function AddressInput({ externalAddress, onAnalyze }: AddressInpu
       )}
 
       {/* Quick Sample Address Selector Bar */}
-      <div className="flex flex-wrap items-center gap-2 text-[10px] t-text-muted select-none">
-        <span className="uppercase font-semibold tracking-wider t-text-muted">Sample Addresses:</span>
+      <div className="flex flex-wrap items-center gap-2 text-[10px] font-mono select-none">
+        <span className="uppercase font-bold tracking-wider t-text-muted">Sample Addresses:</span>
         {SAMPLE_ADDRESSES.map((sample, idx) => (
           <button
             key={idx}
             type="button"
             onClick={() => handleSelectSample(sample.address)}
-            className={`px-2.5 py-1 bg-[var(--cp-surface-elevated)] border text-[10px] font-mono transition-colors cursor-pointer ${
+            className={`px-2.5 py-1 text-[10px] font-mono font-bold transition-all cursor-pointer border focus:outline-none focus:ring-1 focus:ring-cyan-500/50 ${
               activeAddress?.toLowerCase() === sample.address.toLowerCase()
-                ? 'border-[#BAF24A] text-[#BAF24A] font-bold'
-                : 't-border t-text-muted hover:t-text hover:t-border-strong'
+                ? 'border-[#BAF24A] text-[#BAF24A] bg-[#BAF24A]/10'
+                : 'bg-[var(--cp-surface-elevated)] t-border-strong t-text-secondary hover:t-text hover:border-cyan-500/60 hover:text-cyan-400'
             }`}
           >
             {sample.label}
